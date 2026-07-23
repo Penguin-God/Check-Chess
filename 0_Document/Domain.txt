@@ -1,0 +1,25 @@
+===기본 규칙===
+컬랙션은 편의상 []로 표기하지만 실제로는 불변이어야 함
+
+===Start Game===
+Unity Start -> StageIndex LoadStageProgress(string progressKey) -> StageModel[] CreateStageModels(StageProgress progress) -> void DrawStageUI()
+
+-LoadStageProgress : PlayerPrefabs 사용
+-CreateStageModels : 진행도보다 큰 스테이지는 isClear false, 아니면 true
+
+
+===Puzzle Play===
+-ChessSquare SelectSquare() -> SelectedPiece GetSquarePieces(ChessSquare square) -> PuzzlePlayState CreateMoveState(SelectedPiece) -> State Change And Event
+-
+
+===Types===
+PiecesType : King | Queen | Rook | Bishop | Knight | Pawn | None
+PuzzleState : Select | Move | Clear | Fail
+
+===Records===
+StageIndex(int chapter, int stage) : 비교 재정의, 챕터가 큰 쪽인 큼, 같다면 스테이지가 큰 쪽이 큼, 둘이 같으면 동등
+StageModel(int chapter, int stage, bool isClear)
+
+ChessSquare(string file, int rank) : file은 a~h, rank는 1~8
+SelectedPiece : Option<PiecesType> (Some | None)
+PuzzlePlayState(PuzzleState puzzleState, SelectedPiece pieces)
