@@ -1,5 +1,8 @@
 ===기본 규칙===
 컬랙션은 편의상 []로 표기하지만 실제로는 불변이어야 함
+지역 변수 : _camelCase
+매개변수 등 지역 변수 제외 모든 변수 : camelCase
+함수, 프로퍼티, 클래스, 구조체, 레코드, 폴더, 파일명 : PascalCase
 
 ===Start Game===
 Unity Start -> StageIndex LoadStageProgress(string progressKey) -> StageModel[] CreateStageModels(StageProgress progress) -> void DrawStageUI()
