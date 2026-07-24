@@ -12,8 +12,15 @@ Unity Start -> StageIndex LoadStageProgress(string progressKey) -> StageModel[] 
 
 
 ===Puzzle Play===
--ChessSquare SelectSquare() -> SelectedPiece GetSquarePieces(ChessSquare square) -> PuzzlePlayState CreateMoveState(SelectedPiece) -> State Change And Event
--
+ClickUIEvent ->
+ChessSquare SelectSquare(ChessSquare[] selectableSqueares)
+-> PiecesType GetSquarePieces(ChessSquare square) 
+-> ChessSquare[]<Nullable> CreateMoveableOption()
+If Null -> Faild Event
+-> SelectEvent
+-> RemoveCurrentPieces
+->ChangeCurrentPieces
+
 
 ===Types===
 PiecesType : King | Queen | Rook | Bishop | Knight | Pawn | None
@@ -28,6 +35,8 @@ StageModel(int chapter, int stage, bool isClear)
 ChessSquare(string file, int rank) : file은 1~8, rank는 1~8
 SelectedPiece : Option<PiecesType> (Some | None)
 PuzzlePlayState(PuzzleState puzzleState, SelectedPiece pieces)
+
+
 
 
 ===Move===
