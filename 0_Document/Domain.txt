@@ -12,7 +12,6 @@ Unity Start -> StageIndex LoadStageProgress(string progressKey) -> StageModel[] 
 
 
 ===Puzzle Play===
-ClickUIEvent ->
 ChessSquare SelectSquare(ChessSquare[] selectableSqueares)
 -> PiecesType GetSquarePieces(ChessSquare square) 
 -> ChessSquare[]<Nullable> CreateMoveableOption()
@@ -21,23 +20,19 @@ If Null -> Faild Event
 -> RemoveCurrentPieces
 ->ChangeCurrentPieces
 
-
 ===Types===
 PiecesType : King | Queen | Rook | Bishop | Knight | Pawn | None
 MoveRangeTpye : Infinite, Range, Fix,
-MoveType : Jump, Slide
+MoveType : Jump | Slide
 PuzzleState : Select | Move | Clear | Fail
 
 ===Records===
 StageIndex(int chapter, int stage) : 비교 재정의, 챕터가 큰 쪽이 큼, 같다면 스테이지가 큰 쪽이 큼, 둘이 같으면 동등
 StageModel(int chapter, int stage, bool isClear)
 
+PuzzlePlayState(PuzzleState puzzleState, PiecesType movePieces)
 ChessSquare(string file, int rank) : file은 1~8, rank는 1~8
 SelectedPiece : Option<PiecesType> (Some | None)
-PuzzlePlayState(PuzzleState puzzleState, SelectedPiece pieces)
-
-
-
 
 ===Move===
 And는 하나의 규칙으로 동시에 적용됨, Or는 별도의 규칙으로 이동 가능 영역만 늘어남
