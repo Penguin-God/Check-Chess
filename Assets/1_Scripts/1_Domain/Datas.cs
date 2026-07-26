@@ -37,12 +37,7 @@ public record BoardState
     public PiecesType? GetPieceAt(ChessSquare square)
     {
         bool _isOutOfBounds = square.X < 0 || square.X >= Width || square.Y < 0 || square.Y >= Height;
-
-        if (_isOutOfBounds)
-        {
-            return null;
-        }
-
+        if (_isOutOfBounds) return null;
         return grid[square.X, square.Y];
     }
 }
