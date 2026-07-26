@@ -18,11 +18,6 @@ public record ChessSquare(int x, int y);
 
 public record PuzzlePlayState(PuzzleStatusType status, PiecesType piece);
 
-public static class DataFactory
-{
-    public static ChessSquare CreateSquare(int x, int y) => new ChessSquare(x, y);
-}
-
 public record BoardState
 {
     private readonly PiecesType?[,] grid;
@@ -43,4 +38,9 @@ public record BoardState
         if (_isOutOfBounds) return null;
         return grid[square.x, square.y];
     }
+}
+
+public static class DataFactory
+{
+    public static ChessSquare CreateSquare(int x, int y) => new ChessSquare(x, y);
 }
