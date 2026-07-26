@@ -1,5 +1,3 @@
-
-
 public enum PiecesType
 {
     Pawn,
@@ -16,9 +14,14 @@ public enum PuzzleStatusType
     Action
 }
 
-public record ChessSquare(int X, int Y);
+public record ChessSquare(int x, int y);
 
-public record PuzzlePlayState(PuzzleStatusType Status, PiecesType Piece);
+public record PuzzlePlayState(PuzzleStatusType status, PiecesType piece);
+
+public static class DataFactory
+{
+    public static ChessSquare CreateSquare(int x, int y) => new ChessSquare(x, y);
+}
 
 public record BoardState
 {
@@ -36,8 +39,8 @@ public record BoardState
 
     public PiecesType? GetPieceAt(ChessSquare square)
     {
-        bool _isOutOfBounds = square.X < 0 || square.X >= Width || square.Y < 0 || square.Y >= Height;
+        bool _isOutOfBounds = square.x < 0 || square.x >= Width || square.y < 0 || square.y >= Height;
         if (_isOutOfBounds) return null;
-        return grid[square.X, square.Y];
+        return grid[square.x, square.y];
     }
 }
