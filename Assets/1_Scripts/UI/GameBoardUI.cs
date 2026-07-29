@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// 인스펙터에서 기물 타입과 이미지를 연결하기 위한 구조체
 [Serializable]
 public struct PieceSpriteData
 {
@@ -22,20 +21,26 @@ public class GameBoardUI : MonoBehaviour
     public Button restartBtn;
 
     [Header("Piece Sprites Configuration")]
-    public List<PieceSpriteData> pieceSpritesConfig; // 인스펙터에서 세팅할 리스트
-    private Dictionary<PieceType, Sprite> pieceSpriteDict;
+    public List<PieceSpriteData> pieceSpritesConfig;
+    Dictionary<PieceType, Sprite> pieceSpriteDict;
 
     [Header("Stage Data")]
     public StageDataSO currentStageData;
 
-    private GameState currentState;
-    private Button[,] uiButtons = new Button[8, 8];
-    private Image[,] uiBackgrounds = new Image[8, 8]; // 기존 배경용 Image
-    private Image[,] uiPieceImages = new Image[8, 8]; // 새로 추가된 기물용 Image
+    [Header("Board Colors")]
+    // 기본값은 첨부해주신 이미지(image_6eea3f.png)와 유사한 체스닷컴 우드 테마 색상입니다.
+    public Color lightSquareColor = new Color(0.94f, 0.85f, 0.71f);
+    public Color darkSquareColor = new Color(0.71f, 0.53f, 0.39f);
+    public Color activeColor = new Color(0.73f, 0.79f, 0.27f);
+    public Color validMoveColor;
+
+    GameState currentState;
+    Button[,] uiButtons = new Button[8, 8];
+    Image[,] uiBackgrounds = new Image[8, 8];
+    Image[,] uiPieceImages = new Image[8, 8];
 
     void Start()
     {
-        // 리스트를 딕셔너리로 변환하여 빠른 검색이 가능하게 세팅
         pieceSpriteDict = new Dictionary<PieceType, Sprite>();
         foreach (var config in pieceSpritesConfig)
         {
@@ -59,7 +64,7 @@ public class GameBoardUI : MonoBehaviour
         RenderState(currentState);
     }
 
-    private void InitializeUI()
+    void InitializeUI()
     {
         for (int y = 0; y < 8; y++)
         {
@@ -71,8 +76,6 @@ public class GameBoardUI : MonoBehaviour
 
                 uiButtons[x, y] = obj.GetComponent<Button>();
                 uiBackgrounds[x, y] = obj.GetComponent<Image>();
-
-                // 첫 번째 자식인 PieceImage 컴포넌트를 가져옴
                 uiPieceImages[x, y] = obj.transform.GetChild(0).GetComponent<Image>();
 
                 uiButtons[x, y].onClick.AddListener(() => OnSquareClicked(clickX, clickY));
@@ -80,7 +83,7 @@ public class GameBoardUI : MonoBehaviour
         }
     }
 
-    private void OnSquareClicked(int x, int y)
+    void OnSquareClicked(int x, int y)
     {
         var clickedSquare = currentState.Board.FirstOrDefault(sq => sq.X == x && sq.Y == y);
         if (clickedSquare == null) return;
@@ -109,7 +112,7 @@ public class GameBoardUI : MonoBehaviour
         }
     }
 
-    private void RenderState(GameState state)
+    void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
 
@@ -122,14 +125,14 @@ public class GameBoardUI : MonoBehaviour
             if (square.Piece == PieceType.None)
             {
                 pieceImg.sprite = null;
-                pieceImg.color = Color.clear; // 기물이 없으면 투명하게
+                pieceImg.color = Color.clear;
             }
             else
             {
                 if (pieceSpriteDict.TryGetValue(square.Piece, out Sprite sprite))
                 {
                     pieceImg.sprite = sprite;
-                    pieceImg.color = Color.white; // 불투명하게 보이도록 설정
+                    pieceImg.color = Color.white;
                 }
                 else
                 {
@@ -138,29 +141,34 @@ public class GameBoardUI : MonoBehaviour
                 }
             }
 
-            // 2. 상태값 판별
+            // 2. 타일 기본 색상 계산 (x + y 가 짝수면 어두운 색, 홀수면 밝은 색)
+            bool isDarkSquare = (square.X + square.Y) % 2 == 0;
+            Color baseColor = isDarkSquare ? darkSquareColor : lightSquareColor;
+
+            // 3. 상태값 판별
             bool isActive = state.ActiveSquare == square;
             bool isValidMove = validMoves.Contains(square);
             bool isStartDisabled = state.ActiveSquare == null &&
                                    square.Piece != PieceType.None &&
                                    !state.AllowedStartingSquares.Contains(square);
 
-            // 3. 배경색 렌더링 (기물 이미지는 영향받지 않음)
+            // 4. 배경색 렌더링 적용
             if (isActive)
             {
-                bgImg.color = Color.green; // 활성화
+                bgImg.color = activeColor;
             }
             else if (isValidMove)
             {
-                bgImg.color = Color.yellow; // 이동 가능
+                bgImg.color = validMoveColor;
             }
             else if (isStartDisabled)
             {
-                bgImg.color = new Color(0.7f, 0.7f, 0.7f); // 비활성화됨
+                // 완전히 회색으로 덮지 않고, 기존 체스판 패턴을 유지하면서 어둡게(회색빛) 섞어줍니다.
+                bgImg.color = Color.Lerp(baseColor, Color.gray, 0.6f);
             }
             else
             {
-                bgImg.color = Color.white; // 기본
+                bgImg.color = baseColor; // 하얀색(Color.white) 대신 계산된 기본 색상 적용!
             }
         }
     }

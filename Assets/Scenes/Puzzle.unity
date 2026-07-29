@@ -1468,6 +1468,10 @@ MonoBehaviour:
   - pieceType: 6
     pieceSprite: {fileID: 21300000, guid: be302447939b48d4c8b481ea0d2873cb, type: 3}
   currentStageData: {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
+  lightSquareColor: {r: 0.94, g: 0.85, b: 0.71, a: 1}
+  darkSquareColor: {r: 0.71, g: 0.53, b: 0.39, a: 1}
+  activeColor: {r: 0.7481644, g: 0.8207547, b: 0.18195976, a: 1}
+  validMoveColor: {r: 0.8962264, g: 0.32681733, b: 0.29169634, a: 1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
