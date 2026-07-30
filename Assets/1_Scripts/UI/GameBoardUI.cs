@@ -148,9 +148,7 @@ public class GameBoardUI : MonoBehaviour
                 }
             }
 
-            // 2. 타일 기본 색상 계산 (x + y 가 짝수면 어두운 색, 홀수면 밝은 색)
-            bool isDarkSquare = (square.X + square.Y) % 2 == 0;
-            Color baseColor = isDarkSquare ? darkSquareColor : lightSquareColor;
+            Color baseColor = BoardUICalculator.GetCheckerboardColor(square.X, square.Y, lightSquareColor, darkSquareColor);
 
             // 3. 상태값 판별
             bool isActive = state.ActiveSquare == square;
