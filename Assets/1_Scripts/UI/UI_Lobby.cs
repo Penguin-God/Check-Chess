@@ -3,9 +3,9 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class LobbyManager : MonoBehaviour
+public class UI_Lobby : MonoBehaviour
 {
-    private int currentChapterIndex = 0; // 현재 화면에 띄운 챕터
+    int currentChapterIndex = 0; // 현재 화면에 띄운 챕터
 
     [Header("UI 연결")]
     public TMP_Text chapterTitleText;
@@ -26,7 +26,7 @@ public class LobbyManager : MonoBehaviour
         UpdateLobbyUI();
     }
 
-    private void UpdateLobbyUI()
+    void UpdateLobbyUI()
     {
         // LevelManager에서 챕터 데이터를 가져옴
         var chapters = LevelManager.Instance.chapters;
@@ -48,7 +48,7 @@ public class LobbyManager : MonoBehaviour
         SetupStageButtons(currentChapter);
     }
 
-    private void LockAllStageButtons()
+    void LockAllStageButtons()
     {
         foreach (var btn in stageButtons)
         {
@@ -56,7 +56,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private void SetupStageButtons(ChapterData chapter)
+    void SetupStageButtons(ChapterData chapter)
     {
         for (int i = 0; i < stageButtons.Length; i++)
         {
@@ -82,26 +82,26 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private void OnStageSelected(int absoluteLevel)
+    void OnStageSelected(int absoluteLevel)
     {
         // 데이터 복사 로직 제거! 단순히 현재 레벨만 갱신하고 씬 이동
         LevelManager.Instance.CurrentAbsoluteLevel = absoluteLevel;
         SceneManager.LoadScene("Puzzle");
     }
 
-    private void ShowNextChapter()
+    void ShowNextChapter()
     {
         if (currentChapterIndex < LevelManager.Instance.chapters.Count - 1) currentChapterIndex++;
         UpdateLobbyUI();
     }
 
-    private void ShowPrevChapter()
+    void ShowPrevChapter()
     {
         if (currentChapterIndex > 0) currentChapterIndex--;
         UpdateLobbyUI();
     }
 
-    private void OnWatchAdClicked()
+    void OnWatchAdClicked()
     {
         Debug.Log("광고 시청 완료! 전체 챕터가 해금되었습니다.");
         LevelManager.Instance.IsPremiumUnlocked = true;
