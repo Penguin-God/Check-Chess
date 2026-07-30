@@ -10,13 +10,16 @@ public class UI_Lobby : MonoBehaviour
     public GameObject squarePrefab; // 개별 칸(스테이지) 프리팹
     public RectTransform pawnMarker; // 플레이어의 현재 위치를 표시할 폰 이미지 UI
 
+    [Header("Board Colors")]
+    public Color lightSquareColor = new Color(0.9f, 0.9f, 0.9f); // 인스펙터에서 수정 가능
+    public Color darkSquareColor = new Color(0.4f, 0.6f, 0.4f);
+
     [Header("Premium / Ad System")]
     public GameObject adLockPanel;
     public Button watchAdButton;
 
-    const int CHESS_LIEN_COUNT = 8;
-    // 8x8 배열 (x: File/챕터, y: Rank/스테이지)
-    private Button[,] boardButtons = new Button[CHESS_LIEN_COUNT, CHESS_LIEN_COUNT];
+    // BoardUIHelper의 상수를 활용하여 배열 크기 지정
+    private Button[,] boardButtons = new Button[BoardUIHelper.BOARD_SIZE, BoardUIHelper.BOARD_SIZE];
 
     void Start()
     {
@@ -29,59 +32,62 @@ public class UI_Lobby : MonoBehaviour
 
     void InitializeChessBoard()
     {
-        // 체스판은 보통 왼쪽 아래가 a1이므로, UI 생성 시 맨 윗줄(Rank 8)부터 아래(Rank 1)로 내려오며 생성합니다.
-        for (int rank = 7; rank >= 0; rank--)
+        // 헬퍼 함수의 고차 함수 루프를 사용하여 8x8 순회
+        BoardUIHelper.DrawBoard(coord =>
         {
-            for (int file = 0; file < 8; file++)
-            {
-                int f = file; // a ~ h (챕터)
-                int r = rank; // 1 ~ 8 (스테이지)
+            GameObject obj = Instantiate(squarePrefab, boardPanel);
+            Button btn = obj.GetComponent<Button>();
 
-                GameObject obj = Instantiate(squarePrefab, boardPanel);
-                Button btn = obj.GetComponent<Button>();
+            // [중요] 체스판은 a8(Top-Left)부터 UI가 배치되어야 합니다.
+            // DrawBoard는 y=0(Rank 1)부터 시작하므로, UI 계층 구조(Sibling Index)를 역산하여 할당합니다.
+            int siblingIndex = (7 - coord.Y) * BoardUIHelper.BOARD_SIZE + coord.X;
+            obj.transform.SetSiblingIndex(siblingIndex);
 
-                // a1, b2 형태의 네이밍 적용
-                char fileChar = (char)('a' + f);
-                int rankNum = r + 1;
+            // a1, b2 형태의 네이밍 적용 (coord.X: 0~7 -> a~h)
+            char fileChar = (char)('a' + coord.X);
+            int rankNum = coord.Y + 1;
 
-                TMP_Text label = obj.GetComponentInChildren<TMP_Text>();
-                if (label != null) label.text = $"{fileChar}{rankNum}";
+            TMP_Text label = obj.GetComponentInChildren<TMP_Text>();
+            if (label != null) label.text = $"{fileChar}{rankNum}";
 
-                btn.onClick.AddListener(() => OnStageSelected(f, r));
-                boardButtons[f, r] = btn;
-            }
-        }
+            // 클릭 이벤트 리스너 등록
+            btn.onClick.AddListener(() => OnStageSelected(coord.X, coord.Y));
+            boardButtons[coord.X, coord.Y] = btn;
+        });
     }
 
     void UpdateLobbyUI()
     {
         int maxCleared = LevelManager.Instance.MaxClearedLevel; // 0부터 시작
 
-        for (int file = 0; file < CHESS_LIEN_COUNT; file++)
+        // 상태 업데이트 역시 고차 함수로 깔끔하게 처리
+        BoardUIHelper.DrawBoard(coord =>
         {
-            for (int rank = 0; rank < CHESS_LIEN_COUNT; rank++)
+            int absoluteLevel = (coord.X * BoardUIHelper.BOARD_SIZE) + coord.Y;
+            Button btn = boardButtons[coord.X, coord.Y];
+
+            // 해금 여부 판별
+            bool isUnlocked = absoluteLevel <= maxCleared;
+            btn.interactable = isUnlocked;
+
+            // 시각적 처리 및 체스판 교차 색상 적용
+            Image img = btn.GetComponent<Image>();
+            if (img != null)
             {
-                int absoluteLevel = (file * CHESS_LIEN_COUNT) + rank;
-                Button btn = boardButtons[file, rank];
+                // 헬퍼 함수를 통해 타일 고유의 밝은색/어두운색 계산
+                Color baseColor = BoardUIHelper.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
 
-                // 해금 여부 판별
-                bool isUnlocked = absoluteLevel <= maxCleared;
-                btn.interactable = isUnlocked;
-
-                // 잠긴 스테이지 시각적 처리 (회색조)
-                Image img = btn.GetComponent<Image>();
-                if (img != null)
-                {
-                    img.color = isUnlocked ? Color.white : new Color(0.7f, 0.7f, 0.7f);
-                }
-
-                // 플레이어의 현재 최고 도달 스테이지에 폰(Pawn) 배치
-                if (absoluteLevel == maxCleared)
-                {
-                    PlacePawnOnSquare(btn.GetComponent<RectTransform>());
-                }
+                // 잠긴 스테이지는 고유의 색상에 회색조를 섞어 비활성화 느낌을 줌
+                img.color = isUnlocked ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
+                print(baseColor);
             }
-        }
+
+            // 플레이어의 현재 최고 도달 스테이지에 폰(Pawn) 배치
+            if (absoluteLevel == maxCleared)
+            {
+                PlacePawnOnSquare(btn.GetComponent<RectTransform>());
+            }
+        });
     }
 
     void PlacePawnOnSquare(RectTransform squareRect)
@@ -94,9 +100,9 @@ public class UI_Lobby : MonoBehaviour
         pawnMarker.gameObject.SetActive(true);
     }
 
-    void OnStageSelected(int file, int rank)
+    void OnStageSelected(int x, int y)
     {
-        int absoluteLevel = (file * CHESS_LIEN_COUNT) + rank;
+        int absoluteLevel = (x * BoardUIHelper.BOARD_SIZE) + y;
         LevelManager.Instance.CurrentAbsoluteLevel = absoluteLevel;
         SceneManager.LoadScene("Puzzle");
     }

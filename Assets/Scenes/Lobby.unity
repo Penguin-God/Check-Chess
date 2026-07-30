@@ -1312,8 +1312,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ChessBatonTouch::LobbyManager
   boardPanel: {fileID: 502137239}
-  squarePrefab: {fileID: 7238081151113486997, guid: 0731db858989dc94f8b528d259a7d136, type: 3}
+  squarePrefab: {fileID: 7238081151113486997, guid: fd109d502e5409240b6ccbf1c4d1eccd, type: 3}
   pawnMarker: {fileID: 1744747738}
+  lightSquareColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+  darkSquareColor: {r: 0.4, g: 0.6, b: 0.4, a: 1}
   adLockPanel: {fileID: 2089868835}
   watchAdButton: {fileID: 2089868837}
 --- !u!4 &1811033935
