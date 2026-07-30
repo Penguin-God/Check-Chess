@@ -5,105 +5,104 @@ using TMPro;
 
 public class UI_Lobby : MonoBehaviour
 {
-    int currentChapterIndex = 0; // 현재 화면에 띄운 챕터
+    [Header("Board UI References")]
+    public Transform boardPanel;    // GridLayoutGroup이 적용된 8x8 패널
+    public GameObject squarePrefab; // 개별 칸(스테이지) 프리팹
+    public RectTransform pawnMarker; // 플레이어의 현재 위치를 표시할 폰 이미지 UI
 
-    [Header("UI 연결")]
-    public TMP_Text chapterTitleText;
-    public Button[] stageButtons; // 10개의 스테이지 버튼
-    public Button prevChapterBtn;
-    public Button nextChapterBtn;
-
-    [Header("광고 잠금 시스템")]
+    [Header("Premium / Ad System")]
     public GameObject adLockPanel;
     public Button watchAdButton;
 
+    const int CHESS_LIEN_COUNT = 8;
+    // 8x8 배열 (x: File/챕터, y: Rank/스테이지)
+    private Button[,] boardButtons = new Button[CHESS_LIEN_COUNT, CHESS_LIEN_COUNT];
+
     void Start()
     {
-        prevChapterBtn.onClick.AddListener(ShowPrevChapter);
-        nextChapterBtn.onClick.AddListener(ShowNextChapter);
-        watchAdButton.onClick.AddListener(OnWatchAdClicked);
+        if (watchAdButton != null)
+            watchAdButton.onClick.AddListener(OnWatchAdClicked);
 
+        InitializeChessBoard();
         UpdateLobbyUI();
+    }
+
+    void InitializeChessBoard()
+    {
+        // 체스판은 보통 왼쪽 아래가 a1이므로, UI 생성 시 맨 윗줄(Rank 8)부터 아래(Rank 1)로 내려오며 생성합니다.
+        for (int rank = 7; rank >= 0; rank--)
+        {
+            for (int file = 0; file < 8; file++)
+            {
+                int f = file; // a ~ h (챕터)
+                int r = rank; // 1 ~ 8 (스테이지)
+
+                GameObject obj = Instantiate(squarePrefab, boardPanel);
+                Button btn = obj.GetComponent<Button>();
+
+                // a1, b2 형태의 네이밍 적용
+                char fileChar = (char)('a' + f);
+                int rankNum = r + 1;
+
+                TMP_Text label = obj.GetComponentInChildren<TMP_Text>();
+                if (label != null) label.text = $"{fileChar}{rankNum}";
+
+                btn.onClick.AddListener(() => OnStageSelected(f, r));
+                boardButtons[f, r] = btn;
+            }
+        }
     }
 
     void UpdateLobbyUI()
     {
-        // LevelManager에서 챕터 데이터를 가져옴
-        var chapters = LevelManager.Instance.chapters;
-        ChapterData currentChapter = chapters[currentChapterIndex];
-        chapterTitleText.text = currentChapter.chapterName;
+        int maxCleared = LevelManager.Instance.MaxClearedLevel; // 0부터 시작
 
-        prevChapterBtn.interactable = currentChapterIndex > 0;
-        nextChapterBtn.interactable = currentChapterIndex < chapters.Count - 1;
-
-        // LevelManager를 통해 잠금 여부 확인 (해당 챕터의 첫 번째 레벨 기준)
-        if (LevelManager.Instance.IsStageLocked(currentChapterIndex * 10))
+        for (int file = 0; file < CHESS_LIEN_COUNT; file++)
         {
-            adLockPanel.SetActive(true);
-            LockAllStageButtons();
-            return;
-        }
-
-        adLockPanel.SetActive(false);
-        SetupStageButtons(currentChapter);
-    }
-
-    void LockAllStageButtons()
-    {
-        foreach (var btn in stageButtons)
-        {
-            if (btn != null) btn.interactable = false;
-        }
-    }
-
-    void SetupStageButtons(ChapterData chapter)
-    {
-        for (int i = 0; i < stageButtons.Length; i++)
-        {
-            if (i >= chapter.stages.Count)
+            for (int rank = 0; rank < CHESS_LIEN_COUNT; rank++)
             {
-                stageButtons[i].gameObject.SetActive(false);
-                continue;
+                int absoluteLevel = (file * CHESS_LIEN_COUNT) + rank;
+                Button btn = boardButtons[file, rank];
+
+                // 해금 여부 판별
+                bool isUnlocked = absoluteLevel <= maxCleared;
+                btn.interactable = isUnlocked;
+
+                // 잠긴 스테이지 시각적 처리 (회색조)
+                Image img = btn.GetComponent<Image>();
+                if (img != null)
+                {
+                    img.color = isUnlocked ? Color.white : new Color(0.7f, 0.7f, 0.7f);
+                }
+
+                // 플레이어의 현재 최고 도달 스테이지에 폰(Pawn) 배치
+                if (absoluteLevel == maxCleared)
+                {
+                    PlacePawnOnSquare(btn.GetComponent<RectTransform>());
+                }
             }
-
-            stageButtons[i].gameObject.SetActive(true);
-            int stageIdx = i;
-            int absoluteLevel = (currentChapterIndex * 10) + stageIdx;
-
-            // 해금 여부 확인
-            bool isUnlocked = absoluteLevel <= LevelManager.Instance.MaxClearedLevel;
-
-            Button btn = stageButtons[i];
-            btn.interactable = isUnlocked;
-            btn.GetComponentInChildren<TMP_Text>().text = (stageIdx + 1).ToString();
-
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() => OnStageSelected(absoluteLevel));
         }
     }
 
-    void OnStageSelected(int absoluteLevel)
+    void PlacePawnOnSquare(RectTransform squareRect)
     {
-        // 데이터 복사 로직 제거! 단순히 현재 레벨만 갱신하고 씬 이동
+        if (pawnMarker == null) return;
+
+        // 폰을 현재 활성화된 칸의 자식으로 이동시키고 중앙에 정렬
+        pawnMarker.SetParent(squareRect);
+        pawnMarker.anchoredPosition = Vector2.zero;
+        pawnMarker.gameObject.SetActive(true);
+    }
+
+    void OnStageSelected(int file, int rank)
+    {
+        int absoluteLevel = (file * CHESS_LIEN_COUNT) + rank;
         LevelManager.Instance.CurrentAbsoluteLevel = absoluteLevel;
         SceneManager.LoadScene("Puzzle");
     }
 
-    void ShowNextChapter()
-    {
-        if (currentChapterIndex < LevelManager.Instance.chapters.Count - 1) currentChapterIndex++;
-        UpdateLobbyUI();
-    }
-
-    void ShowPrevChapter()
-    {
-        if (currentChapterIndex > 0) currentChapterIndex--;
-        UpdateLobbyUI();
-    }
-
     void OnWatchAdClicked()
     {
-        Debug.Log("광고 시청 완료! 전체 챕터가 해금되었습니다.");
         LevelManager.Instance.IsPremiumUnlocked = true;
         UpdateLobbyUI();
     }
