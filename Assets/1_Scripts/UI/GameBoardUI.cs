@@ -122,61 +122,67 @@ public class GameBoardUI : MonoBehaviour
     void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
+        BoardUIHelper.DrawBoard(coord => UpdateSquareUI(coord, state, validMoves));
+    }
 
-        foreach (var square in state.Board)
+    private void UpdateSquareUI(BoardCoord coord, GameState state, IEnumerable<ChessSquare> validMoves)
+    {
+        // 1. 순수 좌표(coord)를 이용해 게임 상태(state)에서 해당 칸의 상태(ChessSquare)를 찾음
+        var square = state.Board.FirstOrDefault(sq => sq.X == coord.X && sq.Y == coord.Y);
+
+        // 해당하는 칸의 데이터가 없다면 그리지 않음
+        if (square == null) return;
+
+        Image bgImg = uiBackgrounds[coord.X, coord.Y];
+        Image pieceImg = uiPieceImages[coord.X, coord.Y];
+
+        // 2. 기물 이미지 렌더링 (square.Piece 사용)
+        if (square.Piece == PieceType.None)
         {
-            Image bgImg = uiBackgrounds[square.X, square.Y];
-            Image pieceImg = uiPieceImages[square.X, square.Y];
-
-            // 1. 기물 이미지 렌더링
-            if (square.Piece == PieceType.None)
+            pieceImg.sprite = null;
+            pieceImg.color = Color.clear;
+        }
+        else
+        {
+            if (pieceSpriteDict.TryGetValue(square.Piece, out Sprite sprite))
+            {
+                pieceImg.sprite = sprite;
+                pieceImg.color = Color.white;
+            }
+            else
             {
                 pieceImg.sprite = null;
                 pieceImg.color = Color.clear;
             }
-            else
-            {
-                if (pieceSpriteDict.TryGetValue(square.Piece, out Sprite sprite))
-                {
-                    pieceImg.sprite = sprite;
-                    pieceImg.color = Color.white;
-                }
-                else
-                {
-                    pieceImg.sprite = null;
-                    pieceImg.color = Color.clear;
-                }
-            }
+        }
 
-            Color baseColor = BoardUICalculator.GetCheckerboardColor(square.X, square.Y, lightSquareColor, darkSquareColor);
+        // 3. 타일 기본 색상 계산 (coord 사용)
+        Color baseColor = BoardUIHelper.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
 
-            // 3. 상태값 판별
-            bool isActive = state.ActiveSquare == square;
-            bool isValidMove = validMoves.Contains(square);
-            bool isStartDisabled = state.ActiveSquare == null &&
-                                   square.Piece != PieceType.None &&
-                                   !state.AllowedStartingSquares.Contains(square);
+        // 4. 상태값 판별 (square 사용)
+        bool isActive = state.ActiveSquare == square;
+        bool isValidMove = validMoves.Contains(square);
+        bool isStartDisabled = state.ActiveSquare == null &&
+                               square.Piece != PieceType.None &&
+                               !state.AllowedStartingSquares.Contains(square);
 
-            // 4. 배경색 렌더링 적용
-            if (isActive)
-            {
-                bgImg.color = activeColor;
-            }
-            else if (isValidMove)
-            {
-                bgImg.color = validMoveColor;
-            }
-            else if (isStartDisabled)
-            {
-                // 완전히 회색으로 덮지 않고, 기존 체스판 패턴을 유지하면서 어둡게(회색빛) 섞어줍니다.
-                bgImg.color = Color.Lerp(baseColor, Color.gray, 0.6f);
-            }
-            else
-            {
-                bgImg.color = baseColor; // 하얀색(Color.white) 대신 계산된 기본 색상 적용!
-            }
+        // 5. 배경색 렌더링 적용
+        if (isActive)
+        {
+            bgImg.color = activeColor;
+        }
+        else if (isValidMove)
+        {
+            bgImg.color = validMoveColor;
+        }
+        else if (isStartDisabled)
+        {
+            bgImg.color = Color.Lerp(baseColor, Color.gray, 0.6f);
+        }
+        else
+        {
+            bgImg.color = baseColor;
         }
     }
-
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 }

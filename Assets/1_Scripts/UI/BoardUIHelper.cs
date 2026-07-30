@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class BoardUIHelper
 {
-    public static Color GetCheckerboardColor(BoardCoord boardCoord, Color lightColor, Color darkColor) => (x + y) % 2 == 0 ? darkColor : lightColor;
+    public static Color GetCheckerboardColor(BoardCoord boardCoord, Color lightColor, Color darkColor) => (boardCoord.X + boardCoord.Y) % 2 == 0 ? darkColor : lightColor;
 
     public static void DrawBoard(Action<BoardCoord> onDrawSquare)
     {
