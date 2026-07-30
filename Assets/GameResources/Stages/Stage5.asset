@@ -56,7 +56,7 @@ MonoBehaviour:
   - X: 2
     Y: 0
     Piece: 3
-    DisableStart: 1
+    DisableStart: 0
   - X: 5
     Y: 0
     Piece: 3
@@ -64,7 +64,7 @@ MonoBehaviour:
   - X: 3
     Y: 0
     Piece: 5
-    DisableStart: 1
+    DisableStart: 0
   - X: 4
     Y: 0
     Piece: 6

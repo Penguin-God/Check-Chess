@@ -20,19 +20,19 @@ MonoBehaviour:
   - X: 6
     Y: 4
     Piece: 4
-    DisableStart: 1
+    DisableStart: 0
   - X: 5
     Y: 2
     Piece: 2
-    DisableStart: 1
+    DisableStart: 0
   - X: 3
     Y: 3
     Piece: 2
-    DisableStart: 1
+    DisableStart: 0
   - X: 2
     Y: 5
     Piece: 2
-    DisableStart: 1
+    DisableStart: 0
   - X: 3
     Y: 6
     Piece: 1

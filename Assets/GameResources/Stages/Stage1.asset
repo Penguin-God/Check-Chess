@@ -13,10 +13,6 @@ MonoBehaviour:
   m_Name: Stage1
   m_EditorClassIdentifier: ChessBatonTouch::StageDataSO
   initialPieces:
-  - X: 0
-    Y: 6
-    Piece: 1
-    DisableStart: 0
   - X: 2
     Y: 6
     Piece: 1
@@ -24,10 +20,6 @@ MonoBehaviour:
   - X: 3
     Y: 5
     Piece: 2
-    DisableStart: 1
-  - X: 5
-    Y: 4
-    Piece: 3
     DisableStart: 0
   - X: 5
     Y: 6
