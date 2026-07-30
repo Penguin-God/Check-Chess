@@ -98,10 +98,17 @@ public class GameBoardUI : MonoBehaviour
         {
             nextState = ChessPuzzleLogic.MoveAndTouch(currentState, clickedSquare);
 
+            // 1. 성공 조건: 기물을 모두 소진하고 킹을 잡음
             if (nextState.IsVictory)
             {
                 gameResultUI.gameObject.SetActive(true);
                 gameResultUI.OnStageCleared();
+            }
+            // 2. 실패 조건: 기물이 남았는데 킹을 먼저 잡음
+            else if (nextState.IsDefeat)
+            {
+                Debug.Log("기물이 남은 상태로 킹을 잡았습니다! 스테이지를 재시작합니다.");
+                RestartStage(); // 실패 시 즉시 현재 스테이지를 재시작합니다
             }
         }
 
