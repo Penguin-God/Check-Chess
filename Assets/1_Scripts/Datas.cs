@@ -8,6 +8,7 @@ namespace System.Runtime.CompilerServices
 
 public enum PieceType { None, Pawn, Knight, Bishop, Rook, Queen, King }
 public record ChessSquare(int X, int Y, PieceType Piece);
+public record BoardCoord(int X, int Y);
 
 public record GameState(IReadOnlyList<ChessSquare> Board, ChessSquare ActiveSquare, IReadOnlyList<ChessSquare> AllowedStartingSquares)
 {
