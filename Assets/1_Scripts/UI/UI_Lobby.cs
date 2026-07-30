@@ -40,15 +40,15 @@ public class UI_Lobby : MonoBehaviour
 
             // [중요] 체스판은 a8(Top-Left)부터 UI가 배치되어야 합니다.
             // DrawBoard는 y=0(Rank 1)부터 시작하므로, UI 계층 구조(Sibling Index)를 역산하여 할당합니다.
-            int siblingIndex = (7 - coord.Y) * BoardUIHelper.BOARD_SIZE + coord.X;
-            obj.transform.SetSiblingIndex(siblingIndex);
+            //int siblingIndex = (7 - coord.Y) * BoardUIHelper.BOARD_SIZE + coord.X;
+            //obj.transform.SetSiblingIndex(siblingIndex);
 
-            // a1, b2 형태의 네이밍 적용 (coord.X: 0~7 -> a~h)
-            char fileChar = (char)('a' + coord.X);
-            int rankNum = coord.Y + 1;
+            //// a1, b2 형태의 네이밍 적용 (coord.X: 0~7 -> a~h)
+            //char fileChar = (char)('a' + coord.X);
+            //int rankNum = coord.Y + 1;
 
-            TMP_Text label = obj.GetComponentInChildren<TMP_Text>();
-            if (label != null) label.text = $"{fileChar}{rankNum}";
+            //TMP_Text label = obj.GetComponentInChildren<TMP_Text>();
+            //if (label != null) label.text = $"{fileChar}{rankNum}";
 
             // 클릭 이벤트 리스너 등록
             btn.onClick.AddListener(() => OnStageSelected(coord.X, coord.Y));
