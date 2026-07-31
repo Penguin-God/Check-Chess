@@ -25,7 +25,7 @@ public class UI_Lobby : MonoBehaviour
         if (watchAdButton != null)
             watchAdButton.onClick.AddListener(OnWatchAdClicked);
 
-        BoardUIHelper.DrawBoardLoop(SetupButton);
+        BoardUIHelper.DrawBoardReverseYLoop(SetupButton);
         UpdateLobbyUI();
     }
 
@@ -54,12 +54,9 @@ public class UI_Lobby : MonoBehaviour
             Image img = btn.GetComponent<Image>();
             if (img != null)
             {
-                // 헬퍼 함수를 통해 타일 고유의 밝은색/어두운색 계산
                 Color baseColor = BoardUIHelper.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
-
                 // 잠긴 스테이지는 고유의 색상에 회색조를 섞어 비활성화 느낌을 줌
                 img.color = isUnlocked ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
-                print(baseColor);
             }
 
             // 플레이어의 현재 최고 도달 스테이지에 폰(Pawn) 배치
