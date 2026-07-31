@@ -122,7 +122,7 @@ public class GameBoardUI : MonoBehaviour
     void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
-        BoardUIHelper.DrawBoard(coord => UpdateSquareUI(coord, state, validMoves));
+        BoardUIHelper.DrawBoardLoop(coord => UpdateSquareUI(coord, state, validMoves));
     }
 
     private void UpdateSquareUI(BoardCoord coord, GameState state, IEnumerable<ChessSquare> validMoves)

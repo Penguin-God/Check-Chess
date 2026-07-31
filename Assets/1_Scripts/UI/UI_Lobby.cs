@@ -18,7 +18,6 @@ public class UI_Lobby : MonoBehaviour
     public GameObject adLockPanel;
     public Button watchAdButton;
 
-    // BoardUIHelper의 상수를 활용하여 배열 크기 지정
     private Button[,] boardButtons = new Button[BoardUIHelper.BOARD_SIZE, BoardUIHelper.BOARD_SIZE];
 
     void Start()
@@ -26,34 +25,15 @@ public class UI_Lobby : MonoBehaviour
         if (watchAdButton != null)
             watchAdButton.onClick.AddListener(OnWatchAdClicked);
 
-        InitializeChessBoard();
+        BoardUIHelper.DrawBoardLoop(SetupButton);
         UpdateLobbyUI();
     }
 
-    void InitializeChessBoard()
+    void SetupButton(BoardCoord coord)
     {
-        // 헬퍼 함수의 고차 함수 루프를 사용하여 8x8 순회
-        BoardUIHelper.DrawBoard(coord =>
-        {
-            GameObject obj = Instantiate(squarePrefab, boardPanel);
-            Button btn = obj.GetComponent<Button>();
-
-            // [중요] 체스판은 a8(Top-Left)부터 UI가 배치되어야 합니다.
-            // DrawBoard는 y=0(Rank 1)부터 시작하므로, UI 계층 구조(Sibling Index)를 역산하여 할당합니다.
-            //int siblingIndex = (7 - coord.Y) * BoardUIHelper.BOARD_SIZE + coord.X;
-            //obj.transform.SetSiblingIndex(siblingIndex);
-
-            //// a1, b2 형태의 네이밍 적용 (coord.X: 0~7 -> a~h)
-            //char fileChar = (char)('a' + coord.X);
-            //int rankNum = coord.Y + 1;
-
-            //TMP_Text label = obj.GetComponentInChildren<TMP_Text>();
-            //if (label != null) label.text = $"{fileChar}{rankNum}";
-
-            // 클릭 이벤트 리스너 등록
-            btn.onClick.AddListener(() => OnStageSelected(coord.X, coord.Y));
-            boardButtons[coord.X, coord.Y] = btn;
-        });
+        Button btn = Instantiate(squarePrefab, boardPanel).GetComponent<Button>();
+        btn.onClick.AddListener(() => OnStageSelected(coord.X, coord.Y));
+        boardButtons[coord.X, coord.Y] = btn;
     }
 
     void UpdateLobbyUI()
@@ -61,7 +41,7 @@ public class UI_Lobby : MonoBehaviour
         int maxCleared = LevelManager.Instance.MaxClearedLevel; // 0부터 시작
 
         // 상태 업데이트 역시 고차 함수로 깔끔하게 처리
-        BoardUIHelper.DrawBoard(coord =>
+        BoardUIHelper.DrawBoardLoop(coord =>
         {
             int absoluteLevel = (coord.X * BoardUIHelper.BOARD_SIZE) + coord.Y;
             Button btn = boardButtons[coord.X, coord.Y];
