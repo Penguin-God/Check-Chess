@@ -60,7 +60,7 @@
 결과 : 역으로 그리는 함수 DrawBoardReverseYLoop 추가 및 사용
 
 
-"9"
+"9" - 아직 작업 안함
 -동기 : GameBoardUI와 UI_Lobby의 보드 렌더 로직 공유
 -인풋
 2스크립트 전문
