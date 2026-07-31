@@ -10,27 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69a1ed0172086cf43bddde5a96c5f235, type: 3}
-  m_Name: Stage8
-  m_EditorClassIdentifier: Assembly-CSharp::StageDataSO
+  m_Name: a1
+  m_EditorClassIdentifier: ChessBatonTouch::StageDataSO
   initialPieces:
   - X: 2
-    Y: 4
-    Piece: 4
+    Y: 6
+    Piece: 1
     DisableStart: 0
   - X: 3
-    Y: 4
-    Piece: 4
-    DisableStart: 0
-  - X: 2
-    Y: 3
+    Y: 5
     Piece: 2
     DisableStart: 0
-  - X: 4
-    Y: 2
-    Piece: 3
-    DisableStart: 0
   - X: 5
-    Y: 3
+    Y: 6
     Piece: 6
     DisableStart: 1
   CorrectStartingPiece:
