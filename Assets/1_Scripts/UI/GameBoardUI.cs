@@ -47,7 +47,7 @@ public class GameBoardUI : MonoBehaviour
             pieceSpriteDict[config.pieceType] = config.pieceSprite;
         }
 
-        InitializeUI();
+        BoardUIHelper.DrawBoardLoop(CreateSquareUI);
         currentStageData = LevelManager.Instance.GetStageData(LevelManager.Instance.CurrentAbsoluteLevel);
 
         if (currentStageData != null)
@@ -64,23 +64,13 @@ public class GameBoardUI : MonoBehaviour
         RenderState(currentState);
     }
 
-    void InitializeUI()
+    void CreateSquareUI(BoardCoord coord)
     {
-        for (int y = 0; y < 8; y++)
-        {
-            for (int x = 0; x < 8; x++)
-            {
-                int clickX = x;
-                int clickY = y;
-                GameObject obj = Instantiate(squarePrefab, boardPanel);
-
-                uiButtons[x, y] = obj.GetComponent<Button>();
-                uiBackgrounds[x, y] = obj.GetComponent<Image>();
-                uiPieceImages[x, y] = obj.transform.GetChild(0).GetComponent<Image>();
-
-                uiButtons[x, y].onClick.AddListener(() => OnSquareClicked(clickX, clickY));
-            }
-        }
+        GameObject obj = Instantiate(squarePrefab, boardPanel);
+        uiButtons[coord.X, coord.Y] = obj.GetComponent<Button>();
+        uiBackgrounds[coord.X, coord.Y] = obj.GetComponent<Image>();
+        uiPieceImages[coord.X, coord.Y] = obj.transform.GetChild(0).GetComponent<Image>();
+        uiButtons[coord.X, coord.Y].onClick.AddListener(() => OnSquareClicked(coord.X, coord.Y));
     }
 
     void OnSquareClicked(int x, int y)
