@@ -662,7 +662,7 @@ Transform:
   m_GameObject: {fileID: 1739226775}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 750.124, y: 845.93427, z: 0}
+  m_LocalPosition: {x: -4.29, y: -0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -683,7 +683,7 @@ MonoBehaviour:
   chapters:
   - chapterName: 123
     stages:
-    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
+    - {fileID: 11400000, guid: d60a3c32fe15d0948b55a11340264a3f, type: 2}
     - {fileID: 11400000, guid: 0e2e937f89bb9df41abc48975cbdb77e, type: 2}
     - {fileID: 11400000, guid: e9faaf8cb00d78746b50cb5540037bae, type: 2}
     - {fileID: 11400000, guid: c9811753e8931eb46bbc13f0447e53f5, type: 2}
@@ -691,6 +691,16 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 709b6d03f9bc6d74e95e209b6be36a42, type: 2}
     - {fileID: 11400000, guid: 398aa71231004da4d8abdd2c02fb0bba, type: 2}
     - {fileID: 11400000, guid: c0a8ed0388abc1b44a2f86ca920be61a, type: 2}
+  - chapterName: 123
+    stages:
+    - {fileID: 11400000, guid: ed33ff8e6b7e86843829fbb325d5e252, type: 2}
+    - {fileID: 11400000, guid: b524453b1d7ef9246b4b9e7b94ded80d, type: 2}
+    - {fileID: 11400000, guid: 07617a8fe3edd7f44b0d5778610d23cd, type: 2}
+    - {fileID: 11400000, guid: d42342f3f4ad130418a9d7dfe7a1777c, type: 2}
+    - {fileID: 11400000, guid: e18fb81ebeae65c439c112b2cb9bd322, type: 2}
+    - {fileID: 11400000, guid: 5a1f8dc84153eb1428479500880ae329, type: 2}
+    - {fileID: 11400000, guid: ef4edfd5af57bc54cb1346c754ee45ec, type: 2}
+    - {fileID: 11400000, guid: d60a3c32fe15d0948b55a11340264a3f, type: 2}
 --- !u!1 &1744747737
 GameObject:
   m_ObjectHideFlags: 0
