@@ -45,8 +45,8 @@ public class LevelManager : MonoBehaviour
 
     public StageDataSO GetStageData(int absoluteLevel)
     {
-        int chapterIdx = absoluteLevel / 10;
-        int stageIdx = absoluteLevel % 10;
+        int chapterIdx = absoluteLevel / 8;
+        int stageIdx = absoluteLevel % 8;
 
         if (chapterIdx >= 0 && chapterIdx < chapters.Count)
         {
