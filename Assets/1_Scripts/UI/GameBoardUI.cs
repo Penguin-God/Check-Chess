@@ -112,67 +112,48 @@ public class GameBoardUI : MonoBehaviour
     void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
-        BoardUIHelper.DrawBoardLoop(coord => UpdateSquareUI(coord, state, validMoves));
+
+        BoardUIHelper.RenderBoardVisuals(
+            getPieceAt: coord =>
+            {
+                var sq = state.Board.FirstOrDefault(s => s.X == coord.X && s.Y == coord.Y);
+                return sq != null ? sq.Piece : PieceType.None;
+            },
+            getPieceSprite: pieceType =>
+                pieceSpriteDict.TryGetValue(pieceType, out Sprite sprite) ? sprite : null,
+            lightColor: lightSquareColor,
+            darkColor: darkSquareColor,
+            applyUI: (coord, baseColor, pieceSprite, pieceColor) =>
+            {
+                var square = state.Board.FirstOrDefault(sq => sq.X == coord.X && sq.Y == coord.Y);
+                if (square == null) return;
+
+                Image bgImg = uiBackgrounds[coord.X, coord.Y];
+                Image pieceImg = uiPieceImages[coord.X, coord.Y];
+
+                // 1. 공통 기물 렌더링 적용
+                pieceImg.sprite = pieceSprite;
+                pieceImg.color = pieceColor;
+
+                // 2. 상태값 판별 (게임 전용 로직)
+                bool isActive = state.ActiveSquare == square;
+                bool isValidMove = validMoves.Contains(square);
+                bool isStartDisabled = state.ActiveSquare == null &&
+                                       square.Piece != PieceType.None &&
+                                       !state.AllowedStartingSquares.Contains(square);
+
+                // 3. 상태에 따른 배경색 오버라이드
+                if (isActive)
+                    bgImg.color = activeColor;
+                else if (isValidMove)
+                    bgImg.color = validMoveColor;
+                else if (isStartDisabled)
+                    bgImg.color = Color.Lerp(baseColor, Color.gray, 0.6f);
+                else
+                    bgImg.color = baseColor;
+            }
+        );
     }
 
-    private void UpdateSquareUI(BoardCoord coord, GameState state, IEnumerable<ChessSquare> validMoves)
-    {
-        // 1. 순수 좌표(coord)를 이용해 게임 상태(state)에서 해당 칸의 상태(ChessSquare)를 찾음
-        var square = state.Board.FirstOrDefault(sq => sq.X == coord.X && sq.Y == coord.Y);
-
-        // 해당하는 칸의 데이터가 없다면 그리지 않음
-        if (square == null) return;
-
-        Image bgImg = uiBackgrounds[coord.X, coord.Y];
-        Image pieceImg = uiPieceImages[coord.X, coord.Y];
-
-        // 2. 기물 이미지 렌더링 (square.Piece 사용)
-        if (square.Piece == PieceType.None)
-        {
-            pieceImg.sprite = null;
-            pieceImg.color = Color.clear;
-        }
-        else
-        {
-            if (pieceSpriteDict.TryGetValue(square.Piece, out Sprite sprite))
-            {
-                pieceImg.sprite = sprite;
-                pieceImg.color = Color.white;
-            }
-            else
-            {
-                pieceImg.sprite = null;
-                pieceImg.color = Color.clear;
-            }
-        }
-
-        // 3. 타일 기본 색상 계산 (coord 사용)
-        Color baseColor = BoardUIHelper.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
-
-        // 4. 상태값 판별 (square 사용)
-        bool isActive = state.ActiveSquare == square;
-        bool isValidMove = validMoves.Contains(square);
-        bool isStartDisabled = state.ActiveSquare == null &&
-                               square.Piece != PieceType.None &&
-                               !state.AllowedStartingSquares.Contains(square);
-
-        // 5. 배경색 렌더링 적용
-        if (isActive)
-        {
-            bgImg.color = activeColor;
-        }
-        else if (isValidMove)
-        {
-            bgImg.color = validMoveColor;
-        }
-        else if (isStartDisabled)
-        {
-            bgImg.color = Color.Lerp(baseColor, Color.gray, 0.6f);
-        }
-        else
-        {
-            bgImg.color = baseColor;
-        }
-    }
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 }

@@ -43,4 +43,27 @@ public static class BoardUIHelper
             pieceImage.color = Color.white;
         }
     }
+
+    public static void RenderBoardVisuals(Func<BoardCoord, PieceType> getPieceAt, Func<PieceType, Sprite> getPieceSprite, Color lightColor, Color darkColor, Action<BoardCoord, Color, Sprite, Color> applyUI)
+    {
+        DrawBoardLoop(coord =>
+        {
+            // 1. 타일 기본 색상 계산
+            Color baseColor = GetCheckerboardColor(coord, lightColor, darkColor);
+
+            // 2. 기물 정보 및 스프라이트 판별
+            PieceType piece = getPieceAt(coord);
+            Sprite sprite = null;
+            Color pieceColor = Color.clear;
+
+            if (piece != PieceType.None)
+            {
+                sprite = getPieceSprite(piece);
+                pieceColor = sprite != null ? Color.white : Color.clear;
+            }
+
+            // 3. 계산된 시각적 데이터를 콜백으로 전달하여 UI 적용 위임
+            applyUI(coord, baseColor, sprite, pieceColor);
+        });
+    }
 }

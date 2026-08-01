@@ -683,7 +683,7 @@ MonoBehaviour:
   chapters:
   - chapterName: 123
     stages:
-    - {fileID: 11400000, guid: d60a3c32fe15d0948b55a11340264a3f, type: 2}
+    - {fileID: 11400000, guid: ed33ff8e6b7e86843829fbb325d5e252, type: 2}
     - {fileID: 11400000, guid: 0e2e937f89bb9df41abc48975cbdb77e, type: 2}
     - {fileID: 11400000, guid: e9faaf8cb00d78746b50cb5540037bae, type: 2}
     - {fileID: 11400000, guid: c9811753e8931eb46bbc13f0447e53f5, type: 2}
