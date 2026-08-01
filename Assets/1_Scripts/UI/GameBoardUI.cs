@@ -109,6 +109,7 @@ public class GameBoardUI : MonoBehaviour
         }
     }
 
+
     void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
@@ -119,8 +120,7 @@ public class GameBoardUI : MonoBehaviour
                 var sq = state.Board.FirstOrDefault(s => s.X == coord.X && s.Y == coord.Y);
                 return sq != null ? sq.Piece : PieceType.None;
             },
-            getPieceSprite: pieceType =>
-                pieceSpriteDict.TryGetValue(pieceType, out Sprite sprite) ? sprite : null,
+            getPieceSprite: pieceType => pieceSpriteDict.TryGetValue(pieceType, out Sprite sprite) ? sprite : null,
             lightColor: lightSquareColor,
             darkColor: darkSquareColor,
             applyUI: (coord, baseColor, pieceSprite, pieceColor) =>
@@ -135,25 +135,37 @@ public class GameBoardUI : MonoBehaviour
                 pieceImg.sprite = pieceSprite;
                 pieceImg.color = pieceColor;
 
-                // 2. 상태값 판별 (게임 전용 로직)
-                bool isActive = state.ActiveSquare == square;
-                bool isValidMove = validMoves.Contains(square);
-                bool isStartDisabled = state.ActiveSquare == null &&
-                                       square.Piece != PieceType.None &&
-                                       !state.AllowedStartingSquares.Contains(square);
-
-                // 3. 상태에 따른 배경색 오버라이드
-                if (isActive)
-                    bgImg.color = activeColor;
-                else if (isValidMove)
-                    bgImg.color = validMoveColor;
-                else if (isStartDisabled)
-                    bgImg.color = Color.Lerp(baseColor, Color.gray, 0.6f);
-                else
-                    bgImg.color = baseColor;
+                SquareUIState uiState = DetermineSquareState(state, square, validMoves);
+                bgImg.color = GetStateColor(uiState, baseColor);
             }
         );
     }
+
+    public enum SquareUIState
+    {
+        Normal,
+        Active,
+        ValidMove,
+        StartDisabled
+    }
+
+    SquareUIState DetermineSquareState(GameState state, ChessSquare square, IEnumerable<ChessSquare> validMoves)
+    {
+        if (state.ActiveSquare == square) return SquareUIState.Active;
+        if (validMoves.Contains(square)) return SquareUIState.ValidMove;
+        if (state.ActiveSquare == null && square.Piece != PieceType.None && !state.AllowedStartingSquares.Contains(square))
+            return SquareUIState.StartDisabled;
+        return SquareUIState.Normal;
+    }
+
+    Color GetStateColor(SquareUIState uiState, Color baseColor) => uiState switch
+    {
+        SquareUIState.Active => activeColor,
+        SquareUIState.ValidMove => validMoveColor,
+        SquareUIState.StartDisabled => Color.Lerp(baseColor, Color.gray, 0.6f),
+        SquareUIState.Normal => baseColor,
+        _ => baseColor
+    };
 
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 }
