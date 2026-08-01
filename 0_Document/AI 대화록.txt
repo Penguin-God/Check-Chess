@@ -60,11 +60,13 @@
 결과 : 역으로 그리는 함수 DrawBoardReverseYLoop 추가 및 사용
 
 
-"9" - 아직 작업 안함
+"9"
 -동기 : GameBoardUI와 UI_Lobby의 보드 렌더 로직 공유
 -인풋
-2스크립트 전문
-지금 UI_Lobby는 pawnMarker를 이용해서 위치를 정하는데 GameBoardUI는 전체 칸의 상태를 기반으로 그리고 있어. 
-UI_Lobby에 폰을 제외한 다른 기물들도 그릴 수 있어서 로직을 재사용했으면 해. 물론 로비에서 기물을 조작할 건 아니라 이동 로직 및 관련 색깔은 필요 없어.
-기존에 있던 BoardHelper에 관련 로직을 재사용할수 있는 함수가 있으면 좋겠어
--결과 : 
+2개의 스크립트 전문
+지금 UI_Lobby는 pawnMarker를 이용해서 위치를 정하는데 GameBoardUI는 전체 칸의 상태를 기반으로 그리고 있어
+나중에 UI_Lobby에서도 폰을 제외한 다른 기물들을 그릴 생각 중이라 로직을 재사용했으면 해.
+물론 로비에서 기물을 조작할 건 아니라 GameBoardUI의 UpdateSquareUI() 에서 //4.... 부분부터는 필요없어
+근데 그걸 제외해도 지금 로직이 꽤 묶여있어서 깔끔한 추출이 쉽지 않아 보이긴 해
+내가 원하는 건 함수형으로 64개의 칸을 가진 보드의 칸과 기물들을 그리는 별도의 함수가 있으면 해.
+-결과 : 새로운 RenderBoardVisuals함수 및 이걸 사용하는 수정된 GameBoardUI : RenderState(), UI_Lobby : UpdateLobbyUI()
