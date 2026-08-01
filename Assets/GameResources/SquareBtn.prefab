@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 3356421789418106328}
   - component: {fileID: 5432580260102914897}
   - component: {fileID: 2602151963623690586}
+  - component: {fileID: 2876235787685876737}
   m_Layer: 5
   m_Name: SquareBtn
   m_TagString: Untagged
@@ -196,3 +197,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2876235787685876737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7238081151113486997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdd8d8cf59819ae44911ffed936b24f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Square
+  button: {fileID: 2602151963623690586}
+  background: {fileID: 5432580260102914897}
+  pieceImage: {fileID: 2980467970069696833}
