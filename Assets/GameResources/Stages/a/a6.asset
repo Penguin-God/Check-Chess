@@ -32,31 +32,31 @@ MonoBehaviour:
   - X: 7
     Y: 6
     Piece: 3
-    DisableStart: 1
+    DisableStart: 0
   - X: 6
     Y: 5
     Piece: 1
-    DisableStart: 1
+    DisableStart: 0
   - X: 1
     Y: 1
     Piece: 1
-    DisableStart: 1
+    DisableStart: 0
   - X: 2
     Y: 1
     Piece: 1
-    DisableStart: 1
+    DisableStart: 0
   - X: 0
     Y: 4
     Piece: 4
-    DisableStart: 1
+    DisableStart: 0
   - X: 7
     Y: 1
     Piece: 4
-    DisableStart: 1
+    DisableStart: 0
   - X: 1
     Y: 5
     Piece: 5
-    DisableStart: 1
+    DisableStart: 0
   - X: 4
     Y: 3
     Piece: 6
@@ -64,15 +64,15 @@ MonoBehaviour:
   - X: 5
     Y: 4
     Piece: 4
-    DisableStart: 1
+    DisableStart: 0
   - X: 6
     Y: 2
     Piece: 1
-    DisableStart: 1
+    DisableStart: 0
   - X: 3
     Y: 0
     Piece: 4
-    DisableStart: 1
+    DisableStart: 0
   CorrectStartingPiece:
     X: 0
     Y: 0
