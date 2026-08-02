@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07f32204a579f0745a5968d66f5ed952, type: 3}
+  m_Name: BoardTheme
+  m_EditorClassIdentifier: Assembly-CSharp::BoardThemeSO
+  lightSquareColor: {r: 0.94, g: 0.85, b: 0.71, a: 1}
+  darkSquareColor: {r: 0.71, g: 0.53, b: 0.39, a: 1}
+  pieceSpritesConfig:
+  - pieceType: 1
+    pieceSprite: {fileID: 21300000, guid: f86756836471345408f73073bb8a47fe, type: 3}
+  - pieceType: 2
+    pieceSprite: {fileID: 21300000, guid: 1d1b20dd8eb4c084499d7e7346d8b39e, type: 3}
+  - pieceType: 3
+    pieceSprite: {fileID: 21300000, guid: 0f05b06efee77674c9c81aa68b2c8564, type: 3}
+  - pieceType: 4
+    pieceSprite: {fileID: 21300000, guid: 1ed915c4f8f4ef642a1049e27fa9ea8e, type: 3}
+  - pieceType: 5
+    pieceSprite: {fileID: 21300000, guid: 3a0afc691820eac4a8fed85bd2a2056a, type: 3}
+  - pieceType: 6
+    pieceSprite: {fileID: 21300000, guid: be302447939b48d4c8b481ea0d2873cb, type: 3}

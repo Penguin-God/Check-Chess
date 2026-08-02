@@ -1,15 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
-[Serializable]
-public struct PieceSpriteData
-{
-    public PieceType pieceType;
-    public Sprite pieceSprite;
-}
 
 public class GameBoardUI : MonoBehaviour
 {
@@ -19,30 +11,21 @@ public class GameBoardUI : MonoBehaviour
     public GameResultUI gameResultUI;
     public Button restartBtn;
 
-    [Header("Piece Sprites Configuration")]
-    public List<PieceSpriteData> pieceSpritesConfig;
-    Dictionary<PieceType, Sprite> pieceSpriteDict;
+    [Header("Theme & Visuals")]
+    public BoardThemeSO boardTheme; // 생성한 SO를 여기에 할당해 주세요!
+
+    [Header("State Colors (Logic Specific)")]
+    public Color activeColor = new Color(0.73f, 0.79f, 0.27f);
+    public Color validMoveColor;
 
     [Header("Stage Data")]
     public StageDataSO currentStageData;
-
-    [Header("Board Colors")]
-    public Color lightSquareColor = new Color(0.94f, 0.85f, 0.71f);
-    public Color darkSquareColor = new Color(0.71f, 0.53f, 0.39f);
-    public Color activeColor = new Color(0.73f, 0.79f, 0.27f);
-    public Color validMoveColor;
 
     GameState currentState;
     Board<UI_Square> uiSquares;
 
     void Start()
     {
-        pieceSpriteDict = new Dictionary<PieceType, Sprite>();
-        foreach (var config in pieceSpritesConfig)
-        {
-            pieceSpriteDict[config.pieceType] = config.pieceSprite;
-        }
-
         // 1. 임시 2차원 배열에 UI_Square를 생성하여 채웁니다.
         var uiGrid = new UI_Square[Board<UI_Square>.Size, Board<UI_Square>.Size];
         BoardIterator.DrawBoardLoop(coord =>
@@ -108,7 +91,14 @@ public class GameBoardUI : MonoBehaviour
     void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
-        BoardModelMapper.CreateModel(state.Board, lightSquareColor, darkSquareColor, pieceSpriteDict).ForEach((coord, model) =>
+
+        // boardTheme에서 색상과 딕셔너리를 바로 가져옵니다.
+        BoardModelMapper.CreateModel(
+            state.Board,
+            boardTheme.lightSquareColor,
+            boardTheme.darkSquareColor,
+            boardTheme.PieceSpriteDict
+        ).ForEach((coord, model) =>
         {
             model = WarpModelColor(model, state, coord, validMoves);
             uiSquares[coord].UpdateVisuals(model);
