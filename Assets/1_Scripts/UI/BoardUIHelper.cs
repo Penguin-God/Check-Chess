@@ -1,11 +1,25 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+
+public enum BoardColorType
+{
+    White,
+    Black,
+
+}
 
 public static class BoardUIHelper
 {
     public static Color GetCheckerboardColor(BoardCoord boardCoord, Color lightColor, Color darkColor) => (boardCoord.X + boardCoord.Y) % 2 == 0 ? darkColor : lightColor;
+
+    public static BoardColorType GetCheckerboardColorType(BoardCoord boardCoord) => (boardCoord.X + boardCoord.Y) % 2 == 0 ? BoardColorType.Black : BoardColorType.White;
+
+    public static Board<BoardColorType> CreateDefaultBoard()
+    {
+        var grid = new BoardColorType[BOARD_SIZE, BOARD_SIZE];
+        DrawBoardLoop(coord => grid[coord.X, coord.Y] = GetCheckerboardColorType(coord));
+        return new Board<BoardColorType>(grid);
+    }
 
     public const int BOARD_SIZE = 8;
     public static void DrawBoardLoop(Action<BoardCoord> onDrawSquare)
@@ -28,30 +42,10 @@ public static class BoardUIHelper
         }
     }
 
-    public static void UpdatePieceImage(Image pieceImage, PieceType pieceType, Dictionary<PieceType, Sprite> spriteDict)
-    {
-        if (pieceImage == null) return;
-
-        if (pieceType == PieceType.None)
-        {
-            pieceImage.sprite = null;
-            pieceImage.color = Color.clear;
-        }
-        else
-        {
-            pieceImage.sprite = spriteDict[pieceType];
-            pieceImage.color = Color.white;
-        }
-    }
-
     public static void RenderBoardVisuals(Func<BoardCoord, PieceType> getPieceAt, Func<PieceType, Sprite> getPieceSprite, Color lightColor, Color darkColor, Action<BoardCoord, Color, Sprite, Color> applyUI)
     {
         DrawBoardLoop(coord =>
         {
-            // 1. 타일 기본 색상 계산
-            Color baseColor = GetCheckerboardColor(coord, lightColor, darkColor);
-
-            // 2. 기물 정보 및 스프라이트 판별
             PieceType piece = getPieceAt(coord);
             Sprite sprite = null;
             Color pieceColor = Color.clear;
@@ -62,7 +56,7 @@ public static class BoardUIHelper
                 pieceColor = sprite != null ? Color.white : Color.clear;
             }
 
-            // 3. 계산된 시각적 데이터를 콜백으로 전달하여 UI 적용 위임
+            Color baseColor = GetCheckerboardColor(coord, lightColor, darkColor);
             applyUI(coord, baseColor, sprite, pieceColor);
         });
     }
