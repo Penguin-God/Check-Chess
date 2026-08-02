@@ -35,8 +35,8 @@ public class GameBoardUI : MonoBehaviour
     GameState currentState;
 
     // 3개의 2차원 배열을 통합하여 UI_Square 전용 딕셔너리로 관리합니다.
-    Dictionary<BoardCoord, UI_Square> uiSquares = new Dictionary<BoardCoord, UI_Square>();
-    
+    Board<UI_Square> uiSquares;
+
     void Start()
     {
         pieceSpriteDict = new Dictionary<PieceType, Sprite>();
@@ -45,7 +45,20 @@ public class GameBoardUI : MonoBehaviour
             pieceSpriteDict[config.pieceType] = config.pieceSprite;
         }
 
-        BoardUIHelper.DrawBoardLoop(CreateSquareUI);
+        // 1. 임시 2차원 배열에 UI_Square를 생성하여 채웁니다.
+        var uiGrid = new UI_Square[Board<UI_Square>.Size, Board<UI_Square>.Size];
+        BoardUIHelper.DrawBoardLoop(coord =>
+        {
+            GameObject obj = Instantiate(squarePrefab, boardPanel);
+            UI_Square squareUI = obj.GetComponent<UI_Square>();
+            squareUI.Init(() => OnSquareClicked(coord.X, coord.Y));
+
+            uiGrid[coord.X, coord.Y] = squareUI;
+        });
+
+        // 2. 완성된 배열을 기반으로 Board<UI_Square> 인스턴스를 생성합니다.
+        uiSquares = new Board<UI_Square>(uiGrid);
+
         currentStageData = LevelManager.Instance.GetStageData(LevelManager.Instance.CurrentAbsoluteLevel);
 
         if (currentStageData != null)
@@ -62,13 +75,13 @@ public class GameBoardUI : MonoBehaviour
         RenderState(currentState);
     }
 
-    void CreateSquareUI(BoardCoord coord)
-    {
-        GameObject obj = Instantiate(squarePrefab, boardPanel);
-        UI_Square squareUI = obj.GetComponent<UI_Square>();
-        squareUI.Init(() => OnSquareClicked(coord.X, coord.Y));
-        uiSquares[coord] = squareUI;
-    }
+    //void CreateSquareUI(BoardCoord coord)
+    //{
+    //    GameObject obj = Instantiate(squarePrefab, boardPanel);
+    //    UI_Square squareUI = obj.GetComponent<UI_Square>();
+    //    squareUI.Init(() => OnSquareClicked(coord.X, coord.Y));
+    //    uiSquares[coord] = squareUI;
+    //}
 
     void OnSquareClicked(int x, int y)
     {
@@ -106,9 +119,9 @@ public class GameBoardUI : MonoBehaviour
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
         Board<BoardColorType> defaultColorBoard = BoardUIHelper.CreateDefaultBoard();
-        BoardUIHelper.DrawBoardLoop(coord =>
+
+        uiSquares.ForEach((coord, squareUI) =>
         {
-            if (uiSquares.TryGetValue(coord, out UI_Square squareUI) == false) return;
             var model = AA(state, coord, validMoves, defaultColorBoard);
             squareUI.UpdateVisuals(model);
         });

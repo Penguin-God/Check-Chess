@@ -30,6 +30,8 @@ public record Board<T>
 {
     public const int Size = 8;
     private readonly T[,] _grid;
+    public T[,] Grid => (T[,])_grid.Clone();
+
     public Board() => _grid = new T[Size, Size];
 
     public Board(T[,] grid)
@@ -56,16 +58,14 @@ public record Board<T>
 
         return new Board<T>(newGrid);
     }
-
-    // 보드 전체를 순회하며 LINQ를 쓸 수 있게 해주는 헬퍼
-    public IEnumerable<KeyValuePair<BoardCoord, T>> GetAllSquares()
+    public void ForEach(Action<BoardCoord, T> action)
     {
         for (int y = 0; y < Size; y++)
         {
             for (int x = 0; x < Size; x++)
             {
                 var coord = new BoardCoord(x, y);
-                yield return new KeyValuePair<BoardCoord, T>(coord, _grid[x, y]);
+                action(coord, _grid[x, y]);
             }
         }
     }
