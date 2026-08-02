@@ -33,8 +33,6 @@ public class GameBoardUI : MonoBehaviour
     public Color validMoveColor;
 
     GameState currentState;
-
-    // 3개의 2차원 배열을 통합하여 UI_Square 전용 딕셔너리로 관리합니다.
     Board<UI_Square> uiSquares;
 
     void Start()

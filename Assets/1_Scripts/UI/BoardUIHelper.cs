@@ -5,7 +5,6 @@ public enum BoardColorType
 {
     White,
     Black,
-
 }
 
 public static class BoardUIHelper
@@ -59,5 +58,21 @@ public static class BoardUIHelper
             Color baseColor = GetCheckerboardColor(coord, lightColor, darkColor);
             applyUI(coord, baseColor, sprite, pieceColor);
         });
+    }
+}
+
+public static class BoardExtensions
+{
+    public static Board<TResult> Zip<T1, T2, TResult>(this Board<T1> first, Board<T2> second, Func<T1, T2, TResult> create)
+    {
+        var resultGrid = new TResult[BoardUIHelper.BOARD_SIZE, BoardUIHelper.BOARD_SIZE];
+        BoardUIHelper.DrawBoardLoop(coord =>
+        {
+            T1 val1 = first[coord];
+            T2 val2 = second[coord];
+            resultGrid[coord.X, coord.Y] = create(val1, val2);
+        });
+
+        return new Board<TResult>(resultGrid);
     }
 }

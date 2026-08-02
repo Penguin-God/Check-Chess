@@ -36,36 +36,36 @@ public class UI_Lobby : MonoBehaviour
         boardButtons[coord.X, coord.Y] = btn;
     }
 
-    //void UpdateLobbyUI()
-    //{
-    //    int maxCleared = LevelManager.Instance.MaxClearedLevel; // 0부터 시작
+    void __UpdateLobbyUI()
+    {
+        int maxCleared = LevelManager.Instance.MaxClearedLevel; // 0부터 시작
 
-    //    // 상태 업데이트 역시 고차 함수로 깔끔하게 처리
-    //    BoardUIHelper.DrawBoardLoop(coord =>
-    //    {
-    //        int absoluteLevel = (coord.X * BoardUIHelper.BOARD_SIZE) + coord.Y;
-    //        Button btn = boardButtons[coord.X, coord.Y];
+        // 상태 업데이트 역시 고차 함수로 깔끔하게 처리
+        BoardUIHelper.DrawBoardLoop(coord =>
+        {
+            int absoluteLevel = (coord.X * BoardUIHelper.BOARD_SIZE) + coord.Y;
+            Button btn = boardButtons[coord.X, coord.Y];
 
-    //        // 해금 여부 판별
-    //        bool isUnlocked = absoluteLevel <= maxCleared;
-    //        btn.interactable = isUnlocked;
+            // 해금 여부 판별
+            bool isUnlocked = absoluteLevel <= maxCleared;
+            btn.interactable = isUnlocked;
 
-    //        // 시각적 처리 및 체스판 교차 색상 적용
-    //        Image img = btn.GetComponent<Image>();
-    //        if (img != null)
-    //        {
-    //            Color baseColor = BoardUIHelper.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
-    //            // 잠긴 스테이지는 고유의 색상에 회색조를 섞어 비활성화 느낌을 줌
-    //            img.color = isUnlocked ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
-    //        }
+            // 시각적 처리 및 체스판 교차 색상 적용
+            Image img = btn.GetComponent<Image>();
+            if (img != null)
+            {
+                Color baseColor = BoardUIHelper.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
+                // 잠긴 스테이지는 고유의 색상에 회색조를 섞어 비활성화 느낌을 줌
+                img.color = isUnlocked ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
+            }
 
-    //        // 플레이어의 현재 최고 도달 스테이지에 폰(Pawn) 배치
-    //        if (absoluteLevel == maxCleared)
-    //        {
-    //            PlacePawnOnSquare(btn.GetComponent<RectTransform>());
-    //        }
-    //    });
-    //}
+            // 플레이어의 현재 최고 도달 스테이지에 폰(Pawn) 배치
+            if (absoluteLevel == maxCleared)
+            {
+                PlacePawnOnSquare(btn.GetComponent<RectTransform>());
+            }
+        });
+    }
 
     void UpdateLobbyUI()
     {
