@@ -40,7 +40,7 @@ public class StageDataEditor : Editor
                 Color defaultColor = GUI.backgroundColor;
                 if (currentSetup != null && currentSetup.Piece != PieceType.None)
                 {
-                    GUI.backgroundColor = Color.green;
+                    GUI.backgroundColor = currentSetup.Piece == PieceType.King ? Color.gray : Color.green;
                 }
 
                 // 가로 40, 세로 40 크기의 버튼 생성
