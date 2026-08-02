@@ -108,29 +108,11 @@ public class GameBoardUI : MonoBehaviour
     void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
-        Board<BoardColorType> defaultColorBoard = BoardUIHelper.CreateDefaultBoard();
         MyClass.CreateModel(state.Board, lightSquareColor, darkSquareColor, pieceSpriteDict).ForEach((coord, model) =>
         {
             model = WarpModelColor(model, state, coord, validMoves);
             uiSquares[coord].UpdateVisuals(model);
         });
-        //uiSquares.ForEach((coord, squareUI) =>
-        //{
-        //    var model = CreateModel(state, coord, defaultColorBoard);
-        //    model = WarpModelColor(model, state, coord, validMoves);
-        //    squareUI.UpdateVisuals(model);
-        //});
-    }
-
-    SquareModel CreateModel(GameState state, BoardCoord coord, Board<BoardColorType> defaultColorBoard)
-    {
-        PieceType piece = state.Board[coord];
-        Sprite pieceSprite = piece != PieceType.None && pieceSpriteDict.TryGetValue(piece, out Sprite sprite) ? sprite : null;
-
-        BoardColorType logicalColor = defaultColorBoard[coord];
-        Color baseColor = logicalColor == BoardColorType.Black ? darkSquareColor : lightSquareColor;
-
-        return new SquareModel(baseColor, pieceSprite);
     }
 
     SquareModel WarpModelColor(SquareModel origin, GameState state, BoardCoord coord, IReadOnlyList<BoardCoord> validMoves)
