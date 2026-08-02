@@ -122,22 +122,34 @@ public class GameBoardUI : MonoBehaviour
 
         uiSquares.ForEach((coord, squareUI) =>
         {
-            var model = AA(state, coord, validMoves, defaultColorBoard);
+            var model = CreateModel(state, coord, defaultColorBoard);
+            model = WarpModelColor(model, state, coord, validMoves);
             squareUI.UpdateVisuals(model);
         });
     }
 
-    SquareModel AA(GameState state, BoardCoord coord, IReadOnlyList<BoardCoord> validMoves, Board<BoardColorType> defaultColorBoard)
+    SquareModel CreateModel(GameState state, BoardCoord coord, Board<BoardColorType> defaultColorBoard)
     {
         PieceType piece = state.Board[coord];
         Sprite pieceSprite = piece != PieceType.None && pieceSpriteDict.TryGetValue(piece, out Sprite sprite) ? sprite : null;
-        
+
         BoardColorType logicalColor = defaultColorBoard[coord];
         Color baseColor = logicalColor == BoardColorType.Black ? darkSquareColor : lightSquareColor;
 
+        return new SquareModel(baseColor, pieceSprite);
+    }
+
+    SquareModel WarpModelColor(SquareModel origin, GameState state, BoardCoord coord, IReadOnlyList<BoardCoord> validMoves)
+    {
+        Color newColor = GetStateColor(state, coord, validMoves, origin.BgColor);
+        return new SquareModel(newColor, origin.Sprite);
+    }
+
+    Color GetStateColor(GameState state, BoardCoord coord, IReadOnlyList<BoardCoord> validMoves, Color baseColor)
+    {
         SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
         baseColor = SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
-        return new SquareModel(baseColor, pieceSprite);
+        return baseColor;
     }
 
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
