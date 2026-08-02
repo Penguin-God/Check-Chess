@@ -57,7 +57,7 @@ public record Board<T>
         return new Board<T>(newGrid);
     }
 
-    // (선택) 보드 전체를 순회하며 LINQ를 쓸 수 있게 해주는 헬퍼
+    // 보드 전체를 순회하며 LINQ를 쓸 수 있게 해주는 헬퍼
     public IEnumerable<KeyValuePair<BoardCoord, T>> GetAllSquares()
     {
         for (int y = 0; y < Size; y++)

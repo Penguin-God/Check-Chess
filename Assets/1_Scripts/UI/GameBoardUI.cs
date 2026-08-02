@@ -27,16 +27,15 @@ public class GameBoardUI : MonoBehaviour
     public StageDataSO currentStageData;
 
     [Header("Board Colors")]
-    // 기본값은 첨부해주신 이미지(image_6eea3f.png)와 유사한 체스닷컴 우드 테마 색상입니다.
     public Color lightSquareColor = new Color(0.94f, 0.85f, 0.71f);
     public Color darkSquareColor = new Color(0.71f, 0.53f, 0.39f);
     public Color activeColor = new Color(0.73f, 0.79f, 0.27f);
     public Color validMoveColor;
 
     GameState currentState;
-    Button[,] uiButtons = new Button[8, 8];
-    Image[,] uiBackgrounds = new Image[8, 8];
-    Image[,] uiPieceImages = new Image[8, 8];
+
+    // 3개의 2차원 배열을 통합하여 UI_Square 전용 딕셔너리로 관리합니다.
+    Dictionary<BoardCoord, UI_Square> uiSquares = new Dictionary<BoardCoord, UI_Square>();
 
     void Start()
     {
@@ -51,7 +50,6 @@ public class GameBoardUI : MonoBehaviour
 
         if (currentStageData != null)
         {
-            // Note: PuzzleStageBuilder 내부에서도 반환 타입(Board)을 Dictionary로 수정하셔야 합니다!
             currentState = PuzzleStageBuilder.CreateFromSO(currentStageData);
         }
         else
@@ -67,10 +65,9 @@ public class GameBoardUI : MonoBehaviour
     void CreateSquareUI(BoardCoord coord)
     {
         GameObject obj = Instantiate(squarePrefab, boardPanel);
-        uiButtons[coord.X, coord.Y] = obj.GetComponent<Button>();
-        uiBackgrounds[coord.X, coord.Y] = obj.GetComponent<Image>();
-        uiPieceImages[coord.X, coord.Y] = obj.transform.GetChild(0).GetComponent<Image>();
-        uiButtons[coord.X, coord.Y].onClick.AddListener(() => OnSquareClicked(coord.X, coord.Y));
+        UI_Square squareUI = obj.GetComponent<UI_Square>();
+        squareUI.Init(() => OnSquareClicked(coord.X, coord.Y));
+        uiSquares[coord] = squareUI;
     }
 
     void OnSquareClicked(int x, int y)
@@ -110,20 +107,18 @@ public class GameBoardUI : MonoBehaviour
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
 
         BoardUIHelper.RenderBoardVisuals(
-            getPieceAt: coord => state.Board.TryGetValue(coord, out var piece) ? piece : PieceType.None,
+            getPieceAt: coord => state.Board[coord],
             getPieceSprite: pieceType => pieceSpriteDict.TryGetValue(pieceType, out Sprite sprite) ? sprite : null,
             lightColor: lightSquareColor,
             darkColor: darkSquareColor,
             applyUI: (coord, baseColor, pieceSprite, pieceColor) =>
             {
-                Image bgImg = uiBackgrounds[coord.X, coord.Y];
-                Image pieceImg = uiPieceImages[coord.X, coord.Y];
-
-                pieceImg.sprite = pieceSprite;
-                pieceImg.color = pieceColor;
-
-                SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
-                bgImg.color = SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
+                if (uiSquares.TryGetValue(coord, out UI_Square squareUI))
+                {
+                    SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
+                    Color bgColor = SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
+                    squareUI.UpdateVisuals(bgColor, pieceSprite, pieceColor);
+                }
             }
         );
     }
