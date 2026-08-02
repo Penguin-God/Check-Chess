@@ -10,14 +10,17 @@ public enum SquareUIState
     StartDisabled
 }
 
-public static class SquarePreserter
+public static class SquarePresenter
 {
-    public static SquareUIState DetermineSquareState(GameState state, ChessSquare square, IEnumerable<ChessSquare> validMoves)
+    public static SquareUIState DetermineSquareState(GameState state, BoardCoord coord, IEnumerable<BoardCoord> validMoves)
     {
-        if (state.ActiveSquare == square) return SquareUIState.Active;
-        if (validMoves.Contains(square)) return SquareUIState.ValidMove;
-        if (state.ActiveSquare == null && square.Piece != PieceType.None && !state.AllowedStartingSquares.Contains(square))
+        if (state.ActiveSquare == coord) return SquareUIState.Active;
+        if (validMoves.Contains(coord)) return SquareUIState.ValidMove;
+
+        state.Board.TryGetValue(coord, out var piece);
+        if (state.ActiveSquare == null && piece != PieceType.None && !state.AllowedStartingSquares.Contains(coord))
             return SquareUIState.StartDisabled;
+
         return SquareUIState.Normal;
     }
 

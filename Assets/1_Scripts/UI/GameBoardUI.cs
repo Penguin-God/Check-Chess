@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -52,6 +51,7 @@ public class GameBoardUI : MonoBehaviour
 
         if (currentStageData != null)
         {
+            // Note: PuzzleStageBuilder 내부에서도 반환 타입(Board)을 Dictionary로 수정하셔야 합니다!
             currentState = PuzzleStageBuilder.CreateFromSO(currentStageData);
         }
         else
@@ -75,30 +75,26 @@ public class GameBoardUI : MonoBehaviour
 
     void OnSquareClicked(int x, int y)
     {
-        var clickedSquare = currentState.Board.FirstOrDefault(sq => sq.X == x && sq.Y == y);
-        if (clickedSquare == null) return;
-
+        var clickedCoord = new BoardCoord(x, y);
         GameState nextState = currentState;
 
         if (currentState.ActiveSquare == null)
         {
-            nextState = ChessPuzzleLogic.SelectStartingPiece(currentState, clickedSquare);
+            nextState = ChessPuzzleLogic.SelectStartingPiece(currentState, clickedCoord);
         }
         else
         {
-            nextState = ChessPuzzleLogic.MoveAndTouch(currentState, clickedSquare);
+            nextState = ChessPuzzleLogic.MoveAndTouch(currentState, clickedCoord);
 
-            // 1. 성공 조건: 기물을 모두 소진하고 킹을 잡음
             if (nextState.IsVictory)
             {
                 gameResultUI.gameObject.SetActive(true);
                 gameResultUI.OnStageCleared();
             }
-            // 2. 실패 조건: 기물이 남았는데 킹을 먼저 잡음
             else if (nextState.IsDefeat)
             {
                 Debug.Log("기물이 남은 상태로 킹을 잡았습니다! 스테이지를 재시작합니다.");
-                RestartStage(); // 실패 시 즉시 현재 스테이지를 재시작합니다
+                RestartStage();
             }
         }
 
@@ -109,34 +105,25 @@ public class GameBoardUI : MonoBehaviour
         }
     }
 
-
     void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
 
         BoardUIHelper.RenderBoardVisuals(
-            getPieceAt: coord =>
-            {
-                var sq = state.Board.FirstOrDefault(s => s.X == coord.X && s.Y == coord.Y);
-                return sq != null ? sq.Piece : PieceType.None;
-            },
+            getPieceAt: coord => state.Board.TryGetValue(coord, out var piece) ? piece : PieceType.None,
             getPieceSprite: pieceType => pieceSpriteDict.TryGetValue(pieceType, out Sprite sprite) ? sprite : null,
             lightColor: lightSquareColor,
             darkColor: darkSquareColor,
             applyUI: (coord, baseColor, pieceSprite, pieceColor) =>
             {
-                var square = state.Board.FirstOrDefault(sq => sq.X == coord.X && sq.Y == coord.Y);
-                if (square == null) return;
-
                 Image bgImg = uiBackgrounds[coord.X, coord.Y];
                 Image pieceImg = uiPieceImages[coord.X, coord.Y];
 
-                // 1. 공통 기물 렌더링 적용
                 pieceImg.sprite = pieceSprite;
                 pieceImg.color = pieceColor;
 
-                SquareUIState uiState = SquarePreserter.DetermineSquareState(state, square, validMoves);
-                bgImg.color = SquarePreserter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
+                SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
+                bgImg.color = SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
             }
         );
     }

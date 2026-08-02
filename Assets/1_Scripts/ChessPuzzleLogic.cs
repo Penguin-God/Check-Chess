@@ -5,7 +5,7 @@ using System.Linq;
 public static class ChessPuzzleLogic
 {
     // [1] 처음 기물 선택
-    public static GameState SelectStartingPiece(GameState state, ChessSquare startSquare)
+    public static GameState SelectStartingPiece(GameState state, BoardCoord startSquare)
     {
         if (state.ActiveSquare != null) return state;
         if (!state.AllowedStartingSquares.Contains(startSquare)) return state;
@@ -14,47 +14,48 @@ public static class ChessPuzzleLogic
     }
 
     // [2] 바톤 터치가 가능한 칸 목록 반환
-    public static IReadOnlyList<ChessSquare> GetValidBatonTouches(GameState state)
+    public static IReadOnlyList<BoardCoord> GetValidBatonTouches(GameState state)
     {
-        if (state.ActiveSquare == null) return new List<ChessSquare>();
+        if (state.ActiveSquare == null) return Array.Empty<BoardCoord>();
 
         var active = state.ActiveSquare;
 
-        // 조건을 만족하는 요소들을 찾아 새로운 List로 반환 (IReadOnlyList로 업캐스팅됨)
+        // 딕셔너리의 KeyValuePair를 활용해 함수형 파이프라인 구성
         return state.Board
-            .Where(sq => sq.Piece != PieceType.None && sq != active)
-            .Where(sq => IsValidChessMove(state.Board, active, sq))
+            .Where(kvp => kvp.Value != PieceType.None && kvp.Key != active)
+            .Select(kvp => kvp.Key)
+            .Where(coord => IsValidChessMove(state.Board, active, coord))
             .ToList();
     }
 
     // [3] 바톤 터치 실행
-    public static GameState MoveAndTouch(GameState state, ChessSquare targetSquare)
+    public static GameState MoveAndTouch(GameState state, BoardCoord targetSquare)
     {
         var validMoves = GetValidBatonTouches(state);
-
         if (!validMoves.Contains(targetSquare)) return state;
 
-        // LINQ의 Select를 사용해 기존 보드를 기반으로 새로운 List를 생성
-        var newBoard = state.Board.Select(sq =>
-            sq == state.ActiveSquare ? sq with { Piece = PieceType.None } : sq
-        ).ToList();
+        // 함수형 불변성(Immutability) 유지를 위해 새로운 딕셔너리 생성
+        var newBoard = state.Board.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-        var newActiveSquare = newBoard.First(sq => sq.X == targetSquare.X && sq.Y == targetSquare.Y);
+        // 기존 위치의 기물을 비움 (이동 처리)
+        newBoard[state.ActiveSquare] = PieceType.None;
 
         return state with
         {
             Board = newBoard,
-            ActiveSquare = newActiveSquare
+            ActiveSquare = targetSquare
         };
     }
 
     // [4] 체스 이동 규칙 검증
-    private static bool IsValidChessMove(IReadOnlyList<ChessSquare> board, ChessSquare from, ChessSquare to)
+    private static bool IsValidChessMove(IReadOnlyDictionary<BoardCoord, PieceType> board, BoardCoord from, BoardCoord to)
     {
         int dx = Math.Abs(from.X - to.X);
         int dy = Math.Abs(from.Y - to.Y);
 
-        return from.Piece switch
+        if (!board.TryGetValue(from, out var piece)) return false;
+
+        return piece switch
         {
             PieceType.Knight => (dx == 1 && dy == 2) || (dx == 2 && dy == 1),
             PieceType.Rook => (dx == 0 || dy == 0) && IsPathClear(board, from, to),
@@ -66,7 +67,7 @@ public static class ChessPuzzleLogic
     }
 
     // 경로 장애물 확인
-    private static bool IsPathClear(IReadOnlyList<ChessSquare> board, ChessSquare from, ChessSquare to)
+    private static bool IsPathClear(IReadOnlyDictionary<BoardCoord, PieceType> board, BoardCoord from, BoardCoord to)
     {
         int stepX = Math.Sign(to.X - from.X);
         int stepY = Math.Sign(to.Y - from.Y);
@@ -76,8 +77,9 @@ public static class ChessPuzzleLogic
 
         while (currX != to.X || currY != to.Y)
         {
-            var sq = board.FirstOrDefault(s => s.X == currX && s.Y == currY);
-            if (sq != null && sq.Piece != PieceType.None) return false;
+            var checkCoord = new BoardCoord(currX, currY);
+            if (board.TryGetValue(checkCoord, out var piece) && piece != PieceType.None)
+                return false;
 
             currX += stepX;
             currY += stepY;
