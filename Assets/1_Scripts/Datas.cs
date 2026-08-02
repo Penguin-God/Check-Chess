@@ -10,7 +10,7 @@ namespace System.Runtime.CompilerServices
 public enum PieceType { None, Pawn, Knight, Bishop, Rook, Queen, King }
 public record BoardCoord(int X, int Y);
 
-public record GameState(Board<PieceType> Board, BoardCoord ActiveSquare, IReadOnlyList<BoardCoord> AllowedStartingSquares)
+public record GameState(Board<PieceType> Board, BoardCoord ActiveSquare)
 {
     public bool IsKingCaptured => ActiveSquare != null && Board[ActiveSquare] == PieceType.King;
     public int RemainingPiecesCount => Board.GetAll().Count(piece => piece != PieceType.None);

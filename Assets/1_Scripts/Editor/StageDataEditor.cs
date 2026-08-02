@@ -8,8 +8,7 @@ public class StageDataEditor : Editor
 {
     // 팔레트에서 선택한 설정 임시 저장
     private PieceType paintPiece = PieceType.None;
-    private bool paintDisableStart = false;
-
+    
     public override void OnInspectorGUI()
     {
         // 타겟 데이터를 StageDataSO로 캐스팅
@@ -20,7 +19,6 @@ public class StageDataEditor : Editor
 
         EditorGUILayout.BeginVertical("box");
         paintPiece = (PieceType)EditorGUILayout.EnumPopup("그릴 기물", paintPiece);
-        paintDisableStart = EditorGUILayout.Toggle("시작 불가(꼼수방지)", paintDisableStart);
         EditorGUILayout.EndVertical();
 
         GUILayout.Space(15);
@@ -42,7 +40,7 @@ public class StageDataEditor : Editor
                 Color defaultColor = GUI.backgroundColor;
                 if (currentSetup != null && currentSetup.Piece != PieceType.None)
                 {
-                    GUI.backgroundColor = currentSetup.DisableStart ? Color.gray : Color.green;
+                    GUI.backgroundColor = Color.green;
                 }
 
                 // 가로 40, 세로 40 크기의 버튼 생성
@@ -67,7 +65,6 @@ public class StageDataEditor : Editor
 
                         // 팔레트에 선택된 데이터로 덮어쓰기
                         currentSetup.Piece = paintPiece;
-                        currentSetup.DisableStart = paintDisableStart;
                     }
 
                     // 유니티에게 데이터가 변경되었음을 알려서 저장(Ctrl+S)되게 함

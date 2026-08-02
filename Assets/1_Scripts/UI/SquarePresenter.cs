@@ -18,7 +18,9 @@ public static class SquarePresenter
         if (validMoves.Contains(coord)) return SquareUIState.ValidMove;
 
         state.Board.ToDictionary().TryGetValue(coord, out var piece);
-        if (state.ActiveSquare == null && piece != PieceType.None && !state.AllowedStartingSquares.Contains(coord))
+
+        // 아무 기물도 선택되지 않은 초기 상태일 때, 기물이 King이라면 비활성화 표시
+        if (state.ActiveSquare == null && piece == PieceType.King)
             return SquareUIState.StartDisabled;
 
         return SquareUIState.Normal;

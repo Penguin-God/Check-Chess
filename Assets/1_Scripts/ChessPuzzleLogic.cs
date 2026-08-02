@@ -4,11 +4,14 @@ using System.Linq;
 
 public static class ChessPuzzleLogic
 {
-    // [1] 처음 기물 선택
     public static GameState SelectStartingPiece(GameState state, BoardCoord startSquare)
     {
         if (state.ActiveSquare != null) return state;
-        if (!state.AllowedStartingSquares.Contains(startSquare)) return state;
+
+        // 빈 공간이거나 킹(King)이면 선택 불가
+        var clickedPiece = state.Board[startSquare];
+        if (clickedPiece == PieceType.None || clickedPiece == PieceType.King)
+            return state;
 
         return state with { ActiveSquare = startSquare };
     }
