@@ -69,4 +69,21 @@ public record Board<T>
             }
         }
     }
+
+    public Board<TResult> Map<TResult>(Func<BoardCoord, T, TResult> selector)
+    {
+        var newGrid = new TResult[Size, Size];
+
+        for (int y = 0; y < Size; y++)
+        {
+            for (int x = 0; x < Size; x++)
+            {
+                var coord = new BoardCoord(x, y);
+                // 기존 값(_grid[x, y])과 좌표를 selector에 넘겨 새로운 값을 얻어냅니다.
+                newGrid[x, y] = selector(coord, _grid[x, y]);
+            }
+        }
+
+        return new Board<TResult>(newGrid);
+    }
 }

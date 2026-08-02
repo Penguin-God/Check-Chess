@@ -119,7 +119,7 @@ public class GameBoardUI : MonoBehaviour
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
         Board<BoardColorType> defaultColorBoard = BoardUIHelper.CreateDefaultBoard();
-
+        // MyClass.CreateModel(state.Board, lightSquareColor, darkSquareColor, pieceSpriteDict);
         uiSquares.ForEach((coord, squareUI) =>
         {
             var model = CreateModel(state, coord, defaultColorBoard);
@@ -153,4 +153,18 @@ public class GameBoardUI : MonoBehaviour
     }
 
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+}
+
+public static class MyClass
+{
+    public static Board<SquareModel> CreateModel(Board<PieceType> pieceBoard, Color whiteColor, Color blackColor, Dictionary<PieceType, Sprite> pieceSpriteDict)
+    {
+        Board<BoardColorType> defaultColorBoard = BoardUIHelper.CreateDefaultBoard();
+        return pieceBoard.Map((coord, piece) =>
+        {
+            Sprite pieceSprite = piece != PieceType.None && pieceSpriteDict.TryGetValue(piece, out Sprite sprite) ? sprite : null;
+            Color baseColor = defaultColorBoard[coord] == BoardColorType.Black ? blackColor : whiteColor;
+            return new SquareModel(baseColor, pieceSprite);
+        });
+    }
 }
