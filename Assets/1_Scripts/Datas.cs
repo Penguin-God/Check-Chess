@@ -26,6 +26,21 @@ public record Board<T>
     public const int Size = 8;
     private readonly T[,] _grid;
     public T[,] Grid => (T[,])_grid.Clone();
+
+    private static IEnumerable<BoardCoord> AllCoords
+    {
+        get
+        {
+            for (int y = 0; y < Size; y++)
+            {
+                for (int x = 0; x < Size; x++)
+                {
+                    yield return new BoardCoord(x, y);
+                }
+            }
+        }
+    }
+
     public Board() => _grid = new T[Size, Size];
 
     public Board(T[,] grid)
@@ -39,100 +54,40 @@ public record Board<T>
     public Board(Func<BoardCoord, T> generator)
     {
         _grid = new T[Size, Size];
-
-        for (int y = 0; y < Size; y++)
+        foreach (var coord in AllCoords)
         {
-            for (int x = 0; x < Size; x++)
-            {
-                var coord = new BoardCoord(x, y);
-                _grid[x, y] = generator(coord);
-            }
+            _grid[coord.X, coord.Y] = generator(coord);
         }
     }
 
-    // 사용 예: var piece = board[new BoardCoord(3, 4)];
-    public T this[BoardCoord coord]
-    {
-        get => _grid[coord.X, coord.Y];
-    }
+    public T this[BoardCoord coord] => _grid[coord.X, coord.Y];
 
-    // 값을 변경할 때 기존 보드를 수정하지 않고 "새로운 보드"를 반환
-    // 사용 예: var newBoard = board.Set(new BoardCoord(3, 4), PieceType.Knight);
     public Board<T> Change(BoardCoord coord, T value)
     {
-        // 얕은 복사 (값 타입이나 enum인 PieceType에 완벽하게 동작)
         var newGrid = (T[,])_grid.Clone();
         newGrid[coord.X, coord.Y] = value;
-
         return new Board<T>(newGrid);
     }
 
-    public IEnumerable<T> GetAll()
-    {
-        for (int y = 0; y < Size; y++)
-        {
-            for (int x = 0; x < Size; x++)
-            {
-                yield return _grid[x, y];
-            }
-        }
-    }
+    public IEnumerable<T> GetAll() => AllCoords.Select(coord => this[coord]);
 
     public void ForEach(Action<BoardCoord, T> action)
     {
-        for (int y = 0; y < Size; y++)
+        foreach (var coord in AllCoords)
         {
-            for (int x = 0; x < Size; x++)
-            {
-                var coord = new BoardCoord(x, y);
-                action(coord, _grid[x, y]);
-            }
+            action(coord, this[coord]);
         }
     }
 
     public Board<TResult> Map<TResult>(Func<BoardCoord, T, TResult> selector)
     {
         var newGrid = new TResult[Size, Size];
-
-        for (int y = 0; y < Size; y++)
+        foreach (var coord in AllCoords)
         {
-            for (int x = 0; x < Size; x++)
-            {
-                var coord = new BoardCoord(x, y);
-                // 기존 값(_grid[x, y])과 좌표를 selector에 넘겨 새로운 값을 얻어냅니다.
-                newGrid[x, y] = selector(coord, _grid[x, y]);
-            }
+            newGrid[coord.X, coord.Y] = selector(coord, this[coord]);
         }
-
         return new Board<TResult>(newGrid);
     }
-
-    public IEnumerable<KeyValuePair<BoardCoord, T>> GetAllSquares()
-    {
-        for (int y = 0; y < Size; y++)
-        {
-            for (int x = 0; x < Size; x++)
-            {
-                var coord = new BoardCoord(x, y);
-                yield return new KeyValuePair<BoardCoord, T>(coord, _grid[x, y]);
-            }
-        }
-    }
-
-    public Dictionary<BoardCoord, T> ToDictionary()
-    {
-        // 8x8 = 64칸 분량의 메모리를 미리 할당하여 성능을 최적화합니다.
-        var dict = new Dictionary<BoardCoord, T>(Size * Size);
-
-        for (int y = 0; y < Size; y++)
-        {
-            for (int x = 0; x < Size; x++)
-            {
-                var coord = new BoardCoord(x, y);
-                dict[coord] = _grid[x, y];
-            }
-        }
-
-        return dict;
-    }
+    public IEnumerable<KeyValuePair<BoardCoord, T>> GetAllSquares() => AllCoords.Select(coord => new KeyValuePair<BoardCoord, T>(coord, this[coord]));
+    public Dictionary<BoardCoord, T> ToDictionary() => AllCoords.ToDictionary(coord => coord, coord => this[coord]);
 }
