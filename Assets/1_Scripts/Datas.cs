@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,4 +24,49 @@ public record GameState(IReadOnlyDictionary<BoardCoord, PieceType> Board, BoardC
     public bool IsVictory => IsKingCaptured && RemainingPiecesCount == 1;
     // 패배 조건: 킹을 잡았지만, 필드에 킹 이외의 다른 기물이 남아있을 때입니다
     public bool IsDefeat => IsKingCaptured && RemainingPiecesCount > 1;
+}
+
+public record Board<T>
+{
+    public const int Size = 8;
+    private readonly T[,] _grid;
+    public Board() => _grid = new T[Size, Size];
+
+    public Board(T[,] grid)
+    {
+        if (grid.GetLength(0) != Size || grid.GetLength(1) != Size)
+            throw new ArgumentException($"보드 크기는 반드시 {Size}x{Size}여야 합니다.");
+
+        _grid = grid;
+    }
+
+    // 사용 예: var piece = board[new BoardCoord(3, 4)];
+    public T this[BoardCoord coord]
+    {
+        get => _grid[coord.X, coord.Y];
+    }
+
+    // 값을 변경할 때 기존 보드를 수정하지 않고 "새로운 보드"를 반환
+    // 사용 예: var newBoard = board.Set(new BoardCoord(3, 4), PieceType.Knight);
+    public Board<T> Change(BoardCoord coord, T value)
+    {
+        // 얕은 복사 (값 타입이나 enum인 PieceType에 완벽하게 동작)
+        var newGrid = (T[,])_grid.Clone();
+        newGrid[coord.X, coord.Y] = value;
+
+        return new Board<T>(newGrid);
+    }
+
+    // (선택) 보드 전체를 순회하며 LINQ를 쓸 수 있게 해주는 헬퍼
+    public IEnumerable<KeyValuePair<BoardCoord, T>> GetAllSquares()
+    {
+        for (int y = 0; y < Size; y++)
+        {
+            for (int x = 0; x < Size; x++)
+            {
+                var coord = new BoardCoord(x, y);
+                yield return new KeyValuePair<BoardCoord, T>(coord, _grid[x, y]);
+            }
+        }
+    }
 }
