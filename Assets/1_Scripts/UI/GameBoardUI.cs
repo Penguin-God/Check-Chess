@@ -105,22 +105,23 @@ public class GameBoardUI : MonoBehaviour
     void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
+        Board<BoardColorType> defaultColorBoard = BoardUIHelper.CreateDefaultBoard();
+        BoardUIHelper.DrawBoardLoop(coord =>
+        {
+            if (uiSquares.TryGetValue(coord, out UI_Square squareUI) == false) return;
 
-        BoardUIHelper.RenderBoardVisuals(
-            getPieceAt: coord => state.Board[coord],
-            getPieceSprite: pieceType => pieceSpriteDict.TryGetValue(pieceType, out Sprite sprite) ? sprite : null,
-            lightColor: lightSquareColor,
-            darkColor: darkSquareColor,
-            applyUI: (coord, baseColor, pieceSprite, pieceColor) =>
-            {
-                if (uiSquares.TryGetValue(coord, out UI_Square squareUI))
-                {
-                    SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
-                    Color bgColor = SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
-                    squareUI.UpdateVisuals(bgColor, pieceSprite, pieceColor);
-                }
-            }
-        );
+            PieceType piece = state.Board[coord];
+            Sprite pieceSprite = piece != PieceType.None && pieceSpriteDict.TryGetValue(piece, out Sprite sprite) ? sprite : null;
+            Color pieceColor = pieceSprite != null ? Color.white : Color.clear;
+
+            // 배경색 추출 (BoardColorType -> Color 변환)
+            BoardColorType logicalColor = defaultColorBoard[coord];
+            Color baseColor = logicalColor == BoardColorType.Black ? darkSquareColor : lightSquareColor;
+
+            SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
+            Color finalBgColor = SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
+            squareUI.UpdateVisuals(finalBgColor, pieceSprite, pieceColor);
+        });
     }
 
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
