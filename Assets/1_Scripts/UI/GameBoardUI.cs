@@ -36,7 +36,7 @@ public class GameBoardUI : MonoBehaviour
 
     // 3개의 2차원 배열을 통합하여 UI_Square 전용 딕셔너리로 관리합니다.
     Dictionary<BoardCoord, UI_Square> uiSquares = new Dictionary<BoardCoord, UI_Square>();
-
+    
     void Start()
     {
         pieceSpriteDict = new Dictionary<PieceType, Sprite>();
@@ -109,19 +109,22 @@ public class GameBoardUI : MonoBehaviour
         BoardUIHelper.DrawBoardLoop(coord =>
         {
             if (uiSquares.TryGetValue(coord, out UI_Square squareUI) == false) return;
-
-            PieceType piece = state.Board[coord];
-            Sprite pieceSprite = piece != PieceType.None && pieceSpriteDict.TryGetValue(piece, out Sprite sprite) ? sprite : null;
-            Color pieceColor = pieceSprite != null ? Color.white : Color.clear;
-
-            // 배경색 추출 (BoardColorType -> Color 변환)
-            BoardColorType logicalColor = defaultColorBoard[coord];
-            Color baseColor = logicalColor == BoardColorType.Black ? darkSquareColor : lightSquareColor;
-
-            SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
-            Color finalBgColor = SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
-            squareUI.UpdateVisuals(finalBgColor, pieceSprite, pieceColor);
+            var model = AA(state, coord, validMoves, defaultColorBoard);
+            squareUI.UpdateVisuals(model);
         });
+    }
+
+    SquareModel AA(GameState state, BoardCoord coord, IReadOnlyList<BoardCoord> validMoves, Board<BoardColorType> defaultColorBoard)
+    {
+        PieceType piece = state.Board[coord];
+        Sprite pieceSprite = piece != PieceType.None && pieceSpriteDict.TryGetValue(piece, out Sprite sprite) ? sprite : null;
+        
+        BoardColorType logicalColor = defaultColorBoard[coord];
+        Color baseColor = logicalColor == BoardColorType.Black ? darkSquareColor : lightSquareColor;
+
+        SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
+        baseColor = SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
+        return new SquareModel(baseColor, pieceSprite);
     }
 
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
