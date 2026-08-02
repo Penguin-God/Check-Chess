@@ -135,37 +135,11 @@ public class GameBoardUI : MonoBehaviour
                 pieceImg.sprite = pieceSprite;
                 pieceImg.color = pieceColor;
 
-                SquareUIState uiState = DetermineSquareState(state, square, validMoves);
-                bgImg.color = GetStateColor(uiState, baseColor);
+                SquareUIState uiState = SquarePreserter.DetermineSquareState(state, square, validMoves);
+                bgImg.color = SquarePreserter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
             }
         );
     }
-
-    public enum SquareUIState
-    {
-        Normal,
-        Active,
-        ValidMove,
-        StartDisabled
-    }
-
-    SquareUIState DetermineSquareState(GameState state, ChessSquare square, IEnumerable<ChessSquare> validMoves)
-    {
-        if (state.ActiveSquare == square) return SquareUIState.Active;
-        if (validMoves.Contains(square)) return SquareUIState.ValidMove;
-        if (state.ActiveSquare == null && square.Piece != PieceType.None && !state.AllowedStartingSquares.Contains(square))
-            return SquareUIState.StartDisabled;
-        return SquareUIState.Normal;
-    }
-
-    Color GetStateColor(SquareUIState uiState, Color baseColor) => uiState switch
-    {
-        SquareUIState.Active => activeColor,
-        SquareUIState.ValidMove => validMoveColor,
-        SquareUIState.StartDisabled => Color.Lerp(baseColor, Color.gray, 0.6f),
-        SquareUIState.Normal => baseColor,
-        _ => baseColor
-    };
 
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 }
