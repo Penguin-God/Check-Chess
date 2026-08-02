@@ -17,7 +17,7 @@ public static class SquarePresenter
         if (state.ActiveSquare == coord) return SquareUIState.Active;
         if (validMoves.Contains(coord)) return SquareUIState.ValidMove;
 
-        state.Board.TryGetValue(coord, out var piece);
+        state.Board.ToDictionary().TryGetValue(coord, out var piece);
         if (state.ActiveSquare == null && piece != PieceType.None && !state.AllowedStartingSquares.Contains(coord))
             return SquareUIState.StartDisabled;
 

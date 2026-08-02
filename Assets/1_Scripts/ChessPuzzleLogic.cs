@@ -22,9 +22,10 @@ public static class ChessPuzzleLogic
 
         // 딕셔너리의 KeyValuePair를 활용해 함수형 파이프라인 구성
         return state.Board
+            .GetAllSquares()
             .Where(kvp => kvp.Value != PieceType.None && kvp.Key != active)
             .Select(kvp => kvp.Key)
-            .Where(coord => IsValidChessMove(state.Board, active, coord))
+            .Where(coord => IsValidChessMove(state.Board.ToDictionary(), active, coord))
             .ToList();
     }
 
@@ -34,11 +35,7 @@ public static class ChessPuzzleLogic
         var validMoves = GetValidBatonTouches(state);
         if (!validMoves.Contains(targetSquare)) return state;
 
-        // 함수형 불변성(Immutability) 유지를 위해 새로운 딕셔너리 생성
-        var newBoard = state.Board.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-        // 기존 위치의 기물을 비움 (이동 처리)
-        newBoard[state.ActiveSquare] = PieceType.None;
+        var newBoard = state.Board.Change(targetSquare, PieceType.None);
 
         return state with
         {

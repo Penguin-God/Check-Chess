@@ -10,15 +10,10 @@ namespace System.Runtime.CompilerServices
 public enum PieceType { None, Pawn, Knight, Bishop, Rook, Queen, King }
 public record BoardCoord(int X, int Y);
 
-public record GameState(IReadOnlyDictionary<BoardCoord, PieceType> Board, BoardCoord ActiveSquare, IReadOnlyList<BoardCoord> AllowedStartingSquares)
+public record GameState(Board<PieceType> Board, BoardCoord ActiveSquare, IReadOnlyList<BoardCoord> AllowedStartingSquares)
 {
-    // 딕셔너리에서 ActiveSquare 좌표로 기물을 바로 가져와서 확인합니다.
-    public bool IsKingCaptured =>
-        ActiveSquare != null &&
-        Board.TryGetValue(ActiveSquare, out var piece) &&
-        piece == PieceType.King;
-
-    public int RemainingPiecesCount => Board.Values.Count(piece => piece != PieceType.None);
+    public bool IsKingCaptured => ActiveSquare != null && Board[ActiveSquare] == PieceType.King;
+    public int RemainingPiecesCount => Board.GetAll().Count(piece => piece != PieceType.None);
 
     // 승리 조건: 킹을 잡았고, 필드에 남은 기물이 킹(1개)뿐일 때 완벽한 클리어입니다
     public bool IsVictory => IsKingCaptured && RemainingPiecesCount == 1;
@@ -31,7 +26,6 @@ public record Board<T>
     public const int Size = 8;
     private readonly T[,] _grid;
     public T[,] Grid => (T[,])_grid.Clone();
-
     public Board() => _grid = new T[Size, Size];
 
     public Board(T[,] grid)
@@ -40,6 +34,20 @@ public record Board<T>
             throw new ArgumentException($"보드 크기는 반드시 {Size}x{Size}여야 합니다.");
 
         _grid = grid;
+    }
+
+    public Board(Func<BoardCoord, T> generator)
+    {
+        _grid = new T[Size, Size];
+
+        for (int y = 0; y < Size; y++)
+        {
+            for (int x = 0; x < Size; x++)
+            {
+                var coord = new BoardCoord(x, y);
+                _grid[x, y] = generator(coord);
+            }
+        }
     }
 
     // 사용 예: var piece = board[new BoardCoord(3, 4)];
@@ -58,6 +66,18 @@ public record Board<T>
 
         return new Board<T>(newGrid);
     }
+
+    public IEnumerable<T> GetAll()
+    {
+        for (int y = 0; y < Size; y++)
+        {
+            for (int x = 0; x < Size; x++)
+            {
+                yield return _grid[x, y];
+            }
+        }
+    }
+
     public void ForEach(Action<BoardCoord, T> action)
     {
         for (int y = 0; y < Size; y++)
@@ -85,5 +105,34 @@ public record Board<T>
         }
 
         return new Board<TResult>(newGrid);
+    }
+
+    public IEnumerable<KeyValuePair<BoardCoord, T>> GetAllSquares()
+    {
+        for (int y = 0; y < Size; y++)
+        {
+            for (int x = 0; x < Size; x++)
+            {
+                var coord = new BoardCoord(x, y);
+                yield return new KeyValuePair<BoardCoord, T>(coord, _grid[x, y]);
+            }
+        }
+    }
+
+    public Dictionary<BoardCoord, T> ToDictionary()
+    {
+        // 8x8 = 64칸 분량의 메모리를 미리 할당하여 성능을 최적화합니다.
+        var dict = new Dictionary<BoardCoord, T>(Size * Size);
+
+        for (int y = 0; y < Size; y++)
+        {
+            for (int x = 0; x < Size; x++)
+            {
+                var coord = new BoardCoord(x, y);
+                dict[coord] = _grid[x, y];
+            }
+        }
+
+        return dict;
     }
 }

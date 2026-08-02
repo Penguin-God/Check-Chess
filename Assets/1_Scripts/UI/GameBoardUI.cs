@@ -75,14 +75,6 @@ public class GameBoardUI : MonoBehaviour
         RenderState(currentState);
     }
 
-    //void CreateSquareUI(BoardCoord coord)
-    //{
-    //    GameObject obj = Instantiate(squarePrefab, boardPanel);
-    //    UI_Square squareUI = obj.GetComponent<UI_Square>();
-    //    squareUI.Init(() => OnSquareClicked(coord.X, coord.Y));
-    //    uiSquares[coord] = squareUI;
-    //}
-
     void OnSquareClicked(int x, int y)
     {
         var clickedCoord = new BoardCoord(x, y);
@@ -119,13 +111,17 @@ public class GameBoardUI : MonoBehaviour
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
         Board<BoardColorType> defaultColorBoard = BoardUIHelper.CreateDefaultBoard();
-        // MyClass.CreateModel(state.Board, lightSquareColor, darkSquareColor, pieceSpriteDict);
-        uiSquares.ForEach((coord, squareUI) =>
+        MyClass.CreateModel(state.Board, lightSquareColor, darkSquareColor, pieceSpriteDict).ForEach((coord, model) =>
         {
-            var model = CreateModel(state, coord, defaultColorBoard);
             model = WarpModelColor(model, state, coord, validMoves);
-            squareUI.UpdateVisuals(model);
+            uiSquares[coord].UpdateVisuals(model);
         });
+        //uiSquares.ForEach((coord, squareUI) =>
+        //{
+        //    var model = CreateModel(state, coord, defaultColorBoard);
+        //    model = WarpModelColor(model, state, coord, validMoves);
+        //    squareUI.UpdateVisuals(model);
+        //});
     }
 
     SquareModel CreateModel(GameState state, BoardCoord coord, Board<BoardColorType> defaultColorBoard)
@@ -148,8 +144,7 @@ public class GameBoardUI : MonoBehaviour
     Color GetStateColor(GameState state, BoardCoord coord, IReadOnlyList<BoardCoord> validMoves, Color baseColor)
     {
         SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
-        baseColor = SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
-        return baseColor;
+        return SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
     }
 
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
