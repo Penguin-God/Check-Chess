@@ -26,26 +26,10 @@ public class GameBoardUI : MonoBehaviour
 
     void Start()
     {
-        // 1. 임시 2차원 배열에 UI_Square를 생성하여 채웁니다.
-        var uiGrid = new UI_Square[Board<UI_Square>.Size, Board<UI_Square>.Size];
-        BoardIterator.DrawBoardLoop(coord =>
-        {
-            GameObject obj = Instantiate(squarePrefab, boardPanel);
-            UI_Square squareUI = obj.GetComponent<UI_Square>();
-            squareUI.Init(() => OnSquareClicked(coord.X, coord.Y));
-
-            uiGrid[coord.X, coord.Y] = squareUI;
-        });
-
-        // 2. 완성된 배열을 기반으로 Board<UI_Square> 인스턴스를 생성합니다.
-        uiSquares = new Board<UI_Square>(uiGrid);
-
+        uiSquares = new Board<UI_Square>(CreateSquare);
         currentStageData = LevelManager.Instance.GetStageData(LevelManager.Instance.CurrentAbsoluteLevel);
 
-        if (currentStageData != null)
-        {
-            currentState = PuzzleStageBuilder.CreateFromSO(currentStageData);
-        }
+        if (currentStageData != null) currentState = PuzzleStageBuilder.CreateFromSO(currentStageData);
         else
         {
             Debug.LogError("스테이지 데이터를 불러올 수 없습니다!");
@@ -54,51 +38,52 @@ public class GameBoardUI : MonoBehaviour
 
         restartBtn.onClick.AddListener(RestartStage);
         RenderState(currentState);
-    }
 
-    void OnSquareClicked(int x, int y)
-    {
-        var clickedCoord = new BoardCoord(x, y);
-        GameState nextState = currentState;
-
-        if (currentState.ActiveSquare == null)
+        UI_Square CreateSquare(BoardCoord coord)
         {
-            nextState = ChessPuzzleLogic.SelectStartingPiece(currentState, clickedCoord);
-        }
-        else
-        {
-            nextState = ChessPuzzleLogic.MoveAndTouch(currentState, clickedCoord);
-
-            if (nextState.IsVictory)
-            {
-                gameResultUI.gameObject.SetActive(true);
-                gameResultUI.OnStageCleared();
-            }
-            else if (nextState.IsDefeat)
-            {
-                Debug.Log("기물이 남은 상태로 킹을 잡았습니다! 스테이지를 재시작합니다.");
-                RestartStage();
-            }
+            GameObject obj = Instantiate(squarePrefab, boardPanel);
+            UI_Square squareUI = obj.GetComponent<UI_Square>();
+            squareUI.Init(() => OnSquareClicked(coord));
+            return squareUI;
         }
 
-        if (currentState != nextState)
+        void OnSquareClicked(BoardCoord clickedCoord)
         {
-            currentState = nextState;
-            RenderState(currentState);
+            GameState nextState = currentState;
+
+            if (currentState.ActiveSquare == null)
+            {
+                nextState = ChessPuzzleLogic.SelectStartingPiece(currentState, clickedCoord);
+            }
+            else
+            {
+                nextState = ChessPuzzleLogic.MoveAndTouch(currentState, clickedCoord);
+
+                if (nextState.IsVictory)
+                {
+                    gameResultUI.gameObject.SetActive(true);
+                    gameResultUI.OnStageCleared();
+                }
+                else if (nextState.IsDefeat)
+                {
+                    Debug.Log("기물이 남은 상태로 킹을 잡았습니다! 스테이지를 재시작합니다.");
+                    RestartStage();
+                }
+            }
+
+            if (currentState != nextState)
+            {
+                currentState = nextState;
+                RenderState(currentState);
+            }
         }
     }
 
     void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
-
-        // boardTheme에서 색상과 딕셔너리를 바로 가져옵니다.
-        BoardModelMapper.CreateModel(
-            state.Board,
-            boardTheme.lightSquareColor,
-            boardTheme.darkSquareColor,
-            boardTheme.PieceSpriteDict
-        ).ForEach((coord, model) =>
+        BoardModelMapper.CreateModel(state.Board, boardTheme.lightSquareColor, boardTheme.darkSquareColor, boardTheme.PieceSpriteDict)
+            .ForEach((coord, model) =>
         {
             model = WarpModelColor(model, state, coord, validMoves);
             uiSquares[coord].UpdateVisuals(model);
