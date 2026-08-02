@@ -45,7 +45,7 @@ public class GameBoardUI : MonoBehaviour
 
         // 1. 임시 2차원 배열에 UI_Square를 생성하여 채웁니다.
         var uiGrid = new UI_Square[Board<UI_Square>.Size, Board<UI_Square>.Size];
-        BoardUIHelper.DrawBoardLoop(coord =>
+        BoardIterator.DrawBoardLoop(coord =>
         {
             GameObject obj = Instantiate(squarePrefab, boardPanel);
             UI_Square squareUI = obj.GetComponent<UI_Square>();
@@ -108,7 +108,7 @@ public class GameBoardUI : MonoBehaviour
     void RenderState(GameState state)
     {
         var validMoves = ChessPuzzleLogic.GetValidBatonTouches(state);
-        MyClass.CreateModel(state.Board, lightSquareColor, darkSquareColor, pieceSpriteDict).ForEach((coord, model) =>
+        BoardModelMapper.CreateModel(state.Board, lightSquareColor, darkSquareColor, pieceSpriteDict).ForEach((coord, model) =>
         {
             model = WarpModelColor(model, state, coord, validMoves);
             uiSquares[coord].UpdateVisuals(model);
@@ -128,18 +128,4 @@ public class GameBoardUI : MonoBehaviour
     }
 
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-}
-
-public static class MyClass
-{
-    public static Board<SquareModel> CreateModel(Board<PieceType> pieceBoard, Color whiteColor, Color blackColor, Dictionary<PieceType, Sprite> pieceSpriteDict)
-    {
-        Board<BoardColorType> defaultColorBoard = BoardUIHelper.CreateDefaultBoard();
-        return pieceBoard.Map((coord, piece) =>
-        {
-            Sprite pieceSprite = piece != PieceType.None && pieceSpriteDict.TryGetValue(piece, out Sprite sprite) ? sprite : null;
-            Color baseColor = defaultColorBoard[coord] == BoardColorType.Black ? blackColor : whiteColor;
-            return new SquareModel(baseColor, pieceSprite);
-        });
-    }
 }
