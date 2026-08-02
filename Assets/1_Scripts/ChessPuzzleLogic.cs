@@ -35,7 +35,7 @@ public static class ChessPuzzleLogic
         var validMoves = GetValidBatonTouches(state);
         if (!validMoves.Contains(targetSquare)) return state;
 
-        var newBoard = state.Board.Change(targetSquare, PieceType.None);
+        var newBoard = state.Board.Change(state.ActiveSquare, PieceType.None);
 
         return state with
         {
