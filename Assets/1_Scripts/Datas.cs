@@ -27,18 +27,22 @@ public record Board<T>
     private readonly T[,] _grid;
     public T[,] Grid => (T[,])_grid.Clone();
 
-    private static IEnumerable<BoardCoord> AllCoords
+    static IEnumerable<BoardCoord> AllCoords
     {
         get
         {
             for (int y = 0; y < Size; y++)
-            {
                 for (int x = 0; x < Size; x++)
-                {
                     yield return new BoardCoord(x, y);
-                }
-            }
         }
+    }
+
+    static U[,] CreateGrid<U>(Func<BoardCoord, U> generator)
+    {
+        var grid = new U[Size, Size];
+        foreach (var coord in AllCoords)
+            grid[coord.X, coord.Y] = generator(coord);
+        return grid;
     }
 
     public Board() => _grid = new T[Size, Size];
@@ -47,18 +51,10 @@ public record Board<T>
     {
         if (grid.GetLength(0) != Size || grid.GetLength(1) != Size)
             throw new ArgumentException($"보드 크기는 반드시 {Size}x{Size}여야 합니다.");
-
         _grid = grid;
     }
 
-    public Board(Func<BoardCoord, T> generator)
-    {
-        _grid = new T[Size, Size];
-        foreach (var coord in AllCoords)
-        {
-            _grid[coord.X, coord.Y] = generator(coord);
-        }
-    }
+    public Board(Func<BoardCoord, T> generator) => _grid = CreateGrid(generator);
 
     public T this[BoardCoord coord] => _grid[coord.X, coord.Y];
 
@@ -70,24 +66,8 @@ public record Board<T>
     }
 
     public IEnumerable<T> GetAll() => AllCoords.Select(coord => this[coord]);
-
-    public void ForEach(Action<BoardCoord, T> action)
-    {
-        foreach (var coord in AllCoords)
-        {
-            action(coord, this[coord]);
-        }
-    }
-
-    public Board<TResult> Map<TResult>(Func<BoardCoord, T, TResult> selector)
-    {
-        var newGrid = new TResult[Size, Size];
-        foreach (var coord in AllCoords)
-        {
-            newGrid[coord.X, coord.Y] = selector(coord, this[coord]);
-        }
-        return new Board<TResult>(newGrid);
-    }
+    public void ForEach(Action<BoardCoord, T> action) => AllCoords.ToList().ForEach(coord => action(coord, this[coord]));
+    public Board<TResult> Map<TResult>(Func<BoardCoord, T, TResult> selector) => new Board<TResult>(CreateGrid(coord => selector(coord, this[coord])));
     public IEnumerable<KeyValuePair<BoardCoord, T>> GetAllSquares() => AllCoords.Select(coord => new KeyValuePair<BoardCoord, T>(coord, this[coord]));
     public Dictionary<BoardCoord, T> ToDictionary() => AllCoords.ToDictionary(coord => coord, coord => this[coord]);
 }
