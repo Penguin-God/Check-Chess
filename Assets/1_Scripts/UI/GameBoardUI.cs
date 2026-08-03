@@ -10,6 +10,7 @@ public class GameBoardUI : MonoBehaviour
     public GameObject squarePrefab;
     public GameResultUI gameResultUI;
     public Button restartBtn;
+    public Button toLobbyBtn;
 
     [Header("Theme & Visuals")]
     public BoardThemeSO boardTheme; // 생성한 SO를 여기에 할당해 주세요!
@@ -37,6 +38,7 @@ public class GameBoardUI : MonoBehaviour
         }
 
         restartBtn.onClick.AddListener(RestartStage);
+        toLobbyBtn.onClick.AddListener(ToLobby);
         RenderState(currentState);
 
         UI_Square CreateSquare(BoardCoord coord)
@@ -103,4 +105,5 @@ public class GameBoardUI : MonoBehaviour
     }
 
     public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    public void ToLobby() => SceneManager.LoadScene("Lobby");
 }
