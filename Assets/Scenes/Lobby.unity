@@ -683,19 +683,22 @@ MonoBehaviour:
   chapters:
   - chapterName: 123
     stages:
-    - {fileID: 11400000, guid: 1959c40090219d94dacb6929bdb89a96, type: 2}
-    - {fileID: 11400000, guid: 262a220cc5ba7ce40a387774b346660f, type: 2}
-    - {fileID: 11400000, guid: 09a2325d81d2cb14286b84e2bdfff241, type: 2}
-    - {fileID: 11400000, guid: 3dcf6e3b339e1a3498297535c03b0c44, type: 2}
-    - {fileID: 11400000, guid: 693c3dde11110564e85abe7425e23ea8, type: 2}
-    - {fileID: 11400000, guid: c46e17990e2b2af42b41de906208477d, type: 2}
-    - {fileID: 11400000, guid: c4db7f15aa50b28459e798be300330fa, type: 2}
-    - {fileID: 11400000, guid: 347e9d6dd4911ed48b5152e70de9548e, type: 2}
+    - {fileID: 11400000, guid: eb37fad5264a1ba4c888ed87fe268134, type: 2}
+    - {fileID: 11400000, guid: 9bcde0fad3e0ce349a3fa3aaa8c45a8f, type: 2}
+    - {fileID: 11400000, guid: e8ee4c5c11f1b3c4783cd0b63c8bb6bc, type: 2}
+    - {fileID: 11400000, guid: 970a163175755714182191357adf09b8, type: 2}
+    - {fileID: 11400000, guid: ef032acbc24c73646ac9cd3e26d925c0, type: 2}
+    - {fileID: 11400000, guid: 55118aacd684e5d4893f27b6a94ecefa, type: 2}
+    - {fileID: 11400000, guid: a111cc6db75152344a7f6d82c41266e7, type: 2}
+    - {fileID: 11400000, guid: a819ae9c98241964f80c99bcce73bd65, type: 2}
   - chapterName: 123
     stages:
-    - {fileID: 11400000, guid: a1599b2b42f64044eb099f2c156a4d5c, type: 2}
-    - {fileID: 11400000, guid: 3d1dd17eaa642a942bff3463e1bd3ac6, type: 2}
-    - {fileID: 11400000, guid: 0fb71a33b4d48164ea249417760448cf, type: 2}
+    - {fileID: 11400000, guid: 9cf8027a54d807544ab7c6e91ed93f82, type: 2}
+    - {fileID: 11400000, guid: 10801539e80c56544a51085c75dca154, type: 2}
+    - {fileID: 11400000, guid: ad8a3f83536a1854ebd91c049d422ef7, type: 2}
+    - {fileID: 11400000, guid: 31cafb5c744461a4e984bc627edfeaa1, type: 2}
+    - {fileID: 11400000, guid: 6b66dfd331c70844e9c2d08990d3ede2, type: 2}
+    - {fileID: 11400000, guid: c9d4a8663602f3c43b1d6af3793ea7d6, type: 2}
 --- !u!1 &1744747737
 GameObject:
   m_ObjectHideFlags: 0
