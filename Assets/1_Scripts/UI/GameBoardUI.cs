@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class GameBoardUI : MonoBehaviour
 {
@@ -9,11 +7,9 @@ public class GameBoardUI : MonoBehaviour
     public Transform boardPanel;
     public GameObject squarePrefab;
     public GameResultUI gameResultUI;
-    public Button restartBtn;
-    public Button toLobbyBtn;
 
     [Header("Theme & Visuals")]
-    public BoardThemeSO boardTheme; // 생성한 SO를 여기에 할당해 주세요!
+    public BoardThemeSO boardTheme;
 
     [Header("State Colors (Logic Specific)")]
     public Color activeColor = new Color(0.73f, 0.79f, 0.27f);
@@ -24,8 +20,8 @@ public class GameBoardUI : MonoBehaviour
 
     [Header("Audio")]
     public AudioSource audioSource;
-    public AudioClip captureSound;       // 일반 기물을 잡았을 때 낼 소리
-    public AudioClip kingCaptureSound;   // 킹을 잡았을 때 낼 소리
+    public AudioClip captureSound;
+    public AudioClip kingCaptureSound;
 
     GameState currentState;
     Board<UI_Square> uiSquares;
@@ -42,8 +38,6 @@ public class GameBoardUI : MonoBehaviour
             return;
         }
 
-        restartBtn.onClick.AddListener(RestartStage);
-        toLobbyBtn.onClick.AddListener(ToLobby);
         RenderState(currentState);
 
         UI_Square CreateSquare(BoardCoord coord)
@@ -64,12 +58,10 @@ public class GameBoardUI : MonoBehaviour
             }
             else
             {
-                // 이동하기 전, 목표 위치에 어떤 기물이 있는지 미리 확인합니다.
                 PieceType targetPiece = currentState.Board[clickedCoord];
 
                 nextState = ChessPuzzleLogic.MoveAndTouch(currentState, clickedCoord);
 
-                // 상태가 변경되었다면 = 성공적으로 이동 및 기물을 잡았다면 사운드 재생
                 if (currentState != nextState && targetPiece != PieceType.King)
                     PlaySound(captureSound);
 
@@ -77,7 +69,7 @@ public class GameBoardUI : MonoBehaviour
                 else if (nextState.IsDefeat)
                 {
                     Debug.Log("기물이 남은 상태로 킹을 잡았습니다! 스테이지를 재시작합니다.");
-                    // RestartStage();
+                    // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                 }
             }
 
@@ -124,7 +116,4 @@ public class GameBoardUI : MonoBehaviour
         SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
         return SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
     }
-
-    void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    void ToLobby() => SceneManager.LoadScene("Lobby");
 }
