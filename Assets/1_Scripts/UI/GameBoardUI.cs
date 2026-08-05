@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GameBoardUI : MonoBehaviour
 {
+    public UI_ButtonPanel buttonPanel;
+
     [Header("UI References")]
     public Transform boardPanel;
     public GameObject squarePrefab;
@@ -84,8 +86,7 @@ public class GameBoardUI : MonoBehaviour
     void Clear()
     {
         PlaySound(kingCaptureSound);
-        gameResultUI.gameObject.SetActive(true);
-        gameResultUI.OnStageCleared();
+        buttonPanel.Clear();
     }
 
     void PlaySound(AudioClip clip)

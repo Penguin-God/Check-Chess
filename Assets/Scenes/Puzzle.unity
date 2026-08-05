@@ -1504,7 +1504,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.39891088, g: 0.9056604, b: 0.33748665, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1704,6 +1704,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_ButtonPanel
   restartBtn: {fileID: 1742726917}
   toLobbyBtn: {fileID: 1233982309}
+  hintBtn: {fileID: 996665925}
+  nextBtn: {fileID: 1026560330}
 --- !u!1 &1463228364
 GameObject:
   m_ObjectHideFlags: 0
@@ -2285,11 +2287,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae49cc8714547d4d8d02ffdb34347fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ChessBatonTouch::GameBoardUI
+  buttonPanel: {fileID: 1332978516}
   boardPanel: {fileID: 492131911}
   squarePrefab: {fileID: 7238081151113486997, guid: 0731db858989dc94f8b528d259a7d136, type: 3}
   gameResultUI: {fileID: 198054725}
-  restartBtn: {fileID: 1742726917}
-  toLobbyBtn: {fileID: 1233982309}
   boardTheme: {fileID: 11400000, guid: 74ff791f3a8429e46933c37c595968e9, type: 2}
   activeColor: {r: 0.7481644, g: 0.8207547, b: 0.18195976, a: 1}
   validMoveColor: {r: 0.8962264, g: 0.32681733, b: 0.29169634, a: 1}
