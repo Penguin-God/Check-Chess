@@ -16,45 +16,32 @@ MonoBehaviour:
   - X: 0
     Y: 7
     Piece: 6
-    DisableStart: 1
   - X: 0
     Y: 0
     Piece: 4
-    DisableStart: 0
   - X: 7
     Y: 0
     Piece: 4
-    DisableStart: 0
   - X: 6
     Y: 1
     Piece: 1
-    DisableStart: 0
   - X: 5
     Y: 2
     Piece: 1
-    DisableStart: 0
   - X: 4
     Y: 3
     Piece: 1
-    DisableStart: 0
   - X: 3
     Y: 2
     Piece: 1
-    DisableStart: 0
   - X: 2
     Y: 3
     Piece: 3
-    DisableStart: 0
   - X: 4
     Y: 1
     Piece: 2
-    DisableStart: 0
   - X: 2
     Y: 2
     Piece: 2
-    DisableStart: 0
-  CorrectStartingPiece:
-    X: 0
-    Y: 0
-    Piece: 0
-    DisableStart: 0
+  startHintCoord: {x: 2, y: 3}
+  nextHintCoord: {x: 3, y: 2}

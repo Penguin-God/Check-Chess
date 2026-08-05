@@ -49,7 +49,5 @@ MonoBehaviour:
   - X: 3
     Y: 4
     Piece: 5
-  CorrectStartingPiece:
-    X: 0
-    Y: 0
-    Piece: 0
+  startHintCoord: {x: 3, y: 4}
+  nextHintCoord: {x: 4, y: 5}
