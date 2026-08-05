@@ -57,8 +57,8 @@ public class StageDataEditor : Editor
                     // 현재 선택된 모드에 따라 클릭 동작을 분기합니다.
                     switch (currentMode)
                     {
-                        case StageEditorMode.StartHint: stageData.startHintCoord = GetToggledCoord(stageData.GetStartHintCoord, coord); break;
-                        case StageEditorMode.NextHint: stageData.nextHintCoord = GetToggledCoord(stageData.GetNextHintCoord, coord); break;
+                        case StageEditorMode.StartHint: stageData.startHintCoord = TryToggleHintCoord(stageData.GetStartHintCoord, coord, currentSetup); break;
+                        case StageEditorMode.NextHint: stageData.nextHintCoord = TryToggleHintCoord(stageData.GetNextHintCoord, coord, currentSetup); break;
 
                         case StageEditorMode.PieceSetup:
                             if (paintPiece == PieceType.None && currentSetup != null) stageData.initialPieces.Remove(currentSetup);
@@ -81,8 +81,12 @@ public class StageDataEditor : Editor
         }
     }
 
-    // 이미 무언가로(힌트 등)세팅된 곳을 클릭하면 무효값, 아니면 클릭값 반환
-    Vector2Int GetToggledCoord(Func<BoardCoord> getCoord, BoardCoord clickCoord) => (getCoord() == clickCoord) ? new Vector2Int(-1, -1) : new Vector2Int(clickCoord.X, clickCoord.Y);
+    Vector2Int TryToggleHintCoord(Func<BoardCoord> getCoord, BoardCoord clickCoord, PieceSetup currentSetup)
+    {
+        if (currentSetup == null || currentSetup.Piece == PieceType.None) return new Vector2Int(-1, -1);
+        // 기물이 있다면 토글 로직 수행 (이미 설정된 곳이면 해제, 아니면 설정)
+        return (getCoord() == clickCoord) ? new Vector2Int(-1, -1) : new Vector2Int(clickCoord.X, clickCoord.Y);
+    }
 
     // --- 배경색 우선순위 ---
     Color DeterminedSquareBgColor(StageDataSO stageData, BoardCoord coord, PieceSetup currentSetup)
