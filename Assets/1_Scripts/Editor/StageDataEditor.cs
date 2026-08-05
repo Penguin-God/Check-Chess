@@ -13,8 +13,9 @@ public enum StageEditorMode
 [CustomEditor(typeof(StageDataSO))]
 public class StageDataEditor : Editor
 {
-    private PieceType paintPiece = PieceType.None;
-    private StageEditorMode currentMode = StageEditorMode.PieceSetup;
+    PieceType paintPiece = PieceType.None;
+    StageEditorMode currentMode = StageEditorMode.PieceSetup;
+    const int BOARD_SIZE = 8;
 
     public override void OnInspectorGUI()
     {
@@ -36,33 +37,17 @@ public class StageDataEditor : Editor
         GUILayout.Space(15);
         GUILayout.Label("보드 (8x8 Grid)", EditorStyles.boldLabel);
 
-        for (int y = 0; y < 8; y++)
+        for (int y = 0; y < BOARD_SIZE; y++)
         {
             EditorGUILayout.BeginHorizontal();
-            for (int x = 0; x < 8; x++)
+            for (int x = 0; x < BOARD_SIZE; x++)
             {
+                var coord = new BoardCoord(x, y);
                 PieceSetup currentSetup = stageData.initialPieces.FirstOrDefault(p => p.X == x && p.Y == y);
                 string btnText = GetPieceSymbol(currentSetup?.Piece ?? PieceType.None);
 
-                Color defaultColor = GUI.backgroundColor;
-
-                // --- 배경색 칠하기 우선순위 ---
-                if (stageData.startHintCoord.x == x && stageData.startHintCoord.y == y)
-                {
-                    GUI.backgroundColor = Color.yellow; // 1. 시작 힌트
-                }
-                else if (stageData.nextHintCoord.x == x && stageData.nextHintCoord.y == y)
-                {
-                    GUI.backgroundColor = Color.red;    // 2. 다음 힌트
-                }
-                else if (currentSetup != null && currentSetup.Piece != PieceType.None)
-                {
-                    GUI.backgroundColor = currentSetup.Piece == PieceType.King ? Color.gray : Color.green; // 3. 일반 기물
-                }
-                else
-                {
-                    GUI.backgroundColor = Color.white; // 4. 빈칸
-                }
+                Color originColor = GUI.backgroundColor;
+                GUI.backgroundColor = DeterminedSquareBgColor(stageData, coord, currentSetup);
 
                 if (GUILayout.Button(btnText, GUILayout.Width(40), GUILayout.Height(40)))
                 {
@@ -100,13 +85,23 @@ public class StageDataEditor : Editor
                     }
                     EditorUtility.SetDirty(stageData);
                 }
-                GUI.backgroundColor = defaultColor;
+                GUI.backgroundColor = originColor;
             }
             EditorGUILayout.EndHorizontal();
         }
     }
 
-    private string GetPieceSymbol(PieceType type)
+    // --- 배경색 우선순위 ---
+    Color DeterminedSquareBgColor(StageDataSO stageData, BoardCoord coord, PieceSetup currentSetup)
+    {
+        if (stageData.GetStartHintCoord() == coord) return Color.yellow;
+        else if (stageData.GetNextHintCoord() == coord) return Color.red;
+        else if (currentSetup != null && currentSetup.Piece != PieceType.None) // 일반 기물
+            return currentSetup.Piece == PieceType.King ? Color.gray : Color.green;
+        else return Color.white;
+    }
+
+    string GetPieceSymbol(PieceType type)
     {
         return type switch
         {
