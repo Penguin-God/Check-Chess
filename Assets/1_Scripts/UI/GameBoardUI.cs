@@ -70,20 +70,12 @@ public class GameBoardUI : MonoBehaviour
                 nextState = ChessPuzzleLogic.MoveAndTouch(currentState, clickedCoord);
 
                 // 상태가 변경되었다면 = 성공적으로 이동 및 기물을 잡았다면 사운드 재생
-                if (currentState != nextState)
-                {
-                    if (targetPiece == PieceType.King)
-                    {
-                        PlaySound(kingCaptureSound);
-                    }
-                    else if (targetPiece != PieceType.None)
-                    {
-                        PlaySound(captureSound);
-                    }
-                }
+                if (currentState != nextState && targetPiece != PieceType.King)
+                    PlaySound(captureSound);
 
                 if (nextState.IsVictory)
                 {
+                    PlaySound(kingCaptureSound);
                     gameResultUI.gameObject.SetActive(true);
                     gameResultUI.OnStageCleared();
                 }
@@ -102,14 +94,10 @@ public class GameBoardUI : MonoBehaviour
         }
     }
 
-    // AudioSource가 없거나 오디오 클립이 비어있을 때 발생하는 에러를 방지하는 헬퍼 메서드
-    private void PlaySound(AudioClip clip)
+    void PlaySound(AudioClip clip)
     {
         if (audioSource != null && clip != null)
-        {
-            // PlayOneShot을 사용하면 사운드가 겹치더라도 끊기지 않고 덧입혀져 재생됩니다.
             audioSource.PlayOneShot(clip);
-        }
     }
 
     void RenderState(GameState state)
