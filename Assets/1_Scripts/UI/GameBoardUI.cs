@@ -14,7 +14,6 @@ public class GameBoardUI : MonoBehaviour
     [Header("State Colors (Logic Specific)")]
     public Color activeColor = new Color(0.73f, 0.79f, 0.27f);
     public Color validMoveColor;
-    public Color hintColor = Color.yellow;
 
     [Header("Stage Data")]
     public StageDataSO currentStageData;
@@ -124,8 +123,12 @@ public class GameBoardUI : MonoBehaviour
 
     void ShowHintOnBoard()
     {
-        BoardCoord hintCoord = currentStageData.GetHintCoord();
-        if (hintCoord == null) print("힌트가 없는데?");
-        uiSquares[hintCoord].background.color = hintColor;
+        BoardCoord startCoord = currentStageData.GetStartHintCoord();
+        BoardCoord nextCoord = currentStageData.GetNextHintCoord();
+
+        if (startCoord == null || nextCoord == null) print("힌트가 없는데?");
+        // 일부러 인게임과 같은 색깔을 써서 연관성을 주고자함
+        uiSquares[startCoord].background.color = activeColor;
+        uiSquares[nextCoord].background.color = validMoveColor;
     }
 }

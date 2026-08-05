@@ -12,16 +12,24 @@ public class PieceSetup
 [CreateAssetMenu(fileName = "NewStage", menuName = "ChessPuzzle/StageData")]
 public class StageDataSO : ScriptableObject
 {
-    [Header("스테이지에 배치할 기물들")]
+    [Header("초기 기물 배치")]
     public List<PieceSetup> initialPieces = new List<PieceSetup>();
 
-    [Header("힌트 좌표 (에디터 클릭으로 설정됨)")]
-    // -1, -1은 힌트가 아직 설정되지 않았음을 의미합니다.
-    public Vector2Int hintCoord = new Vector2Int(-1, -1);
+    [Header("힌트 좌표")]
+    public Vector2Int startHintCoord = new Vector2Int(-1, -1);
+    public Vector2Int nextHintCoord = new Vector2Int(-1, -1);
 
-    public BoardCoord GetHintCoord()
+    // 첫 번째 힌트(시작 기물) 좌표 반환
+    public BoardCoord GetStartHintCoord()
     {
-        if (hintCoord.x < 0 || hintCoord.y < 0)return null;
-        return new BoardCoord(hintCoord.x, hintCoord.y);
+        if (startHintCoord.x < 0 || startHintCoord.y < 0) return null;
+        return new BoardCoord(startHintCoord.x, startHintCoord.y);
+    }
+
+    // 두 번째 힌트(다음 기물) 좌표 반환
+    public BoardCoord GetNextHintCoord()
+    {
+        if (nextHintCoord.x < 0 || nextHintCoord.y < 0) return null;
+        return new BoardCoord(nextHintCoord.x, nextHintCoord.y);
     }
 }

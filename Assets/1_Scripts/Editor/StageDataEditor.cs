@@ -2,11 +2,19 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 
+// 에디터의 현재 상태를 구분하기 위한 Enum
+public enum StageEditorMode
+{
+    PieceSetup, // 기물 배치 모드
+    StartHint,  // 시작 기물 힌트(노란색) 모드
+    NextHint    // 다음 기물 힌트(빨간색) 모드
+}
+
 [CustomEditor(typeof(StageDataSO))]
 public class StageDataEditor : Editor
 {
     private PieceType paintPiece = PieceType.None;
-    private bool isHintMode = false; // 힌트 설정 모드용 토글
+    private StageEditorMode currentMode = StageEditorMode.PieceSetup;
 
     public override void OnInspectorGUI()
     {
@@ -14,10 +22,12 @@ public class StageDataEditor : Editor
 
         GUILayout.Label("에디터 모드 설정", EditorStyles.boldLabel);
         EditorGUILayout.BeginVertical("box");
-        isHintMode = EditorGUILayout.Toggle("힌트 지정 모드", isHintMode);
 
-        // 힌트 모드가 아닐 때만 기물 선택 팝업을 보여줍니다.
-        if (!isHintMode)
+        // EnumPopup을 사용해 3가지 모드 중 하나를 선택하도록 합니다.
+        currentMode = (StageEditorMode)EditorGUILayout.EnumPopup("현재 작업 모드", currentMode);
+
+        // 기물 배치 모드일 때만 어떤 기물을 놓을지 팝업을 띄워줍니다.
+        if (currentMode == StageEditorMode.PieceSetup)
         {
             paintPiece = (PieceType)EditorGUILayout.EnumPopup("배치할 기물", paintPiece);
         }
@@ -32,59 +42,65 @@ public class StageDataEditor : Editor
             for (int x = 0; x < 8; x++)
             {
                 PieceSetup currentSetup = stageData.initialPieces.FirstOrDefault(p => p.X == x && p.Y == y);
-
-                // 글자는 현재 설정된 기물의 심볼을 그대로 가져옵니다.
                 string btnText = GetPieceSymbol(currentSetup?.Piece ?? PieceType.None);
 
                 Color defaultColor = GUI.backgroundColor;
 
-                // 1순위: 해당 좌표가 힌트로 설정되어 있다면 무조건 배경을 노란색으로 칠합니다.
-                if (stageData.hintCoord.x == x && stageData.hintCoord.y == y)
+                // --- 배경색 칠하기 우선순위 ---
+                if (stageData.startHintCoord.x == x && stageData.startHintCoord.y == y)
                 {
-                    GUI.backgroundColor = Color.yellow;
+                    GUI.backgroundColor = Color.yellow; // 1. 시작 힌트
                 }
-                // 2순위: 힌트가 아니고 기물이 존재한다면 기존 로직대로 칠합니다.
+                else if (stageData.nextHintCoord.x == x && stageData.nextHintCoord.y == y)
+                {
+                    GUI.backgroundColor = Color.red;    // 2. 다음 힌트
+                }
                 else if (currentSetup != null && currentSetup.Piece != PieceType.None)
                 {
-                    GUI.backgroundColor = currentSetup.Piece == PieceType.King ? Color.gray : Color.green;
+                    GUI.backgroundColor = currentSetup.Piece == PieceType.King ? Color.gray : Color.green; // 3. 일반 기물
                 }
                 else
                 {
-                    GUI.backgroundColor = Color.white;
+                    GUI.backgroundColor = Color.white; // 4. 빈칸
                 }
 
                 if (GUILayout.Button(btnText, GUILayout.Width(40), GUILayout.Height(40)))
                 {
                     Undo.RecordObject(stageData, "Edit Chess Board");
 
-                    if (isHintMode)
+                    // 현재 선택된 모드에 따라 클릭 동작을 분기합니다.
+                    switch (currentMode)
                     {
-                        // 힌트 모드일 때 클릭: 이미 힌트인 곳을 클릭하면 해제(-1, -1), 아니면 지정
-                        if (stageData.hintCoord.x == x && stageData.hintCoord.y == y)
-                            stageData.hintCoord = new Vector2Int(-1, -1);
-                        else
-                            stageData.hintCoord = new Vector2Int(x, y);
-                    }
-                    else
-                    {
-                        // 기존 기물 배치 모드 로직
-                        if (paintPiece == PieceType.None)
-                        {
-                            if (currentSetup != null) stageData.initialPieces.Remove(currentSetup);
-                        }
-                        else
-                        {
-                            if (currentSetup == null)
+                        case StageEditorMode.StartHint:
+                            // 이미 힌트인 곳을 누르면 해제, 아니면 설정
+                            stageData.startHintCoord = (stageData.startHintCoord.x == x && stageData.startHintCoord.y == y)
+                                ? new Vector2Int(-1, -1) : new Vector2Int(x, y);
+                            break;
+
+                        case StageEditorMode.NextHint:
+                            stageData.nextHintCoord = (stageData.nextHintCoord.x == x && stageData.nextHintCoord.y == y)
+                                ? new Vector2Int(-1, -1) : new Vector2Int(x, y);
+                            break;
+
+                        case StageEditorMode.PieceSetup:
+                            if (paintPiece == PieceType.None)
                             {
-                                currentSetup = new PieceSetup { X = x, Y = y };
-                                stageData.initialPieces.Add(currentSetup);
+                                if (currentSetup != null) stageData.initialPieces.Remove(currentSetup);
                             }
-                            currentSetup.Piece = paintPiece;
-                        }
+                            else
+                            {
+                                if (currentSetup == null)
+                                {
+                                    currentSetup = new PieceSetup { X = x, Y = y };
+                                    stageData.initialPieces.Add(currentSetup);
+                                }
+                                currentSetup.Piece = paintPiece;
+                            }
+                            break;
                     }
                     EditorUtility.SetDirty(stageData);
                 }
-                GUI.backgroundColor = defaultColor; // 버튼을 그린 후엔 색상 복구
+                GUI.backgroundColor = defaultColor;
             }
             EditorGUILayout.EndHorizontal();
         }
