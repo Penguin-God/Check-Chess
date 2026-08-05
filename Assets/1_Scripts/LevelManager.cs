@@ -58,6 +58,12 @@ public class LevelManager : MonoBehaviour
         return null;
     }
 
+    public void ClearCurrentStage()
+    {
+        if (CurrentAbsoluteLevel >= MaxClearedLevel)
+            MaxClearedLevel = CurrentAbsoluteLevel + 1;
+    }
+
     public bool HasNextStage() => GetStageData(CurrentAbsoluteLevel + 1) != null;
 
     // 특정 레벨이 광고/프리미엄으로 인해 잠겨있는지 확인
@@ -66,4 +72,6 @@ public class LevelManager : MonoBehaviour
         // 10레벨(2챕터) 이상이고, 프리미엄 해금이 안 되어 있으면 잠김
         return absoluteLevel >= 10 && !IsPremiumUnlocked;
     }
+
+    public bool PlayableNextStage() => HasNextStage() && !IsStageLocked(CurrentAbsoluteLevel + 1);
 }

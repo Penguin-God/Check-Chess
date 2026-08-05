@@ -17,23 +17,9 @@ public class GameResultUI : MonoBehaviour
 
     public void OnStageCleared()
     {
-        int currentLevel = LevelManager.Instance.CurrentAbsoluteLevel;
-
-        // 최고 클리어 레벨 갱신
-        if (currentLevel >= LevelManager.Instance.MaxClearedLevel)
-        {
-            LevelManager.Instance.MaxClearedLevel = currentLevel + 1;
-        }
-
+        LevelManager.Instance.ClearCurrentStage();
         clearPanel.SetActive(true);
-
-        // 다음 스테이지 존재 여부 및 잠금 여부 확인
-        int nextLevel = currentLevel + 1;
-        bool hasNextStage = LevelManager.Instance.HasNextStage();
-        bool isNextStageLocked = LevelManager.Instance.IsStageLocked(nextLevel);
-
-        // 다음 스테이지 버튼 활성화/비활성화 처리
-        nextStageButton.interactable = hasNextStage && !isNextStageLocked;
+        nextStageButton.interactable = LevelManager.Instance.PlayableNextStage();
     }
 
     void GoToLobby() => SceneManager.LoadScene("Lobby");
