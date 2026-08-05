@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
+using System;
 
 // 에디터의 현재 상태를 구분하기 위한 Enum
 public enum StageEditorMode
@@ -56,22 +57,11 @@ public class StageDataEditor : Editor
                     // 현재 선택된 모드에 따라 클릭 동작을 분기합니다.
                     switch (currentMode)
                     {
-                        case StageEditorMode.StartHint:
-                            // 이미 힌트인 곳을 누르면 해제, 아니면 설정
-                            stageData.startHintCoord = (stageData.startHintCoord.x == x && stageData.startHintCoord.y == y)
-                                ? new Vector2Int(-1, -1) : new Vector2Int(x, y);
-                            break;
-
-                        case StageEditorMode.NextHint:
-                            stageData.nextHintCoord = (stageData.nextHintCoord.x == x && stageData.nextHintCoord.y == y)
-                                ? new Vector2Int(-1, -1) : new Vector2Int(x, y);
-                            break;
+                        case StageEditorMode.StartHint: stageData.startHintCoord = GetToggledCoord(stageData.GetStartHintCoord, coord); break;
+                        case StageEditorMode.NextHint: stageData.nextHintCoord = GetToggledCoord(stageData.GetNextHintCoord, coord); break;
 
                         case StageEditorMode.PieceSetup:
-                            if (paintPiece == PieceType.None)
-                            {
-                                if (currentSetup != null) stageData.initialPieces.Remove(currentSetup);
-                            }
+                            if (paintPiece == PieceType.None && currentSetup != null) stageData.initialPieces.Remove(currentSetup);
                             else
                             {
                                 if (currentSetup == null)
@@ -90,6 +80,9 @@ public class StageDataEditor : Editor
             EditorGUILayout.EndHorizontal();
         }
     }
+
+    // 이미 무언가로(힌트 등)세팅된 곳을 클릭하면 무효값, 아니면 클릭값 반환
+    Vector2Int GetToggledCoord(Func<BoardCoord> getCoord, BoardCoord clickCoord) => (getCoord() == clickCoord) ? new Vector2Int(-1, -1) : new Vector2Int(clickCoord.X, clickCoord.Y);
 
     // --- 배경색 우선순위 ---
     Color DeterminedSquareBgColor(StageDataSO stageData, BoardCoord coord, PieceSetup currentSetup)
