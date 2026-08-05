@@ -3,12 +3,10 @@ using UnityEngine;
 
 public class GameBoardUI : MonoBehaviour
 {
-    public UI_ButtonPanel buttonPanel;
-
     [Header("UI References")]
     public Transform boardPanel;
     public GameObject squarePrefab;
-    public GameResultUI gameResultUI;
+    public UI_ButtonPanel buttonPanel;
 
     [Header("Theme & Visuals")]
     public BoardThemeSO boardTheme;
