@@ -73,12 +73,7 @@ public class GameBoardUI : MonoBehaviour
                 if (currentState != nextState && targetPiece != PieceType.King)
                     PlaySound(captureSound);
 
-                if (nextState.IsVictory)
-                {
-                    PlaySound(kingCaptureSound);
-                    gameResultUI.gameObject.SetActive(true);
-                    gameResultUI.OnStageCleared();
-                }
+                if (nextState.IsVictory) Clear();
                 else if (nextState.IsDefeat)
                 {
                     Debug.Log("기물이 남은 상태로 킹을 잡았습니다! 스테이지를 재시작합니다.");
@@ -92,6 +87,13 @@ public class GameBoardUI : MonoBehaviour
                 RenderState(currentState);
             }
         }
+    }
+
+    void Clear()
+    {
+        PlaySound(kingCaptureSound);
+        gameResultUI.gameObject.SetActive(true);
+        gameResultUI.OnStageCleared();
     }
 
     void PlaySound(AudioClip clip)
@@ -123,6 +125,6 @@ public class GameBoardUI : MonoBehaviour
         return SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
     }
 
-    public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    public void ToLobby() => SceneManager.LoadScene("Lobby");
+    void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    void ToLobby() => SceneManager.LoadScene("Lobby");
 }
