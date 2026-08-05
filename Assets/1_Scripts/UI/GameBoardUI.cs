@@ -90,6 +90,7 @@ public class GameBoardUI : MonoBehaviour
     {
         PlaySound(kingCaptureSound);
         buttonPanel.Clear();
+        LevelManager.Instance.ClearCurrentStage();
     }
 
     void PlaySound(AudioClip clip)
