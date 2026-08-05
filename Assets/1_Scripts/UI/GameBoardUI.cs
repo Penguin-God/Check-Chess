@@ -14,6 +14,7 @@ public class GameBoardUI : MonoBehaviour
     [Header("State Colors (Logic Specific)")]
     public Color activeColor = new Color(0.73f, 0.79f, 0.27f);
     public Color validMoveColor;
+    public Color hintColor = Color.yellow;
 
     [Header("Stage Data")]
     public StageDataSO currentStageData;
@@ -38,6 +39,7 @@ public class GameBoardUI : MonoBehaviour
             return;
         }
 
+        buttonPanel.OnHintClicked += ShowHintOnBoard;
         RenderState(currentState);
 
         UI_Square CreateSquare(BoardCoord coord)
@@ -118,5 +120,14 @@ public class GameBoardUI : MonoBehaviour
     {
         SquareUIState uiState = SquarePresenter.DetermineSquareState(state, coord, validMoves);
         return SquarePresenter.GetStateColor(uiState, activeColor, validMoveColor, baseColor);
+    }
+
+    void ShowHintOnBoard()
+    {
+        var hintSetup = currentStageData.CorrectStartingPiece;
+        if (hintSetup == null) return;
+
+        BoardCoord hintCoord = new BoardCoord(hintSetup.X, hintSetup.Y);
+        uiSquares[hintCoord].background.color = hintColor;
     }
 }

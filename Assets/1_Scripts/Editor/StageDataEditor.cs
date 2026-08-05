@@ -78,12 +78,12 @@ public class StageDataEditor : Editor
         }
 
         GUILayout.Space(15);
+        GUILayout.Label("힌트 설정", EditorStyles.boldLabel);
 
-        // 기본 리스트 형태도 보고 싶다면 아래 버튼을 눌러서 열 수 있도록 폴드아웃 추가
-        // stageData.CorrectStartingPiece = (PieceSetup)EditorGUILayout.ObjectField("광고용 정답 기물 (나중에 추가)", null, typeof(PieceSetup), false);
-
-        // 만약 기존의 List 형태 인스펙터도 그대로 아래에 띄우고 싶다면 주석 해제하세요
-        // base.OnInspectorGUI(); 
+        // 기본 프로퍼티를 노출
+        serializedObject.Update();
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("CorrectStartingPiece"), new GUIContent("정답 시작 기물"));
+        serializedObject.ApplyModifiedProperties();
     }
 
     // 기물 종류를 한 글자로 변환해 주는 헬퍼 함수

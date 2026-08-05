@@ -38,6 +38,6 @@ MonoBehaviour:
     Y: 3
     Piece: 6
   CorrectStartingPiece:
-    X: 0
-    Y: 0
-    Piece: 0
+    X: 3
+    Y: 4
+    Piece: 2

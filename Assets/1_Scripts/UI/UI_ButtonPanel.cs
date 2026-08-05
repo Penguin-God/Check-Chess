@@ -1,3 +1,4 @@
+using System; // Action 사용을 위해 추가
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,24 +10,25 @@ public class UI_ButtonPanel : MonoBehaviour
     public Button hintBtn;
     public Button nextBtn;
 
+    // 힌트 버튼 클릭 이벤트를 외부(GameBoardUI)로 전달하기 위한 Action
+    public event Action OnHintClicked;
+
     void Start()
     {
         restartBtn.onClick.AddListener(RestartStage);
         toLobbyBtn.onClick.AddListener(ToLobby);
         hintBtn.onClick.AddListener(ShowHint);
         nextBtn.onClick.AddListener(ToNextStage);
-
         nextBtn.gameObject.SetActive(false);
     }
 
     void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     void ToLobby() => SceneManager.LoadScene("Lobby");
-    void ShowHint()
-    {
 
-    }
+    // 버튼이 눌리면 이벤트를 발생시킵니다.
+    void ShowHint() => OnHintClicked?.Invoke();
 
-    void ToNextStage() // 레벨을 1 올리고 씬을 다시 로드하면 됨
+    void ToNextStage()
     {
         LevelManager.Instance.CurrentAbsoluteLevel++;
         RestartStage();
