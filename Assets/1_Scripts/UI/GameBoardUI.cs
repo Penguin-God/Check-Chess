@@ -124,10 +124,8 @@ public class GameBoardUI : MonoBehaviour
 
     void ShowHintOnBoard()
     {
-        var hintSetup = currentStageData.CorrectStartingPiece;
-        if (hintSetup == null) return;
-
-        BoardCoord hintCoord = new BoardCoord(hintSetup.X, hintSetup.Y);
+        BoardCoord hintCoord = currentStageData.GetHintCoord();
+        if (hintCoord == null) print("힌트가 없는데?");
         uiSquares[hintCoord].background.color = hintColor;
     }
 }

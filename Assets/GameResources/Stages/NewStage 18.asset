@@ -37,7 +37,4 @@ MonoBehaviour:
   - X: 5
     Y: 3
     Piece: 6
-  CorrectStartingPiece:
-    X: 3
-    Y: 4
-    Piece: 2
+  hintCoord: {x: 3, y: 4}

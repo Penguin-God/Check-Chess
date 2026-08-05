@@ -1,4 +1,4 @@
-using System; // Action 사용을 위해 추가
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;

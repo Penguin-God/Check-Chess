@@ -1,92 +1,95 @@
 using UnityEngine;
-using UnityEditor; // 에디터 전용 네임스페이스
+using UnityEditor;
 using System.Linq;
 
-// 이 스크립트가 StageDataSO의 인스펙터를 덮어씌운다는 선언
 [CustomEditor(typeof(StageDataSO))]
 public class StageDataEditor : Editor
 {
-    // 팔레트에서 선택한 설정 임시 저장
     private PieceType paintPiece = PieceType.None;
-    
+    private bool isHintMode = false; // 힌트 설정 모드용 토글
+
     public override void OnInspectorGUI()
     {
-        // 타겟 데이터를 StageDataSO로 캐스팅
         StageDataSO stageData = (StageDataSO)target;
 
-        // --- 1. 팔레트 UI 영역 ---
-        GUILayout.Label("🎨 팔레트 (선택 후 아래 보드에 클릭)", EditorStyles.boldLabel);
-
+        GUILayout.Label("에디터 모드 설정", EditorStyles.boldLabel);
         EditorGUILayout.BeginVertical("box");
-        paintPiece = (PieceType)EditorGUILayout.EnumPopup("그릴 기물", paintPiece);
+        isHintMode = EditorGUILayout.Toggle("힌트 지정 모드", isHintMode);
+
+        // 힌트 모드가 아닐 때만 기물 선택 팝업을 보여줍니다.
+        if (!isHintMode)
+        {
+            paintPiece = (PieceType)EditorGUILayout.EnumPopup("배치할 기물", paintPiece);
+        }
         EditorGUILayout.EndVertical();
 
         GUILayout.Space(15);
-        GUILayout.Label("♟️ 8x8 체스판 에디터", EditorStyles.boldLabel);
+        GUILayout.Label("보드 (8x8 Grid)", EditorStyles.boldLabel);
 
-        // --- 2. 8x8 체스판 UI 영역 ---
         for (int y = 0; y < 8; y++)
         {
             EditorGUILayout.BeginHorizontal();
             for (int x = 0; x < 8; x++)
             {
-                // 현재 칸에 데이터가 있는지 확인
                 PieceSetup currentSetup = stageData.initialPieces.FirstOrDefault(p => p.X == x && p.Y == y);
 
-                // 버튼에 표시할 글자 설정
+                // 글자는 현재 설정된 기물의 심볼을 그대로 가져옵니다.
                 string btnText = GetPieceSymbol(currentSetup?.Piece ?? PieceType.None);
 
-                // 버튼 색상 설정 (빈칸: 기본, 일반기물: 초록, 시작불가: 회색)
                 Color defaultColor = GUI.backgroundColor;
-                if (currentSetup != null && currentSetup.Piece != PieceType.None)
+
+                // 1순위: 해당 좌표가 힌트로 설정되어 있다면 무조건 배경을 노란색으로 칠합니다.
+                if (stageData.hintCoord.x == x && stageData.hintCoord.y == y)
+                {
+                    GUI.backgroundColor = Color.yellow;
+                }
+                // 2순위: 힌트가 아니고 기물이 존재한다면 기존 로직대로 칠합니다.
+                else if (currentSetup != null && currentSetup.Piece != PieceType.None)
                 {
                     GUI.backgroundColor = currentSetup.Piece == PieceType.King ? Color.gray : Color.green;
                 }
+                else
+                {
+                    GUI.backgroundColor = Color.white;
+                }
 
-                // 가로 40, 세로 40 크기의 버튼 생성
                 if (GUILayout.Button(btnText, GUILayout.Width(40), GUILayout.Height(40)))
                 {
-                    // Ctrl+Z(실행 취소)를 위한 기록 남기기
-                    Undo.RecordObject(stageData, "Paint Chess Board");
+                    Undo.RecordObject(stageData, "Edit Chess Board");
 
-                    // None을 칠하면(지우개) 리스트에서 제거
-                    if (paintPiece == PieceType.None)
+                    if (isHintMode)
                     {
-                        if (currentSetup != null) stageData.initialPieces.Remove(currentSetup);
+                        // 힌트 모드일 때 클릭: 이미 힌트인 곳을 클릭하면 해제(-1, -1), 아니면 지정
+                        if (stageData.hintCoord.x == x && stageData.hintCoord.y == y)
+                            stageData.hintCoord = new Vector2Int(-1, -1);
+                        else
+                            stageData.hintCoord = new Vector2Int(x, y);
                     }
                     else
                     {
-                        // 기존에 데이터가 없으면 새로 생성해서 리스트에 추가
-                        if (currentSetup == null)
+                        // 기존 기물 배치 모드 로직
+                        if (paintPiece == PieceType.None)
                         {
-                            currentSetup = new PieceSetup { X = x, Y = y };
-                            stageData.initialPieces.Add(currentSetup);
+                            if (currentSetup != null) stageData.initialPieces.Remove(currentSetup);
                         }
-
-                        // 팔레트에 선택된 데이터로 덮어쓰기
-                        currentSetup.Piece = paintPiece;
+                        else
+                        {
+                            if (currentSetup == null)
+                            {
+                                currentSetup = new PieceSetup { X = x, Y = y };
+                                stageData.initialPieces.Add(currentSetup);
+                            }
+                            currentSetup.Piece = paintPiece;
+                        }
                     }
-
-                    // 유니티에게 데이터가 변경되었음을 알려서 저장(Ctrl+S)되게 함
                     EditorUtility.SetDirty(stageData);
                 }
-
-                // 색상 복구
-                GUI.backgroundColor = defaultColor;
+                GUI.backgroundColor = defaultColor; // 버튼을 그린 후엔 색상 복구
             }
             EditorGUILayout.EndHorizontal();
         }
-
-        GUILayout.Space(15);
-        GUILayout.Label("힌트 설정", EditorStyles.boldLabel);
-
-        // 기본 프로퍼티를 노출
-        serializedObject.Update();
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("CorrectStartingPiece"), new GUIContent("정답 시작 기물"));
-        serializedObject.ApplyModifiedProperties();
     }
 
-    // 기물 종류를 한 글자로 변환해 주는 헬퍼 함수
     private string GetPieceSymbol(PieceType type)
     {
         return type switch
@@ -97,7 +100,7 @@ public class StageDataEditor : Editor
             PieceType.Rook => "R",
             PieceType.Queen => "Q",
             PieceType.King => "K",
-            _ => "" // None일 때는 빈 칸
+            _ => ""
         };
     }
 }
