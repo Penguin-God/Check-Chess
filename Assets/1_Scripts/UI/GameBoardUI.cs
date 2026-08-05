@@ -52,7 +52,7 @@ public class GameBoardUI : MonoBehaviour
         {
             GameState nextState = currentState;
 
-            if (currentState.ActiveSquare == null)
+            if (currentState.ActiveSquare == null) // 선택단계
             {
                 nextState = ChessPuzzleLogic.SelectStartingPiece(currentState, clickedCoord);
             }
@@ -65,7 +65,11 @@ public class GameBoardUI : MonoBehaviour
                 if (currentState != nextState && targetPiece != PieceType.King)
                     PlaySound(captureSound);
 
-                if (nextState.IsVictory) Clear();
+                if (nextState.IsVictory)
+                {
+                    Clear();
+                    nextState = new(new Board<PieceType>(_ => PieceType.None), null);
+                }
                 else if (nextState.IsDefeat)
                 {
                     Debug.Log("기물이 남은 상태로 킹을 잡았습니다! 스테이지를 재시작합니다.");
