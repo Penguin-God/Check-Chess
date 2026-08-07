@@ -116,7 +116,11 @@
 그리고 난 함수형으로 개발중이라 그런 식으로 클래스를 나누고 코드를 짜줘
 결과 : 기본 기능이 구현된 LevelPlayAdManager, StageLockLogic, StageLockManager, 수정된 UI_Lobby
 
-
+"18"
+동기 : 영속성 담당 클래스로 관련 기능 추출하기
+인풋 : LevelManager, StageLockManager 전체. 보면 플레이어 프리펩스 로직이 들어가 있잖아? 이걸 별도의 영속성을 담당하는 클래스를 하나 두고 싶어 
+결과 : 새로운 LocalStorage, 수정된 LevelManager, StageLockManager
+ 
 
 
 

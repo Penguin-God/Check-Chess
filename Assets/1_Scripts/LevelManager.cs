@@ -18,10 +18,11 @@ public class LevelManager : MonoBehaviour
     // 현재 플레이 중인 절대 레벨 (0부터 시작)
     public int CurrentAbsoluteLevel { get; set; }
 
+    // 프로퍼티 내부에서 SaveManager를 호출하여 결합도를 낮춤
     public int MaxClearedLevel
     {
-        get => PlayerPrefs.GetInt("MaxClearedLevel", 0);
-        set => PlayerPrefs.SetInt("MaxClearedLevel", value);
+        get => LocalStorage.LoadMaxClearedLevel();
+        set => LocalStorage.SaveMaxClearedLevel(value);
     }
 
     private void Awake()
