@@ -1,5 +1,3 @@
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -7,87 +5,96 @@ using UnityEngine.UI;
 public class UI_Lobby : MonoBehaviour
 {
     [Header("Board UI References")]
-    public Transform boardPanel;    // GridLayoutGroup이 적용된 8x8 패널
-    public GameObject squarePrefab; // 개별 칸(스테이지) 프리팹
-    public RectTransform pawnMarker; // 플레이어의 현재 위치를 표시할 폰 이미지 UI
+    public Transform boardPanel;
+    public GameObject squarePrefab;
+    public RectTransform pawnMarker;
 
     [Header("Board Colors")]
-    public Color lightSquareColor = new Color(0.9f, 0.9f, 0.9f); // 인스펙터에서 수정 가능
+    public Color lightSquareColor = new Color(0.9f, 0.9f, 0.9f);
     public Color darkSquareColor = new Color(0.4f, 0.6f, 0.4f);
 
     [Header("Premium / Ad System")]
     public GameObject adLockPanel;
     public Button watchAdButton;
 
-    private Button[,] boardButtons = new Button[BoardIterator.BOARD_SIZE, BoardIterator.BOARD_SIZE];
+    Button[,] boardButtons = new Button[BoardIterator.BOARD_SIZE, BoardIterator.BOARD_SIZE];
 
     void Start()
     {
-        if (watchAdButton != null)
-            watchAdButton.onClick.AddListener(OnWatchAdClicked);
+        // 1. 이벤트 등록
+        watchAdButton?.onClick.AddListener(OnWatchAdClicked);
 
-        BoardIterator.DrawBoardReverseYLoop(SetupButton);
+        // 2. 초기 생성 (부수 효과)
+        BoardIterator.DrawBoardReverseYLoop(SetupSquareUI);
+
+        // 3. UI 갱신 (부수 효과)
         UpdateLobbyUI();
-    }
 
-    void SetupButton(BoardCoord coord)
-    {
-        Button btn = Instantiate(squarePrefab, boardPanel).GetComponent<Button>();
-        btn.onClick.AddListener(() => OnStageSelected(coord.X, coord.Y));
-        boardButtons[coord.X, coord.Y] = btn;
+        void SetupSquareUI(BoardCoord coord)
+        {
+            Button btn = Instantiate(squarePrefab, boardPanel).GetComponent<Button>();
+            btn.onClick.AddListener(() => OnStageSelected(coord));
+            boardButtons[coord.X, coord.Y] = btn;
+        }
     }
 
     void UpdateLobbyUI()
     {
-        int maxCleared = LevelManager.Instance.MaxClearedLevel; // 0부터 시작
+        int maxCleared = LevelManager.Instance.MaxClearedLevel;
 
-        // 상태 업데이트 역시 고차 함수로 깔끔하게 처리
         BoardIterator.DrawBoardLoop(coord =>
         {
-            int absoluteLevel = (coord.X * BoardIterator.BOARD_SIZE) + coord.Y;
+            int absoluteLevel = GetAbsoluteLevel(coord);
+            bool isUnlocked = IsLevelUnlocked(absoluteLevel, maxCleared);
             Button btn = boardButtons[coord.X, coord.Y];
 
-            // 해금 여부 판별
-            bool isUnlocked = absoluteLevel <= maxCleared;
-            btn.interactable = isUnlocked;
+            // 데이터(순수 함수 결과)를 바탕으로 UI 상태(부수 효과) 적용
+            ApplyButtonState(btn, isUnlocked);
+            ApplySquareColor(btn.GetComponent<Image>(), coord, isUnlocked);
 
-            // 시각적 처리 및 체스판 교차 색상 적용
-            Image img = btn.GetComponent<Image>();
-            if (img != null)
-            {
-                Color baseColor = BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
-                // 잠긴 스테이지는 고유의 색상에 회색조를 섞어 비활성화 느낌을 줌
-                img.color = isUnlocked ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
-            }
-
-            // 플레이어의 현재 최고 도달 스테이지에 폰(Pawn) 배치
-            if (absoluteLevel == maxCleared)
+            if (IsCurrentMaxLevel(absoluteLevel, maxCleared))
             {
                 PlacePawnOnSquare(btn.GetComponent<RectTransform>());
             }
         });
     }
 
+    void ApplyButtonState(Button btn, bool isUnlocked) => btn.interactable = isUnlocked;
+
+    void ApplySquareColor(Image img, BoardCoord coord, bool isUnlocked)
+    {
+        if (img == null) return;
+        img.color = CalculateColor(coord, lightSquareColor, darkSquareColor, isUnlocked);
+    }
+
     void PlacePawnOnSquare(RectTransform squareRect)
     {
         if (pawnMarker == null) return;
-
-        // 폰을 현재 활성화된 칸의 자식으로 이동시키고 중앙에 정렬
         pawnMarker.SetParent(squareRect);
         pawnMarker.anchoredPosition = Vector2.zero;
         pawnMarker.gameObject.SetActive(true);
     }
 
-    void OnStageSelected(int x, int y)
+    void OnStageSelected(BoardCoord coord)
     {
-        int absoluteLevel = (x * BoardIterator.BOARD_SIZE) + y;
-        LevelManager.Instance.CurrentAbsoluteLevel = absoluteLevel;
+        LevelManager.Instance.CurrentAbsoluteLevel = GetAbsoluteLevel(coord);
         SceneManager.LoadScene("Puzzle");
     }
 
     void OnWatchAdClicked()
     {
         LevelManager.Instance.IsPremiumUnlocked = true;
-        UpdateLobbyUI();
+        UpdateLobbyUI(); // 상태 변경 후 즉시 렌더링 함수 재호출
+    }
+
+    // --- [ 순수 함수 (Pure Functions) 영역 ] ---
+    int GetAbsoluteLevel(BoardCoord coord) => (coord.X * BoardIterator.BOARD_SIZE) + coord.Y;
+    bool IsLevelUnlocked(int absoluteLevel, int maxCleared) => absoluteLevel <= maxCleared;
+    bool IsCurrentMaxLevel(int absoluteLevel, int maxCleared) => absoluteLevel == maxCleared;
+
+    Color CalculateColor(BoardCoord coord, Color light, Color dark, bool isUnlocked)
+    {
+        Color baseColor = BoardIterator.GetCheckerboardColor(coord, light, dark);
+        return isUnlocked ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
     }
 }
