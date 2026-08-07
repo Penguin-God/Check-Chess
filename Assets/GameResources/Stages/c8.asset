@@ -10,53 +10,41 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69a1ed0172086cf43bddde5a96c5f235, type: 3}
-  m_Name: NewStage 34
+  m_Name: c8
   m_EditorClassIdentifier: Assembly-CSharp::StageDataSO
   initialPieces:
-  - X: 0
-    Y: 0
+  - X: 3
+    Y: 2
+    Piece: 2
+  - X: 3
+    Y: 4
     Piece: 2
   - X: 1
-    Y: 0
-    Piece: 3
-  - X: 2
-    Y: 0
-    Piece: 6
-  - X: 3
-    Y: 0
-    Piece: 5
+    Y: 3
+    Piece: 2
+  - X: 5
+    Y: 3
+    Piece: 2
   - X: 4
-    Y: 0
-    Piece: 4
-  - X: 5
-    Y: 0
-    Piece: 2
-  - X: 6
-    Y: 0
-    Piece: 3
-  - X: 7
-    Y: 0
-    Piece: 4
-  - X: 7
-    Y: 1
-    Piece: 2
-  - X: 6
-    Y: 1
-    Piece: 3
-  - X: 5
-    Y: 1
-    Piece: 4
-  - X: 3
-    Y: 1
-    Piece: 2
+    Y: 3
+    Piece: 6
   - X: 2
-    Y: 1
-    Piece: 3
-  - X: 1
-    Y: 1
+    Y: 3
     Piece: 5
-  - X: 0
-    Y: 1
+  - X: 3
+    Y: 3
+    Piece: 1
+  - X: 2
+    Y: 2
     Piece: 4
-  startHintCoord: {x: 7, y: 1}
-  nextHintCoord: {x: 5, y: 0}
+  - X: 4
+    Y: 4
+    Piece: 4
+  - X: 4
+    Y: 2
+    Piece: 3
+  - X: 2
+    Y: 4
+    Piece: 3
+  startHintCoord: {x: 4, y: 2}
+  nextHintCoord: {x: 3, y: 3}
