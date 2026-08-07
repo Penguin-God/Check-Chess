@@ -68,7 +68,7 @@ public class GameBoardUI : MonoBehaviour
 
                 if (nextState.IsVictory)
                 {
-                    Clear();
+                    StageClear();
                     nextState = new(new Board<PieceType>(_ => PieceType.None), null);
                 }
                 else if (nextState.IsDefeat)
@@ -86,7 +86,7 @@ public class GameBoardUI : MonoBehaviour
         }
     }
 
-    void Clear()
+    void StageClear()
     {
         PlaySound(kingCaptureSound);
         buttonPanel.Clear();
@@ -113,7 +113,7 @@ public class GameBoardUI : MonoBehaviour
     SquareModel WarpModelColor(SquareModel origin, GameState state, BoardCoord coord, IReadOnlyList<BoardCoord> validMoves)
     {
         Color newColor = GetStateColor(state, coord, validMoves, origin.BgColor);
-        return new SquareModel(newColor, origin.Sprite);
+        return new SquareModel(newColor, origin.statusIcon);
     }
 
     Color GetStateColor(GameState state, BoardCoord coord, IReadOnlyList<BoardCoord> validMoves, Color baseColor)
