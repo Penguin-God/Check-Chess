@@ -14,7 +14,7 @@ public class UI_Lobby : MonoBehaviour
     public Color lightSquareColor = new Color(0.9f, 0.9f, 0.9f);
     public Color darkSquareColor = new Color(0.4f, 0.6f, 0.4f);
 
-    private Button[,] boardButtons = new Button[BoardIterator.BOARD_SIZE, BoardIterator.BOARD_SIZE];
+    Board<Button> boardButtons = new();
 
     void Start()
     {
@@ -25,7 +25,7 @@ public class UI_Lobby : MonoBehaviour
     void SetupSquareUI(BoardCoord coord)
     {
         GameObject obj = Instantiate(squarePrefab, boardPanel);
-        boardButtons[coord.X, coord.Y] = obj.GetComponent<Button>();
+        boardButtons = boardButtons.Change(coord, obj.GetComponent<Button>());
 
         // 자물쇠 아이콘 세팅 (동적으로 프리팹 생성 후 비활성화)
         Transform lockTransform = obj.transform.Find("LockIcon");
@@ -50,7 +50,7 @@ public class UI_Lobby : MonoBehaviour
         BoardIterator.DrawBoardLoop(coord =>
         {
             int absoluteLevel = (coord.X * BoardIterator.BOARD_SIZE) + coord.Y;
-            Button btn = boardButtons[coord.X, coord.Y];
+            Button btn = boardButtons[coord];
 
             // 1. 순수 함수로 현재 칸의 상태 데이터 연산
             bool isReached = StageLockLogic.IsReached(absoluteLevel, maxCleared);
