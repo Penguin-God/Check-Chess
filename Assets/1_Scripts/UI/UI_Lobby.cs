@@ -9,10 +9,13 @@ public class UI_Lobby : MonoBehaviour
     public GameObject squarePrefab;
     public GameObject lockIconPrefab;
     public RectTransform pawnMarker;
+    public Sprite pawnIcon;
 
     [Header("Board Colors")]
     public Color lightSquareColor = new Color(0.9f, 0.9f, 0.9f);
     public Color darkSquareColor = new Color(0.4f, 0.6f, 0.4f);
+
+    BoardThemeSO boardTheme;
 
     Board<Button> boardButtons = new();
 
@@ -70,6 +73,17 @@ public class UI_Lobby : MonoBehaviour
                 PlacePawnOnSquare(btn.GetComponent<RectTransform>());
             }
         });
+    }
+
+    void RenderState(BoardCoord coord)
+    {
+        var modelBoard = BoardModelMapper.CreateEmptyModel(boardTheme.lightSquareColor, boardTheme.darkSquareColor);
+        modelBoard = modelBoard.Change(coord, modelBoard[coord] with { statusIcon = pawnIcon } );
+    }
+
+    void Draw(BoardCoord coord, SquareModel model)
+    {
+
     }
 
     void ApplySquareVisuals(Button btn, BoardCoord coord, bool canPlay, bool isCurrentlyLocked)
