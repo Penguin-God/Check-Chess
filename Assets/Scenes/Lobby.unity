@@ -638,6 +638,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageLockManager
   lockedStageCoords:
   - a2
+  - b6
+  - c7
 --- !u!4 &922168767
 Transform:
   m_ObjectHideFlags: 0
@@ -987,6 +989,7 @@ MonoBehaviour:
   squarePrefab: {fileID: 7238081151113486997, guid: fd109d502e5409240b6ccbf1c4d1eccd, type: 3}
   lockIconPrefab: {fileID: 244692585}
   pawnMarker: {fileID: 1744747738}
+  pawnIcon: {fileID: 0}
   lightSquareColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
   darkSquareColor: {r: 0.4, g: 0.6, b: 0.4, a: 1}
 --- !u!4 &1811033935

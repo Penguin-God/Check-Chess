@@ -55,7 +55,7 @@ public class UI_Lobby : MonoBehaviour
             int absoluteLevel = (coord.X * BoardIterator.BOARD_SIZE) + coord.Y;
             Button btn = boardButtons[coord];
 
-            // 1. 순수 함수로 현재 칸의 상태 데이터 연산
+            // TODO : 이거 enum상태로 만들기
             bool isReached = StageLockLogic.IsReached(absoluteLevel, maxCleared);
             bool isCurrentlyLocked = StageLockLogic.IsCurrentlyLocked(absoluteLevel, lockedSet, unlockedSet);
             bool canPlay = isReached && !isCurrentlyLocked;
@@ -86,6 +86,7 @@ public class UI_Lobby : MonoBehaviour
 
     }
 
+    // TODO : 여기서 UI_Square가져와서 사용하기
     void ApplySquareVisuals(Button btn, BoardCoord coord, bool canPlay, bool isCurrentlyLocked)
     {
         // 자물쇠 아이콘 켜기/끄기
@@ -108,19 +109,10 @@ public class UI_Lobby : MonoBehaviour
 
     void BindButtonAction(Button btn, int absoluteLevel, bool canPlay, bool isCurrentlyLocked)
     {
-        // 이전 이벤트 리스너 초기화 (중복 방지)
         btn.onClick.RemoveAllListeners();
 
-        if (isCurrentlyLocked)
-        {
-            // 도달하지 못했더라도 자물쇠 칸이면 언제든 눌러서 해금 시도 가능
-            btn.onClick.AddListener(() => WatchAdToUnlock(absoluteLevel));
-        }
-        else if (canPlay)
-        {
-            // 자물쇠도 없고 정상적으로 도달한 칸
-            btn.onClick.AddListener(() => OnStageSelected(absoluteLevel));
-        }
+        if (isCurrentlyLocked) btn.onClick.AddListener(() => WatchAdToUnlock(absoluteLevel));
+        else if (canPlay) btn.onClick.AddListener(() => OnStageSelected(absoluteLevel));
     }
 
     void WatchAdToUnlock(int absoluteLevel)
