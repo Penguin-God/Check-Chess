@@ -737,7 +737,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 55118aacd684e5d4893f27b6a94ecefa, type: 2}
     - {fileID: 11400000, guid: a111cc6db75152344a7f6d82c41266e7, type: 2}
     - {fileID: 11400000, guid: a819ae9c98241964f80c99bcce73bd65, type: 2}
-  - chapterName: 123
+  - chapterName: 7
     stages:
     - {fileID: 11400000, guid: 9cf8027a54d807544ab7c6e91ed93f82, type: 2}
     - {fileID: 11400000, guid: 10801539e80c56544a51085c75dca154, type: 2}
@@ -745,6 +745,18 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 31cafb5c744461a4e984bc627edfeaa1, type: 2}
     - {fileID: 11400000, guid: 6b66dfd331c70844e9c2d08990d3ede2, type: 2}
     - {fileID: 11400000, guid: c9d4a8663602f3c43b1d6af3793ea7d6, type: 2}
+    - {fileID: 11400000, guid: 91ca45051dbc8684996d9ea2484b015a, type: 2}
+    - {fileID: 11400000, guid: 043137df38ac0424892ceaa63ee7f8f0, type: 2}
+  - chapterName: 7
+    stages:
+    - {fileID: 11400000, guid: 27bef29217ddf5347b2aca416fe1c47a, type: 2}
+    - {fileID: 11400000, guid: 6d1bb56f367909c439b3e0feb31a0321, type: 2}
+    - {fileID: 11400000, guid: 85fa8c738ec6e0947917a87384b1fd1c, type: 2}
+    - {fileID: 11400000, guid: 758f639ff0f01434fa8923e94f0728db, type: 2}
+    - {fileID: 11400000, guid: fa95539f422f5704bbe3c7c507f2053b, type: 2}
+    - {fileID: 11400000, guid: 7071517fac556ba4a9ef4eee381fe537, type: 2}
+    - {fileID: 11400000, guid: d4ab719d182fc6c4bb23a5b749334c0a, type: 2}
+    - {fileID: 11400000, guid: b7b2241091480d940b83bda57a675e24, type: 2}
 --- !u!1 &1744747737
 GameObject:
   m_ObjectHideFlags: 0
