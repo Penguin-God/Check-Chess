@@ -11,7 +11,7 @@ public class StageLockManager : MonoBehaviour
     public HashSet<int> DesignatedLockLevels { get; private set; }
     public HashSet<int> UnlockedLevels { get; private set; }
 
-    private void Awake()
+    void Awake()
     {
         if (Instance == null) { Instance = this; }
         else { Destroy(gameObject); return; }
@@ -26,13 +26,13 @@ public class StageLockManager : MonoBehaviour
         SaveUnlockedLevels();
     }
 
-    private void SaveUnlockedLevels()
+    void SaveUnlockedLevels()
     {
         string data = StageLockLogic.SerializeUnlocked(UnlockedLevels);
         PlayerPrefs.SetString("UnlockedStageLevels", data); // 저장 키 이름도 직관적으로 변경
     }
 
-    private void LoadUnlockedLevels()
+    void LoadUnlockedLevels()
     {
         string data = PlayerPrefs.GetString("UnlockedStageLevels", "");
         UnlockedLevels = StageLockLogic.DeserializeUnlocked(data);

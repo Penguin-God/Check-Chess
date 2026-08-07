@@ -7,7 +7,7 @@ public class UI_Lobby : MonoBehaviour
     [Header("Board UI References")]
     public Transform boardPanel;
     public GameObject squarePrefab;
-    public GameObject lockIconPrefab; // 인스펙터에서 자물쇠 이미지 프리팹을 꼭 할당해 주세요!
+    public GameObject lockIconPrefab;
     public RectTransform pawnMarker;
 
     [Header("Board Colors")]
@@ -18,10 +18,7 @@ public class UI_Lobby : MonoBehaviour
 
     void Start()
     {
-        // 1. 초기 생성 (부수 효과)
         BoardIterator.DrawBoardReverseYLoop(SetupSquareUI);
-
-        // 2. UI 갱신 (부수 효과)
         UpdateLobbyUI();
     }
 

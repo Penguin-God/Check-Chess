@@ -24,12 +24,6 @@ public class LevelManager : MonoBehaviour
         set => PlayerPrefs.SetInt("MaxClearedLevel", value);
     }
 
-    public bool IsPremiumUnlocked
-    {
-        get => PlayerPrefs.GetInt("IsPremiumUnlocked", 0) == 1;
-        set => PlayerPrefs.SetInt("IsPremiumUnlocked", value ? 1 : 0);
-    }
-
     private void Awake()
     {
         if (Instance == null)
@@ -63,15 +57,4 @@ public class LevelManager : MonoBehaviour
         if (CurrentAbsoluteLevel >= MaxClearedLevel)
             MaxClearedLevel = CurrentAbsoluteLevel + 1;
     }
-
-    public bool HasNextStage() => GetStageData(CurrentAbsoluteLevel + 1) != null;
-
-    // 특정 레벨이 광고/프리미엄으로 인해 잠겨있는지 확인
-    public bool IsStageLocked(int absoluteLevel)
-    {
-        // 10레벨(2챕터) 이상이고, 프리미엄 해금이 안 되어 있으면 잠김
-        return absoluteLevel >= 10 && !IsPremiumUnlocked;
-    }
-
-    public bool PlayableNextStage() => HasNextStage() && !IsStageLocked(CurrentAbsoluteLevel + 1);
 }

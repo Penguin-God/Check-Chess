@@ -13,8 +13,7 @@ public static class StageLockLogic
     }
 
     // 잠금 지정된 좌표 리스트를 레벨 집합으로 변환
-    public static HashSet<int> GetDesignatedLockLevels(IEnumerable<string> coords, int boardSize) =>
-        new HashSet<int>(coords.Select(c => ParseCoord(c, boardSize)));
+    public static HashSet<int> GetDesignatedLockLevels(IEnumerable<string> coords, int boardSize) => new HashSet<int>(coords.Select(c => ParseCoord(c, boardSize)));
 
     // 데이터 직렬화/역직렬화
     public static string SerializeUnlocked(HashSet<int> unlockedSet) => string.Join(",", unlockedSet);
@@ -28,8 +27,6 @@ public static class StageLockLogic
 
         return set;
     }
-
-    // --- 상태 판별 순수 함수들 ---
 
     // 자물쇠 칸인가?
     public static bool IsLock(int level, HashSet<int> lockedSet) => lockedSet.Contains(level);
