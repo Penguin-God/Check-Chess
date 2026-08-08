@@ -8,7 +8,19 @@ namespace System.Runtime.CompilerServices
 }
 
 public enum PieceType { None, Pawn, Knight, Bishop, Rook, Queen, King }
-public record BoardCoord(int X, int Y);
+
+public record BoardCoord(int X, int Y)
+{
+    public string ToChessSquare() => $"{(char)('a' + X)}{Y + 1}";
+
+    public static BoardCoord FromChessSquare(string square)
+    {
+        if (square.Length < 2) throw new ArgumentException($"유효하지 않은 체스 좌표입니다: {square}");
+
+        // 'a'를 빼면 0~7이 되고, '1'을 빼면 0~7이 되는 문자 연산의 마법!
+        return new BoardCoord(square.ToLower()[0] - 'a', square[1] - '1');
+    }
+}
 
 public record GameState(Board<PieceType> Board, BoardCoord ActiveSquare)
 {
