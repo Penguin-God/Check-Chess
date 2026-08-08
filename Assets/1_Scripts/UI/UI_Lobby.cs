@@ -73,11 +73,14 @@ public class UI_Lobby : MonoBehaviour
     {
         Debug.Log($"챕터 {stage.ChapterIndex}, 스테이지 {stage.StageIndex} 자물쇠 해금을 위해 광고를 봅니다.");
 
-        LevelPlayAdManager.Instance.ShowRewardedAd(() =>
-        {
-            StageLockManager.Instance.UnlockLevel(stage);
-            UpdateLobbyUI();
-        });
+        //LevelPlayAdManager.Instance.ShowRewardedAd(() =>
+        //{
+        //    StageLockManager.Instance.UnlockLevel(stage);
+        //    UpdateLobbyUI();
+        //});
+
+        StageLockManager.Instance.UnlockLevel(stage);
+        UpdateLobbyUI();
     }
 
     void OnStageSelected(StageCoord stage)
