@@ -40,7 +40,6 @@ public class UI_Lobby : MonoBehaviour
 
     void UpdateLobbyUI()
     {
-        // 1. 최고 도달 레벨도 StageCoord 레코드로 변환합니다.
         StageCoord maxClearedStage = StageCoord.FromAbsoluteLevel(LevelManager.Instance.MaxClearedLevel);
         var lockedSet = StageLockManager.Instance.DesignatedLockLevels;
         var unlockedSet = StageLockManager.Instance.UnlockedLevels;
@@ -52,7 +51,7 @@ public class UI_Lobby : MonoBehaviour
             StageState currentState = EvaluateStageState(currentStage, maxClearedStage, lockedSet, unlockedSet);
 
             square.GetComponent<Button>().interactable = currentState != StageState.Unreached;
-            ApplySquareVisuals(square, coord, currentState);
+            ApplySquareVisuals(square, GetSquareColor(coord, currentState), currentState);
             BindButtonAction(square, currentStage, currentState);
 
             if (currentStage == maxClearedStage)
@@ -80,15 +79,19 @@ public class UI_Lobby : MonoBehaviour
     {
     }
 
-    // --- [ 부수 효과 (Side Effects) ] ---
-
-    void ApplySquareVisuals(UI_Square square, BoardCoord coord, StageState state)
+    Color GetSquareColor(BoardCoord coord, StageState state)
     {
         Color baseColor = BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
-        Color finalBgColor = state == StageState.Playable ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
-        Sprite currentIcon = state == StageState.Locked ? lockSprite : null;
+        return state == StageState.Playable ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
+    }
 
-        SquareModel squareModel = new SquareModel(finalBgColor, currentIcon);
+
+    // --- [ 부수 효과 (Side Effects) ] ---
+
+    void ApplySquareVisuals(UI_Square square, Color color, StageState state)
+    {
+        Sprite currentIcon = state == StageState.Locked ? lockSprite : null;
+        SquareModel squareModel = new SquareModel(color, currentIcon);
         square.UpdateVisuals(squareModel);
     }
 
