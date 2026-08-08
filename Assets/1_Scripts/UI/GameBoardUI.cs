@@ -113,7 +113,7 @@ public class GameBoardUI : MonoBehaviour
     SquareModel WarpModelColor(SquareModel origin, GameState state, BoardCoord coord, IReadOnlyList<BoardCoord> validMoves)
     {
         Color newColor = GetStateColor(state, coord, validMoves, origin.BgColor);
-        return new SquareModel(newColor, origin.statusIcon);
+        return new SquareModel(newColor, origin.StatusIcon);
     }
 
     Color GetStateColor(GameState state, BoardCoord coord, IReadOnlyList<BoardCoord> validMoves, Color baseColor)

@@ -10,6 +10,7 @@ public class UI_Lobby : MonoBehaviour
     public GameObject lockIconPrefab;
     public RectTransform pawnMarker;
     public Sprite pawnIcon;
+    public Sprite lockSprite;
 
     [Header("Board Colors")]
     public Color lightSquareColor = new Color(0.9f, 0.9f, 0.9f);
@@ -78,7 +79,7 @@ public class UI_Lobby : MonoBehaviour
     void RenderState(BoardCoord coord)
     {
         var modelBoard = BoardModelMapper.CreateEmptyModel(boardTheme.lightSquareColor, boardTheme.darkSquareColor);
-        modelBoard = modelBoard.Change(coord, modelBoard[coord] with { statusIcon = pawnIcon } );
+        modelBoard = modelBoard.Change(coord, modelBoard[coord] with { StatusIcon = pawnIcon } );
     }
 
     void Draw(BoardCoord coord, SquareModel model)
@@ -86,25 +87,19 @@ public class UI_Lobby : MonoBehaviour
 
     }
 
-    // TODO : 여기서 UI_Square가져와서 사용하기
     void ApplySquareVisuals(Button btn, BoardCoord coord, bool canPlay, bool isCurrentlyLocked)
     {
-        // 자물쇠 아이콘 켜기/끄기
-        Transform lockIcon = btn.transform.Find("LockIcon");
-        if (lockIcon != null)
-        {
-            lockIcon.gameObject.SetActive(isCurrentlyLocked);
-        }
+        UI_Square squareUI = btn.GetComponent<UI_Square>();
 
-        // 체스판 색상 및 비활성화 음영 처리
-        Image img = btn.GetComponent<Image>();
-        if (img != null)
-        {
-            Color baseColor = BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
+        Color baseColor = BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
+        Color finalBgColor = canPlay ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
 
-            // 플레이 가능한 상태가 아니면 원래 색상에 회색을 섞어 어둡게 만듭니다.
-            img.color = canPlay ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
-        }
+        Sprite currentIcon = null;
+        if (isCurrentlyLocked) // 잠겨있다면 자물쇠 스프라이트 지정
+            currentIcon = lockSprite;
+
+        SquareModel squareModel = new SquareModel(finalBgColor, currentIcon);
+        squareUI.UpdateVisuals(squareModel);
     }
 
     void BindButtonAction(Button btn, int absoluteLevel, bool canPlay, bool isCurrentlyLocked)

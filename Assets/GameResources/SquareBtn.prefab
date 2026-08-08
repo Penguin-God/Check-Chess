@@ -211,4 +211,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_Square
   button: {fileID: 2602151963623690586}
   background: {fileID: 5432580260102914897}
-  pieceImage: {fileID: 2980467970069696833}
+  statusIcon: {fileID: 2980467970069696833}
