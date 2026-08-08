@@ -71,3 +71,16 @@ public record Board<T>
     public IEnumerable<KeyValuePair<BoardCoord, T>> GetAllSquares() => AllCoords.Select(coord => new KeyValuePair<BoardCoord, T>(coord, this[coord]));
     public Dictionary<BoardCoord, T> ToDictionary() => AllCoords.ToDictionary(coord => coord, coord => this[coord]);
 }
+
+public static class BoardSize
+{
+    public const int Size = 8; // 절대 불변 고정값
+}
+
+public record StageCoord(int ChapterIndex, int StageIndex)
+{
+    public static StageCoord FromAbsoluteLevel(int absoluteLevel) => new StageCoord(absoluteLevel / BoardSize.Size, absoluteLevel % BoardSize.Size);
+    public static StageCoord FromBoardCoord(BoardCoord boardCoord) => new StageCoord(boardCoord.X, boardCoord.Y);
+    public int ToAbsoluteLevel() => (ChapterIndex * BoardSize.Size) + StageIndex;
+    public BoardCoord ToBoardCoord() => new BoardCoord(ChapterIndex, StageIndex);
+}
