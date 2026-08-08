@@ -29,7 +29,8 @@ public class GameBoardUI : MonoBehaviour
     void Start()
     {
         uiSquares = new Board<UI_Square>(CreateSquare);
-        currentStageData = LevelManager.Instance.GetStageData(LevelManager.Instance.CurrentAbsoluteLevel);
+        // currentStageData = LevelManager.Instance.GetStageData(LevelManager.Instance.CurrentAbsoluteLevel);
+        currentStageData = LevelManager.Instance.GetCurrentStageData();
 
         if (currentStageData != null) currentState = PuzzleStageBuilder.CreateFromSO(currentStageData);
         else

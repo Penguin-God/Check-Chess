@@ -14,6 +14,12 @@ public static class LocalStorage
         PlayerPrefs.Save(); // 기기에 확실히 기록되도록 Save() 호출
     }
 
+    public static void SaveMaxClearedStage(StageCoord stageCoord)
+    {
+        PlayerPrefs.SetInt(KEY_MAX_CLEARED_LEVEL, stageCoord.ToAbsoluteLevel());
+        PlayerPrefs.Save(); // 기기에 확실히 기록되도록 Save() 호출
+    }
+
     public static string LoadUnlockedStages() => PlayerPrefs.GetString(KEY_UNLOCKED_STAGES, "");
 
     public static void SaveUnlockedStages(string data)

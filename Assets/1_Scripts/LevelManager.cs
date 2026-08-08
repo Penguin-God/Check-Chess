@@ -16,6 +16,7 @@ public class LevelManager : MonoBehaviour
     public List<ChapterData> chapters;
 
     public int CurrentAbsoluteLevel { get; set; }
+    public StageCoord CurrentStage { get; set; }
 
     int MaxClearedLevel
     {
@@ -46,6 +47,14 @@ public class LevelManager : MonoBehaviour
 
         // 3. 유효하면 데이터를, 아니면 null을 반환
         return isValidIndex ? chapters[stageCoord.ChapterIndex].stages[stageCoord.StageIndex] : null;
+    }
+
+    public StageDataSO GetCurrentStageData()
+    {
+        bool isValidIndex = CurrentStage.ChapterIndex >= 0 && CurrentStage.ChapterIndex < chapters.Count &&
+                            CurrentStage.StageIndex >= 0 && CurrentStage.StageIndex < chapters[CurrentStage.ChapterIndex].stages.Count;
+
+        return isValidIndex ? chapters[CurrentStage.ChapterIndex].stages[CurrentStage.StageIndex] : null;
     }
 
     public void ClearCurrentStage()
