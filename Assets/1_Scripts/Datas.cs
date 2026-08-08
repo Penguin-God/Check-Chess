@@ -118,4 +118,6 @@ public record StageCoord(int ChapterIndex, int StageIndex) : IComparable<StageCo
         int prevLevel = System.Math.Max(0, coord.ToAbsoluteLevel() - 1);
         return FromAbsoluteLevel(prevLevel);
     }
+
+    public static StageCoord MaxStage => new StageCoord(BoardSize.Size - 1, BoardSize.Size - 1);
 }

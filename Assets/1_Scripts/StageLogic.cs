@@ -3,6 +3,21 @@ using System.Linq;
 
 public static class StageLogic
 {
+    public static StageCoord GetPlayableLimit(HashSet<StageCoord> lockedSet, StageCoord unlockStage)
+    {
+        // unlockStage보다 큰 자물쇠들만 필터링한 뒤, 오름차순 정렬하여 가장 가까운 첫 번째 자물쇠를 찾습니다.
+        StageCoord nextLock = lockedSet
+            .Where(lockStage => lockStage > unlockStage)
+            .OrderBy(lockStage => lockStage)
+            .FirstOrDefault();
+
+        // [예외 처리] 만약 더 이상 앞을 막고 있는 자물쇠가 없다면? (다 풀었거나 애초에 자물쇠가 없을 때)
+        if (nextLock == null) return StageCoord.MaxStage;
+
+        // 첫 번째 자물쇠의 바로 이전 단계(--)를 반환합니다.
+        return --nextLock;
+    }
+
     public static HashSet<StageCoord> GetDesignatedLockLevels(IEnumerable<string> coords) => new HashSet<StageCoord>(coords.Select(c => StageCoord.FromBoardCoord(BoardCoord.FromChessSquare(c))));
     public static string SerializeUnlocked(HashSet<StageCoord> unlockedSet) => string.Join(",", unlockedSet.Select(coord => coord.ToAbsoluteLevel()));
 

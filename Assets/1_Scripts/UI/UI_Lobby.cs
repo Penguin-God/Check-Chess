@@ -75,7 +75,6 @@ public class UI_Lobby : MonoBehaviour
 
         LevelPlayAdManager.Instance.ShowRewardedAd(() =>
         {
-            // [변경됨] .ToAbsoluteLevel()을 지우고 stage 객체를 있는 그대로 넘깁니다!
             StageLockManager.Instance.UnlockLevel(stage);
             UpdateLobbyUI();
         });
