@@ -8,7 +8,7 @@ public enum StageState
     Unreached
 }
 
-public static class LobbySquarePresenter
+public static class StageStatusLogic
 {
     public static StageState EvaluateStageState(StageCoord currentStage, StageCoord maxClearedStage, HashSet<StageCoord> lockedSet, HashSet<StageCoord> unlockedSet)
     {

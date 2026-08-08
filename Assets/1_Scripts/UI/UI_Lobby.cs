@@ -35,10 +35,10 @@ public class UI_Lobby : MonoBehaviour
         {
             UI_Square square = boardButtons[coord];
             StageCoord currentStage = StageCoord.FromBoardCoord(coord);
-            StageState currentState = LobbySquarePresenter.EvaluateStageState(currentStage, maxClearedStage, lockedSet, unlockedSet);
+            StageState currentState = StageStatusLogic.EvaluateStageState(currentStage, maxClearedStage, lockedSet, unlockedSet);
 
             square.GetComponent<Button>().interactable = currentState != StageState.Unreached;
-            ApplySquareVisuals(square, LobbySquarePresenter.GetSquareColor(coord, currentState, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor)), currentState);
+            ApplySquareVisuals(square, StageStatusLogic.GetSquareColor(coord, currentState, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor)), currentState);
             BindButtonAction(square, currentStage, currentState);
 
             if (currentStage == maxClearedStage)

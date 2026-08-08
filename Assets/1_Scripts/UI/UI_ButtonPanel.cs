@@ -32,5 +32,7 @@ public class UI_ButtonPanel : MonoBehaviour
     {
         hintBtn.gameObject.SetActive(false);
         nextBtn.gameObject.SetActive(true);
+
+        // nextBtn.interactable = 
     }
 }
