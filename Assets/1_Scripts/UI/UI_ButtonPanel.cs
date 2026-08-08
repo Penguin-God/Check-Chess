@@ -32,7 +32,8 @@ public class UI_ButtonPanel : MonoBehaviour
     {
         hintBtn.gameObject.SetActive(false);
         nextBtn.gameObject.SetActive(true);
-
-        // nextBtn.interactable = 
+        var status = StageStatusLogic.EvaluateStageState(LevelManager.Instance.CurrentStage, LocalStorage.LoadMaxClearedStage(), StageLockManager.Instance.DesignatedLockLevels, StageLockManager.Instance.UnlockedLevels);
+        nextBtn.interactable = status == StageState.Playable ? true : false;
+        nextBtn.GetComponent<Image>().color = StageStatusLogic.GetStatusColor(status, nextBtn.GetComponent<Image>().color);
     }
 }

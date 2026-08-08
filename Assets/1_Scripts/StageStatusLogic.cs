@@ -18,5 +18,5 @@ public static class StageStatusLogic
         return StageState.Unreached;
     }
 
-    public static Color GetSquareColor(BoardCoord coord, StageState state, Color baseColor) => state == StageState.Playable ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
+    public static Color GetStatusColor(StageState state, Color baseColor) => state == StageState.Playable ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
 }

@@ -38,7 +38,7 @@ public class UI_Lobby : MonoBehaviour
             StageState currentState = StageStatusLogic.EvaluateStageState(currentStage, maxClearedStage, lockedSet, unlockedSet);
 
             square.GetComponent<Button>().interactable = currentState != StageState.Unreached;
-            ApplySquareVisuals(square, StageStatusLogic.GetSquareColor(coord, currentState, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor)), currentState);
+            ApplySquareVisuals(square, StageStatusLogic.GetStatusColor(currentState, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor)), currentState);
             BindButtonAction(square, currentStage, currentState);
 
             if (currentStage == maxClearedStage)
