@@ -17,7 +17,7 @@ public record BoardCoord(int X, int Y)
     {
         if (square.Length < 2) throw new ArgumentException($"유효하지 않은 체스 좌표입니다: {square}");
 
-        // 'a'를 빼면 0~7이 되고, '1'을 빼면 0~7이 되는 문자 연산의 마법!
+        // 아스키 코드로 치환하면 숫자라서 간단 연산으로 계산 가능
         return new BoardCoord(square.ToLower()[0] - 'a', square[1] - '1');
     }
 }

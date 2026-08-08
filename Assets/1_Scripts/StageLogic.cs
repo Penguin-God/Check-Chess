@@ -3,37 +3,21 @@ using System.Linq;
 
 public static class StageLogic
 {
-    // 좌표 문자열을 절대 레벨 숫자로 변환
-    public static int ParseCoord(string coord, int boardSize)
-    {
-        if (string.IsNullOrEmpty(coord) || coord.Length < 2) return -1;
-        int x = coord.ToLower()[0] - 'a';
-        int y = int.Parse(coord[1].ToString()) - 1;
-        return (x * boardSize) + y;
-    }
+    public static HashSet<StageCoord> GetDesignatedLockLevels(IEnumerable<string> coords) => new HashSet<StageCoord>(coords.Select(c => StageCoord.FromBoardCoord(BoardCoord.FromChessSquare(c))));
+    public static string SerializeUnlocked(HashSet<StageCoord> unlockedSet) => string.Join(",", unlockedSet.Select(coord => coord.ToAbsoluteLevel()));
 
-    // 잠금 지정된 좌표 리스트를 레벨 집합으로 변환
-    public static HashSet<int> GetDesignatedLockLevels(IEnumerable<string> coords) => new HashSet<int>(coords.Select(c => ParseCoord(c, BoardSize.Size)));
-
-    // 데이터 직렬화/역직렬화
-    public static string SerializeUnlocked(HashSet<int> unlockedSet) => string.Join(",", unlockedSet);
-    public static HashSet<int> DeserializeUnlocked(string data)
+    // 불러올 때는 int를 파싱한 뒤, FromAbsoluteLevel을 통해 StageCoord 레코드로 복원합니다.
+    public static HashSet<StageCoord> DeserializeUnlocked(string data)
     {
-        var set = new HashSet<int>();
+        var set = new HashSet<StageCoord>();
         if (string.IsNullOrEmpty(data)) return set;
 
         foreach (var s in data.Split(','))
-            if (int.TryParse(s, out int val)) set.Add(val);
+            if (int.TryParse(s, out int val)) set.Add(StageCoord.FromAbsoluteLevel(val));
 
         return set;
     }
 
-    // 자물쇠 칸인가?
-    static bool IsLock(int level, HashSet<int> lockedSet) => lockedSet.Contains(level);
-
-    // 유저가 자물쇠를 풀었는가?
-    static bool IsUnlocked(int level, HashSet<int> unlockedSet) => unlockedSet.Contains(level);
-
-    // [핵심] 현재 이 칸이 잠겨있는 상태인가? (잠금 칸으로 지정되었는데, 아직 안 풀었음)
-    public static bool IsCurrentlyLocked(int level, HashSet<int> lockedSet, HashSet<int> unlockedSet) => IsLock(level, lockedSet) && !IsUnlocked(level, unlockedSet);
+    // StageCoord 객체 자체를 받아 해시셋(HashSet)에 포함되어 있는지 검사합니다!
+    public static bool IsCurrentlyLocked(StageCoord level, HashSet<StageCoord> lockedSet, HashSet<StageCoord> unlockedSet) => lockedSet.Contains(level) && !unlockedSet.Contains(level);
 }

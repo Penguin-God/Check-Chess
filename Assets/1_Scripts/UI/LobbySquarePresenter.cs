@@ -10,9 +10,9 @@ public enum StageState
 
 public static class LobbySquarePresenter
 {
-    public static StageState EvaluateStageState(StageCoord currentStage, StageCoord maxClearedStage, HashSet<int> lockedSet, HashSet<int> unlockedSet)
+    public static StageState EvaluateStageState(StageCoord currentStage, StageCoord maxClearedStage, HashSet<StageCoord> lockedSet, HashSet<StageCoord> unlockedSet)
     {
-        if (StageLogic.IsCurrentlyLocked(currentStage.ToAbsoluteLevel(), lockedSet, unlockedSet)) return StageState.Locked;
+        if (StageLogic.IsCurrentlyLocked(currentStage, lockedSet, unlockedSet)) return StageState.Locked;
         if (currentStage <= maxClearedStage) return StageState.Playable;
 
         return StageState.Unreached;

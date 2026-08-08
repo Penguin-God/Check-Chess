@@ -8,8 +8,8 @@ public class StageLockManager : MonoBehaviour
     [Header("자물쇠로 잠글 스테이지 좌표 (예: b1, c3)")]
     public List<string> lockedStageCoords;
 
-    public HashSet<int> DesignatedLockLevels { get; private set; }
-    public HashSet<int> UnlockedLevels { get; private set; }
+    public HashSet<StageCoord> DesignatedLockLevels { get; private set; }
+    public HashSet<StageCoord> UnlockedLevels { get; private set; }
 
     void Awake()
     {
@@ -20,9 +20,9 @@ public class StageLockManager : MonoBehaviour
         LoadUnlockedLevels();
     }
 
-    public void UnlockLevel(int absoluteLevel)
+    public void UnlockLevel(StageCoord stage)
     {
-        UnlockedLevels.Add(absoluteLevel);
+        UnlockedLevels.Add(stage);
         SaveUnlockedLevels();
     }
 

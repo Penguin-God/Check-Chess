@@ -71,13 +71,12 @@ public class UI_Lobby : MonoBehaviour
 
     void WatchAdToUnlock(StageCoord stage)
     {
-        // 레코드를 쓰면 로그를 찍을 때도 챕터와 스테이지를 분리해서 보기 훨씬 편해집니다!
         Debug.Log($"챕터 {stage.ChapterIndex}, 스테이지 {stage.StageIndex} 자물쇠 해금을 위해 광고를 봅니다.");
 
         LevelPlayAdManager.Instance.ShowRewardedAd(() =>
         {
-            // 실제 데이터 저장소(StageLockManager)에 넘길 때만 숫자로 변환
-            StageLockManager.Instance.UnlockLevel(stage.ToAbsoluteLevel());
+            // [변경됨] .ToAbsoluteLevel()을 지우고 stage 객체를 있는 그대로 넘깁니다!
+            StageLockManager.Instance.UnlockLevel(stage);
             UpdateLobbyUI();
         });
     }
