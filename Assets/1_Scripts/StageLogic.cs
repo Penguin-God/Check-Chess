@@ -3,9 +3,6 @@ using System.Linq;
 
 public static class StageLogic
 {
-    public static (int chapterIdx, int stageIdx) ToChapterAndStageIndices(int absoluteLevel, int boardSize) => (absoluteLevel / boardSize, absoluteLevel % boardSize);
-    public static int ToAbsoluteLevel(BoardCoord coord, int boardSize) => (coord.X * boardSize) + coord.Y;
-
     // 좌표 문자열을 절대 레벨 숫자로 변환
     public static int ParseCoord(string coord, int boardSize)
     {
@@ -16,7 +13,7 @@ public static class StageLogic
     }
 
     // 잠금 지정된 좌표 리스트를 레벨 집합으로 변환
-    public static HashSet<int> GetDesignatedLockLevels(IEnumerable<string> coords, int boardSize) => new HashSet<int>(coords.Select(c => ParseCoord(c, boardSize)));
+    public static HashSet<int> GetDesignatedLockLevels(IEnumerable<string> coords) => new HashSet<int>(coords.Select(c => ParseCoord(c, BoardSize.Size)));
 
     // 데이터 직렬화/역직렬화
     public static string SerializeUnlocked(HashSet<int> unlockedSet) => string.Join(",", unlockedSet);
@@ -32,13 +29,10 @@ public static class StageLogic
     }
 
     // 자물쇠 칸인가?
-    public static bool IsLock(int level, HashSet<int> lockedSet) => lockedSet.Contains(level);
+    static bool IsLock(int level, HashSet<int> lockedSet) => lockedSet.Contains(level);
 
     // 유저가 자물쇠를 풀었는가?
-    public static bool IsUnlocked(int level, HashSet<int> unlockedSet) => unlockedSet.Contains(level);
-
-    // 일반적인 진행도로 여기까지 도달했는가?
-    public static bool IsReached(int level, int maxCleared) => level <= maxCleared;
+    static bool IsUnlocked(int level, HashSet<int> unlockedSet) => unlockedSet.Contains(level);
 
     // [핵심] 현재 이 칸이 잠겨있는 상태인가? (잠금 칸으로 지정되었는데, 아직 안 풀었음)
     public static bool IsCurrentlyLocked(int level, HashSet<int> lockedSet, HashSet<int> unlockedSet) => IsLock(level, lockedSet) && !IsUnlocked(level, unlockedSet);

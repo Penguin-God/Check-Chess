@@ -16,7 +16,7 @@ public class StageLockManager : MonoBehaviour
         if (Instance == null) { Instance = this; }
         else { Destroy(gameObject); return; }
 
-        DesignatedLockLevels = StageLogic.GetDesignatedLockLevels(lockedStageCoords, 8);
+        DesignatedLockLevels = StageLogic.GetDesignatedLockLevels(lockedStageCoords);
         LoadUnlockedLevels();
     }
 

@@ -40,7 +40,7 @@ public class UI_Lobby : MonoBehaviour
 
     void UpdateLobbyUI()
     {
-        StageCoord maxClearedStage = StageCoord.FromAbsoluteLevel(LevelManager.Instance.MaxClearedLevel);
+        StageCoord maxClearedStage = LocalStorage.LoadMaxClearedStage();
         var lockedSet = StageLockManager.Instance.DesignatedLockLevels;
         var unlockedSet = StageLockManager.Instance.UnlockedLevels;
 

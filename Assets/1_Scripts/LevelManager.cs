@@ -15,10 +15,9 @@ public class LevelManager : MonoBehaviour
     [Header("전체 챕터 및 스테이지 데이터")]
     public List<ChapterData> chapters;
 
-    // 현재 플레이 중인 절대 레벨 (0부터 시작)
     public int CurrentAbsoluteLevel { get; set; }
 
-    public int MaxClearedLevel
+    int MaxClearedLevel
     {
         get => LocalStorage.LoadMaxClearedLevel();
         set => LocalStorage.SaveMaxClearedLevel(value);

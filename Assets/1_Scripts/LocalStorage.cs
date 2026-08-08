@@ -6,6 +6,7 @@ public static class LocalStorage
     const string KEY_UNLOCKED_STAGES = "UnlockedStageLevels";
 
     public static int LoadMaxClearedLevel() => PlayerPrefs.GetInt(KEY_MAX_CLEARED_LEVEL, 0);
+    public static StageCoord LoadMaxClearedStage() => StageCoord.FromAbsoluteLevel(PlayerPrefs.GetInt(KEY_MAX_CLEARED_LEVEL, 0));
 
     public static void SaveMaxClearedLevel(int level)
     {
