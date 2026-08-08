@@ -1683,6 +1683,7 @@ MonoBehaviour:
   validMoveColor: {r: 0.8962264, g: 0.32681733, b: 0.29169634, a: 1}
   currentStageData: {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
   audioSource: {fileID: 2127521673}
+  selectPieceSound: {fileID: 8300000, guid: dbefe17c626e8ef4a87329e77cf17956, type: 3}
   captureSound: {fileID: 8300000, guid: aaf275459ed50a840a50e9f955283586, type: 3}
   kingCaptureSound: {fileID: 8300000, guid: 338043297a1143b40b92482e606f04d7, type: 3}
 --- !u!82 &2127521673

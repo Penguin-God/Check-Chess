@@ -20,8 +20,10 @@ public class GameBoardUI : MonoBehaviour
 
     [Header("Audio")]
     public AudioSource audioSource;
+    public AudioClip selectPieceSound;
     public AudioClip captureSound;
     public AudioClip kingCaptureSound;
+
 
     GameState currentState;
     Board<UI_Square> uiSquares;
@@ -55,6 +57,7 @@ public class GameBoardUI : MonoBehaviour
 
             if (currentState.ActiveSquare == null) // 선택단계
             {
+                PlaySound(selectPieceSound);
                 nextState = ChessPuzzleLogic.SelectStartingPiece(currentState, clickedCoord);
             }
             else
