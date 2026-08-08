@@ -25,14 +25,8 @@ public class UI_ButtonPanel : MonoBehaviour
     void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     void ToLobby() => SceneManager.LoadScene("Lobby");
 
-    // 버튼이 눌리면 이벤트를 발생시킵니다.
     void ShowHint() => OnHintClicked?.Invoke();
-
-    void ToNextStage()
-    {
-        LevelManager.Instance.CurrentStage++;
-        RestartStage();
-    }
+    void ToNextStage() => RestartStage();
 
     public void Clear()
     {

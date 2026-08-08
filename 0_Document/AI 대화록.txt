@@ -126,6 +126,8 @@
 인풋 : UI_Lobby, Level의 변환 로직을 StageLogic으로 옮겨줘
 결과 : 새로운 ToChapterAndStageIndices(), ToAbsoluteLevel() 함수와 이걸 사용하는 클래스
 
-
+"20"
+동기 : 스테이지 전용 레코드로 크기 비교, 데이터 변환 등 다양한 로직 수행
+결과 : StageCoord만들고 LevelManager등 저장에 사용하고 int 변환 로직은 캡슐화
 
 

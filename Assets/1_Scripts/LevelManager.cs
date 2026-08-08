@@ -14,14 +14,7 @@ public class LevelManager : MonoBehaviour
 
     [Header("전체 챕터 및 스테이지 데이터")]
     public List<ChapterData> chapters;
-
     public StageCoord CurrentStage { get; set; }
-
-    int MaxClearedLevel
-    {
-        get => LocalStorage.LoadMaxClearedLevel();
-        set => LocalStorage.SaveMaxClearedLevel(value);
-    }
 
     private void Awake()
     {
@@ -46,7 +39,10 @@ public class LevelManager : MonoBehaviour
 
     public void ClearCurrentStage()
     {
-        if (CurrentStage.ToAbsoluteLevel() >= MaxClearedLevel)
-            MaxClearedLevel = CurrentStage.ToAbsoluteLevel() + 1;
+        if (CurrentStage >= LocalStorage.LoadMaxClearedStage())
+        {
+            CurrentStage++;
+            LocalStorage.SaveMaxClearedStage(CurrentStage);
+        }
     }
 }
