@@ -862,7 +862,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d60d35fb72d7f9e4795cf0689a045c32, type: 3}
+  m_Sprite: {fileID: 702849514, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -911,9 +911,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: ChessBatonTouch::LobbyManager
   boardPanel: {fileID: 502137239}
   squarePrefab: {fileID: 7238081151113486997, guid: 0731db858989dc94f8b528d259a7d136, type: 3}
-  lockIconPrefab: {fileID: 0}
   pawnMarker: {fileID: 1744747738}
-  pawnIcon: {fileID: 21300000, guid: d60d35fb72d7f9e4795cf0689a045c32, type: 3}
+  pawnIcon: {fileID: 702849514, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
   lockSprite: {fileID: 21300000, guid: e2b73c82512126847b6cafa5e0eda9be, type: 3}
   lightSquareColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
   darkSquareColor: {r: 0.4, g: 0.6, b: 0.4, a: 1}
