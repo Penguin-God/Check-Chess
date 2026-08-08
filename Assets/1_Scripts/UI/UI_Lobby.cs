@@ -28,7 +28,7 @@ public class UI_Lobby : MonoBehaviour
     void UpdateLobbyUI()
     {
         StageCoord maxClearedStage = LocalStorage.LoadMaxClearedStage();
-        var lockedSet = StageLockManager.Instance.DesignatedLockLevels;
+        var lockedSet = StageLockManager.Instance.LockLevels;
         var unlockedSet = StageLockManager.Instance.UnlockedLevels;
 
         BoardIterator.DrawBoardLoop(coord =>
