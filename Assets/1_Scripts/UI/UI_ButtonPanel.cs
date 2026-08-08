@@ -30,7 +30,7 @@ public class UI_ButtonPanel : MonoBehaviour
 
     void ToNextStage()
     {
-        LevelManager.Instance.CurrentAbsoluteLevel++;
+        LevelManager.Instance.CurrentStage++;
         RestartStage();
     }
 

@@ -121,8 +121,6 @@ public class UI_Lobby : MonoBehaviour
 
     void OnStageSelected(StageCoord stage)
     {
-        // 씬을 넘어가기 전 LevelManager에 저장할 때만 숫자로 변환
-        LevelManager.Instance.CurrentAbsoluteLevel = stage.ToAbsoluteLevel();
         LevelManager.Instance.CurrentStage = stage;
         SceneManager.LoadScene("Puzzle");
     }
