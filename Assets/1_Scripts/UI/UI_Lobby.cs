@@ -40,34 +40,33 @@ public class UI_Lobby : MonoBehaviour
 
     void UpdateLobbyUI()
     {
-        int maxCleared = LevelManager.Instance.MaxClearedLevel;
+        // 1. 최고 도달 레벨도 StageCoord 레코드로 변환합니다.
+        StageCoord maxClearedStage = StageCoord.FromAbsoluteLevel(LevelManager.Instance.MaxClearedLevel);
         var lockedSet = StageLockManager.Instance.DesignatedLockLevels;
         var unlockedSet = StageLockManager.Instance.UnlockedLevels;
 
         BoardIterator.DrawBoardLoop(coord =>
         {
-            int absoluteLevel = StageLogic.ToAbsoluteLevel(coord, BoardIterator.BOARD_SIZE);
-
             UI_Square square = boardButtons[coord];
-
-            StageState currentState = EvaluateStageState(absoluteLevel, maxCleared, lockedSet, unlockedSet);
+            StageCoord currentStage = StageCoord.FromBoardCoord(coord);
+            StageState currentState = EvaluateStageState(currentStage, maxClearedStage, lockedSet, unlockedSet);
 
             square.GetComponent<Button>().interactable = currentState != StageState.Unreached;
             ApplySquareVisuals(square, coord, currentState);
-            BindButtonAction(square, absoluteLevel, currentState);
+            BindButtonAction(square, currentStage, currentState);
 
-            // 4. 플레이어 위치(폰) 갱신
-            if (absoluteLevel == maxCleared)
+            if (currentStage == maxClearedStage)
             {
                 PlacePawnOnSquare(square.GetComponent<RectTransform>());
             }
         });
     }
 
-    StageState EvaluateStageState(int absoluteLevel, int maxCleared, HashSet<int> lockedSet, HashSet<int> unlockedSet)
+    StageState EvaluateStageState(StageCoord currentStage, StageCoord maxClearedStage, HashSet<int> lockedSet, HashSet<int> unlockedSet)
     {
-        if (StageLogic.IsCurrentlyLocked(absoluteLevel, lockedSet, unlockedSet)) return StageState.Locked;
-        if (StageLogic.IsReached(absoluteLevel, maxCleared)) return StageState.Playable;
+        if (StageLogic.IsCurrentlyLocked(currentStage.ToAbsoluteLevel(), lockedSet, unlockedSet)) return StageState.Locked;
+        if (currentStage <= maxClearedStage) return StageState.Playable;
+
         return StageState.Unreached;
     }
 
@@ -81,7 +80,6 @@ public class UI_Lobby : MonoBehaviour
     {
     }
 
-
     // --- [ 부수 효과 (Side Effects) ] ---
 
     void ApplySquareVisuals(UI_Square square, BoardCoord coord, StageState state)
@@ -94,30 +92,34 @@ public class UI_Lobby : MonoBehaviour
         square.UpdateVisuals(squareModel);
     }
 
-    void BindButtonAction(UI_Square square, int absoluteLevel, StageState state)
+    // 절대 레벨 숫자 대신 StageCoord 객체를 받도록 변경
+    void BindButtonAction(UI_Square square, StageCoord stage, StageState state)
     {
         switch (state)
         {
-            case StageState.Locked: square.BindClickAction(() => WatchAdToUnlock(absoluteLevel)); break;
-            case StageState.Playable: square.BindClickAction(() => OnStageSelected(absoluteLevel)); break;
+            case StageState.Locked: square.BindClickAction(() => WatchAdToUnlock(stage)); break;
+            case StageState.Playable: square.BindClickAction(() => OnStageSelected(stage)); break;
             case StageState.Unreached: break;
         }
     }
 
-    void WatchAdToUnlock(int absoluteLevel)
+    void WatchAdToUnlock(StageCoord stage)
     {
-        Debug.Log($"레벨 {absoluteLevel} 자물쇠 해금을 위해 광고를 봅니다.");
+        // 레코드를 쓰면 로그를 찍을 때도 챕터와 스테이지를 분리해서 보기 훨씬 편해집니다!
+        Debug.Log($"챕터 {stage.ChapterIndex}, 스테이지 {stage.StageIndex} 자물쇠 해금을 위해 광고를 봅니다.");
 
         LevelPlayAdManager.Instance.ShowRewardedAd(() =>
         {
-            StageLockManager.Instance.UnlockLevel(absoluteLevel);
+            // 실제 데이터 저장소(StageLockManager)에 넘길 때만 숫자로 변환
+            StageLockManager.Instance.UnlockLevel(stage.ToAbsoluteLevel());
             UpdateLobbyUI();
         });
     }
 
-    void OnStageSelected(int absoluteLevel)
+    void OnStageSelected(StageCoord stage)
     {
-        LevelManager.Instance.CurrentAbsoluteLevel = absoluteLevel;
+        // 씬을 넘어가기 전 LevelManager에 저장할 때만 숫자로 변환
+        LevelManager.Instance.CurrentAbsoluteLevel = stage.ToAbsoluteLevel();
         SceneManager.LoadScene("Puzzle");
     }
 
