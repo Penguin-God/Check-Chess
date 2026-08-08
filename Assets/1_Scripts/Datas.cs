@@ -77,10 +77,24 @@ public static class BoardSize
     public const int Size = 8; // 절대 불변 고정값
 }
 
-public record StageCoord(int ChapterIndex, int StageIndex)
+public record StageCoord(int ChapterIndex, int StageIndex) : IComparable<StageCoord>
 {
     public static StageCoord FromAbsoluteLevel(int absoluteLevel) => new StageCoord(absoluteLevel / BoardSize.Size, absoluteLevel % BoardSize.Size);
     public static StageCoord FromBoardCoord(BoardCoord boardCoord) => new StageCoord(boardCoord.X, boardCoord.Y);
     public int ToAbsoluteLevel() => (ChapterIndex * BoardSize.Size) + StageIndex;
     public BoardCoord ToBoardCoord() => new BoardCoord(ChapterIndex, StageIndex);
+
+    // 1. IComparable 구현 (리스트의 Sort() 등 정렬을 지원하기 위한 표준)
+    public int CompareTo(StageCoord other)
+    {
+        if (other == null) return 1; // 절대 레벨 값으로 비교를 위임합니다.
+        return ToAbsoluteLevel().CompareTo(other.ToAbsoluteLevel());
+    }
+
+    // 2. 비교 연산자 오버로딩 (ToAbsoluteLevel을 활용한 아주 간결한 구현)
+    public static bool operator >(StageCoord left, StageCoord right) => left.ToAbsoluteLevel() > right.ToAbsoluteLevel();
+    public static bool operator >=(StageCoord left, StageCoord right) => left.ToAbsoluteLevel() >= right.ToAbsoluteLevel();
+
+    public static bool operator <(StageCoord left, StageCoord right) => left.ToAbsoluteLevel() < right.ToAbsoluteLevel();
+    public static bool operator <=(StageCoord left, StageCoord right) => left.ToAbsoluteLevel() <= right.ToAbsoluteLevel();
 }
