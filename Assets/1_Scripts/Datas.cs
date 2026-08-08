@@ -97,4 +97,13 @@ public record StageCoord(int ChapterIndex, int StageIndex) : IComparable<StageCo
 
     public static bool operator <(StageCoord left, StageCoord right) => left.ToAbsoluteLevel() < right.ToAbsoluteLevel();
     public static bool operator <=(StageCoord left, StageCoord right) => left.ToAbsoluteLevel() <= right.ToAbsoluteLevel();
+
+    public static StageCoord operator ++(StageCoord coord) => FromAbsoluteLevel(coord.ToAbsoluteLevel() + 1);
+
+    public static StageCoord operator --(StageCoord coord)
+    {
+        // 0 레벨 미만으로 떨어지는 것을 방지(Math.Max)하면서 1을 뺍니다.
+        int prevLevel = System.Math.Max(0, coord.ToAbsoluteLevel() - 1);
+        return FromAbsoluteLevel(prevLevel);
+    }
 }
