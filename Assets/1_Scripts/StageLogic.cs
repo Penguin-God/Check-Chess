@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public static class StageLockLogic
+public static class StageLogic
 {
+    public static (int chapterIdx, int stageIdx) ToChapterAndStageIndices(int absoluteLevel, int boardSize) => (absoluteLevel / boardSize, absoluteLevel % boardSize);
+    public static int ToAbsoluteLevel(BoardCoord coord, int boardSize) => (coord.X * boardSize) + coord.Y;
+
     // 좌표 문자열을 절대 레벨 숫자로 변환
     public static int ParseCoord(string coord, int boardSize)
     {

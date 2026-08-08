@@ -18,7 +18,7 @@ public class LevelManager : MonoBehaviour
     // 현재 플레이 중인 절대 레벨 (0부터 시작)
     public int CurrentAbsoluteLevel { get; set; }
 
-    // 프로퍼티 내부에서 SaveManager를 호출하여 결합도를 낮춤
+    // 프로퍼티 내부에서 LocalStorage를 호출하여 결합도를 낮춤
     public int MaxClearedLevel
     {
         get => LocalStorage.LoadMaxClearedLevel();
@@ -40,17 +40,14 @@ public class LevelManager : MonoBehaviour
 
     public StageDataSO GetStageData(int absoluteLevel)
     {
-        int chapterIdx = absoluteLevel / 8;
-        int stageIdx = absoluteLevel % 8;
+        var (chapterIdx, stageIdx) = StageLogic.ToChapterAndStageIndices(absoluteLevel, Board<int>.Size);
 
-        if (chapterIdx >= 0 && chapterIdx < chapters.Count)
-        {
-            if (stageIdx >= 0 && stageIdx < chapters[chapterIdx].stages.Count)
-            {
-                return chapters[chapterIdx].stages[stageIdx];
-            }
-        }
-        return null;
+        // 2. 인덱스가 유효한 범위 내에 있는지 판별합니다.
+        bool isValidIndex = chapterIdx >= 0 && chapterIdx < chapters.Count &&
+                            stageIdx >= 0 && stageIdx < chapters[chapterIdx].stages.Count;
+
+        // 3. 유효하면 데이터를, 아니면 null을 반환합니다. (함수형의 단일 반환 원칙)
+        return isValidIndex ? chapters[chapterIdx].stages[stageIdx] : null;
     }
 
     public void ClearCurrentStage()

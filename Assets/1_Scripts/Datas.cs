@@ -23,7 +23,7 @@ public record GameState(Board<PieceType> Board, BoardCoord ActiveSquare)
 
 public record Board<T>
 {
-    public const int Size = 8;
+    public static readonly int Size = 8;
     private readonly T[,] _grid;
     public T[,] Grid => (T[,])_grid.Clone();
 

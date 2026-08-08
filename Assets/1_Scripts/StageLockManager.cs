@@ -16,7 +16,7 @@ public class StageLockManager : MonoBehaviour
         if (Instance == null) { Instance = this; }
         else { Destroy(gameObject); return; }
 
-        DesignatedLockLevels = StageLockLogic.GetDesignatedLockLevels(lockedStageCoords, 8);
+        DesignatedLockLevels = StageLogic.GetDesignatedLockLevels(lockedStageCoords, 8);
         LoadUnlockedLevels();
     }
 
@@ -28,13 +28,13 @@ public class StageLockManager : MonoBehaviour
 
     void SaveUnlockedLevels()
     {
-        string data = StageLockLogic.SerializeUnlocked(UnlockedLevels);
+        string data = StageLogic.SerializeUnlocked(UnlockedLevels);
         LocalStorage.SaveUnlockedStages(data);
     }
 
     void LoadUnlockedLevels()
     {
         string data = LocalStorage.LoadUnlockedStages();
-        UnlockedLevels = StageLockLogic.DeserializeUnlocked(data);
+        UnlockedLevels = StageLogic.DeserializeUnlocked(data);
     }
 }

@@ -121,7 +121,10 @@
 인풋 : LevelManager, StageLockManager 전체. 보면 플레이어 프리펩스 로직이 들어가 있잖아? 이걸 별도의 영속성을 담당하는 클래스를 하나 두고 싶어 
 결과 : 새로운 LocalStorage, 수정된 LevelManager, StageLockManager
  
-
+"19"
+동기 : 흩어져 있는 스테이지 좌표(BoardCoord) <-> int 변환 로직을 몰아넣기
+인풋 : UI_Lobby, Level의 변환 로직을 StageLogic으로 옮겨줘
+결과 : 새로운 ToChapterAndStageIndices(), ToAbsoluteLevel() 함수와 이걸 사용하는 클래스
 
 
 

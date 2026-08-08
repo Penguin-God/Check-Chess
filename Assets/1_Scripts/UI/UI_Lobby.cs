@@ -46,11 +46,13 @@ public class UI_Lobby : MonoBehaviour
 
         BoardIterator.DrawBoardLoop(coord =>
         {
-            int absoluteLevel = (coord.X * BoardIterator.BOARD_SIZE) + coord.Y;
+            int absoluteLevel = StageLogic.ToAbsoluteLevel(coord, BoardIterator.BOARD_SIZE);
+
             UI_Square square = boardButtons[coord];
 
             StageState currentState = EvaluateStageState(absoluteLevel, maxCleared, lockedSet, unlockedSet);
-            square.GetComponent<Button>().interactable  = currentState != StageState.Unreached; // Unreached가 아닐 때만 터치 가능
+
+            square.GetComponent<Button>().interactable = currentState != StageState.Unreached;
             ApplySquareVisuals(square, coord, currentState);
             BindButtonAction(square, absoluteLevel, currentState);
 
@@ -64,8 +66,8 @@ public class UI_Lobby : MonoBehaviour
 
     StageState EvaluateStageState(int absoluteLevel, int maxCleared, HashSet<int> lockedSet, HashSet<int> unlockedSet)
     {
-        if (StageLockLogic.IsCurrentlyLocked(absoluteLevel, lockedSet, unlockedSet)) return StageState.Locked;
-        if (StageLockLogic.IsReached(absoluteLevel, maxCleared)) return StageState.Playable;
+        if (StageLogic.IsCurrentlyLocked(absoluteLevel, lockedSet, unlockedSet)) return StageState.Locked;
+        if (StageLogic.IsReached(absoluteLevel, maxCleared)) return StageState.Playable;
         return StageState.Unreached;
     }
 
