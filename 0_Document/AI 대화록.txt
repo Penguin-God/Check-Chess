@@ -128,6 +128,10 @@
 
 "20"
 동기 : 스테이지 전용 레코드로 크기 비교, 데이터 변환 등 다양한 로직 수행
-결과 : StageCoord만들고 LevelManager등 저장에 사용하고 int 변환 로직은 캡슐화
+결과 : StageCoord만들고 LevelManager, UI_Lobby, StageLockManager에서 사용하던 int를 대체 및 변환 로직 캡슐화
+
+"21"
+동기 : 가장 가까운 잠금만 풀 수 있도록 기획 변경
+
 
 
