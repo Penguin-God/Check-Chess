@@ -1,14 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
-public enum StageState
-{
-    Locked,
-    Playable,
-    Unreached
-}
 
 public class UI_Lobby : MonoBehaviour
 {
@@ -23,20 +15,15 @@ public class UI_Lobby : MonoBehaviour
     public Color lightSquareColor = new Color(0.9f, 0.9f, 0.9f);
     public Color darkSquareColor = new Color(0.4f, 0.6f, 0.4f);
 
-    BoardThemeSO boardTheme;
     Board<UI_Square> boardButtons = new();
 
     void Start()
     {
-        BoardIterator.DrawBoardReverseYLoop(SetupSquareUI);
+        BoardIterator.DrawBoardReverseYLoop(SetupSquareUI); // Grid 규칙 때문에 역으로 설정해야 정좌표가 됨
         UpdateLobbyUI();
     }
 
-    void SetupSquareUI(BoardCoord coord)
-    {
-        GameObject obj = Instantiate(squarePrefab, boardPanel);
-        boardButtons = boardButtons.Change(coord, obj.GetComponent<UI_Square>());
-    }
+    void SetupSquareUI(BoardCoord coord) => boardButtons = boardButtons.Change(coord, Instantiate(squarePrefab, boardPanel).GetComponent<UI_Square>());
 
     void UpdateLobbyUI()
     {
@@ -48,10 +35,10 @@ public class UI_Lobby : MonoBehaviour
         {
             UI_Square square = boardButtons[coord];
             StageCoord currentStage = StageCoord.FromBoardCoord(coord);
-            StageState currentState = EvaluateStageState(currentStage, maxClearedStage, lockedSet, unlockedSet);
+            StageState currentState = LobbySquarePresenter.EvaluateStageState(currentStage, maxClearedStage, lockedSet, unlockedSet);
 
             square.GetComponent<Button>().interactable = currentState != StageState.Unreached;
-            ApplySquareVisuals(square, GetSquareColor(coord, currentState), currentState);
+            ApplySquareVisuals(square, LobbySquarePresenter.GetSquareColor(coord, currentState, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor)), currentState);
             BindButtonAction(square, currentStage, currentState);
 
             if (currentStage == maxClearedStage)
@@ -59,30 +46,6 @@ public class UI_Lobby : MonoBehaviour
                 PlacePawnOnSquare(square.GetComponent<RectTransform>());
             }
         });
-    }
-
-    StageState EvaluateStageState(StageCoord currentStage, StageCoord maxClearedStage, HashSet<int> lockedSet, HashSet<int> unlockedSet)
-    {
-        if (StageLogic.IsCurrentlyLocked(currentStage.ToAbsoluteLevel(), lockedSet, unlockedSet)) return StageState.Locked;
-        if (currentStage <= maxClearedStage) return StageState.Playable;
-
-        return StageState.Unreached;
-    }
-
-    void RenderState(BoardCoord coord)
-    {
-        var modelBoard = BoardModelMapper.CreateEmptyModel(boardTheme.lightSquareColor, boardTheme.darkSquareColor);
-        modelBoard = modelBoard.Change(coord, modelBoard[coord] with { StatusIcon = pawnIcon });
-    }
-
-    void Draw(BoardCoord coord, SquareModel model)
-    {
-    }
-
-    Color GetSquareColor(BoardCoord coord, StageState state)
-    {
-        Color baseColor = BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
-        return state == StageState.Playable ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
     }
 
 
@@ -133,3 +96,5 @@ public class UI_Lobby : MonoBehaviour
         pawnMarker.gameObject.SetActive(true);
     }
 }
+
+

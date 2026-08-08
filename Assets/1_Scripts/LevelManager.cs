@@ -16,7 +16,7 @@ public class LevelManager : MonoBehaviour
     public List<ChapterData> chapters;
     public StageCoord CurrentStage { get; set; }
 
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -31,8 +31,7 @@ public class LevelManager : MonoBehaviour
 
     public StageDataSO GetCurrentStageData()
     {
-        bool isValidIndex = CurrentStage.ChapterIndex >= 0 && CurrentStage.ChapterIndex < chapters.Count &&
-                            CurrentStage.StageIndex >= 0 && CurrentStage.StageIndex < chapters[CurrentStage.ChapterIndex].stages.Count;
+        bool isValidIndex = CurrentStage.ChapterIndex < chapters.Count && CurrentStage.StageIndex < chapters[CurrentStage.ChapterIndex].stages.Count;
 
         return isValidIndex ? chapters[CurrentStage.ChapterIndex].stages[CurrentStage.StageIndex] : null;
     }
