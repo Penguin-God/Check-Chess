@@ -24,7 +24,7 @@ public class UI_Lobby : MonoBehaviour
     public Color darkSquareColor = new Color(0.4f, 0.6f, 0.4f);
 
     BoardThemeSO boardTheme;
-    Board<Button> boardButtons = new();
+    Board<UI_Square> boardButtons = new();
 
     void Start()
     {
@@ -35,7 +35,7 @@ public class UI_Lobby : MonoBehaviour
     void SetupSquareUI(BoardCoord coord)
     {
         GameObject obj = Instantiate(squarePrefab, boardPanel);
-        boardButtons = boardButtons.Change(coord, obj.GetComponent<Button>());
+        boardButtons = boardButtons.Change(coord, obj.GetComponent<UI_Square>());
     }
 
     void UpdateLobbyUI()
@@ -47,20 +47,17 @@ public class UI_Lobby : MonoBehaviour
         BoardIterator.DrawBoardLoop(coord =>
         {
             int absoluteLevel = (coord.X * BoardIterator.BOARD_SIZE) + coord.Y;
-            Button btn = boardButtons[coord];
+            UI_Square square = boardButtons[coord];
 
-            // 1. 순수 함수로 현재 칸의 명확한 '상태(State)' 하나를 도출
             StageState currentState = EvaluateStageState(absoluteLevel, maxCleared, lockedSet, unlockedSet);
-            btn.interactable = currentState != StageState.Unreached; // Unreached가 아닐 때만 터치 가능
-            ApplySquareVisuals(btn, coord, currentState);
-
-            // 3. 버튼 동작 연결
-            BindButtonAction(btn, absoluteLevel, currentState);
+            square.GetComponent<Button>().interactable  = currentState != StageState.Unreached; // Unreached가 아닐 때만 터치 가능
+            ApplySquareVisuals(square, coord, currentState);
+            BindButtonAction(square, absoluteLevel, currentState);
 
             // 4. 플레이어 위치(폰) 갱신
             if (absoluteLevel == maxCleared)
             {
-                PlacePawnOnSquare(btn.GetComponent<RectTransform>());
+                PlacePawnOnSquare(square.GetComponent<RectTransform>());
             }
         });
     }
@@ -85,25 +82,22 @@ public class UI_Lobby : MonoBehaviour
 
     // --- [ 부수 효과 (Side Effects) ] ---
 
-    void ApplySquareVisuals(Button btn, BoardCoord coord, StageState state)
+    void ApplySquareVisuals(UI_Square square, BoardCoord coord, StageState state)
     {
-        UI_Square squareUI = btn.GetComponent<UI_Square>();
         Color baseColor = BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor);
         Color finalBgColor = state == StageState.Playable ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
         Sprite currentIcon = state == StageState.Locked ? lockSprite : null;
 
         SquareModel squareModel = new SquareModel(finalBgColor, currentIcon);
-        squareUI.UpdateVisuals(squareModel);
+        square.UpdateVisuals(squareModel);
     }
 
-    void BindButtonAction(Button btn, int absoluteLevel, StageState state)
+    void BindButtonAction(UI_Square square, int absoluteLevel, StageState state)
     {
-        btn.onClick.RemoveAllListeners();
-
         switch (state)
         {
-            case StageState.Locked: btn.onClick.AddListener(() => WatchAdToUnlock(absoluteLevel)); break;
-            case StageState.Playable: btn.onClick.AddListener(() => OnStageSelected(absoluteLevel)); break;
+            case StageState.Locked: square.BindClickAction(() => WatchAdToUnlock(absoluteLevel)); break;
+            case StageState.Playable: square.BindClickAction(() => OnStageSelected(absoluteLevel)); break;
             case StageState.Unreached: break;
         }
     }

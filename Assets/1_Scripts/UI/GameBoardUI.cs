@@ -45,7 +45,7 @@ public class GameBoardUI : MonoBehaviour
         {
             GameObject obj = Instantiate(squarePrefab, boardPanel);
             UI_Square squareUI = obj.GetComponent<UI_Square>();
-            squareUI.Init(() => OnSquareClicked(coord));
+            squareUI.BindClickAction(() => OnSquareClicked(coord));
             return squareUI;
         }
 
