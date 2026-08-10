@@ -43,4 +43,6 @@ public class UI_ButtonPanel : MonoBehaviour
         // 바뀐 LevelManager 로직 덕분에 자물쇠와 클리어 한계가 동시에 완벽하게 계산됩니다.
         nextBtn.interactable = LevelManager.Instance.CurrentStagePlayable(nextStage);
     }
+
+    public void InActiveHintButton() => hintBtn.interactable = false;
 }

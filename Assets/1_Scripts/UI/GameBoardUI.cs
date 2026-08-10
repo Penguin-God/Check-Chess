@@ -59,6 +59,7 @@ public class GameBoardUI : MonoBehaviour
             {
                 PlaySound(selectPieceSound);
                 nextState = ChessPuzzleLogic.SelectStartingPiece(currentState, clickedCoord);
+                buttonPanel.InActiveHintButton();
             }
             else
             {
