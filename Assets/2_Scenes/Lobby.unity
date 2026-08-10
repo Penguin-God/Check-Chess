@@ -561,10 +561,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbf5294f6d5321e4d918e584f582dd9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageLockManager
-  lockPointCoords:
-  - a3
-  - b5
-  - c7
+  lockPointDataSO: {fileID: 11400000, guid: 2a101d81ab2b47447a8017bb7c612ae7, type: 2}
 --- !u!4 &922168767
 Transform:
   m_ObjectHideFlags: 0

@@ -21,6 +21,6 @@ public static class StageLogic
     // unlockStage보다 큰 스테이지만 가져옴
     public static HashSet<StageCoord> GetRemainingLocks(HashSet<StageCoord> lockedSet, StageCoord maxUnlockStage) => new (lockedSet.Where(lockStage => lockStage > maxUnlockStage));
 
-    public static HashSet<StageCoord> GetDesignatedLockLevels(IEnumerable<string> coords) => new (coords.Select(StringToStage));
+    public static HashSet<StageCoord> StringToStage(IEnumerable<string> coords) => new (coords.Select(StringToStage));
     static StageCoord StringToStage(string coord) => StageCoord.FromBoardCoord(BoardCoord.FromChessSquare(coord));
 }

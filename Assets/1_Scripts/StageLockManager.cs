@@ -5,11 +5,9 @@ public class StageLockManager : MonoBehaviour
 {
     public static StageLockManager Instance { get; private set; }
 
-    [Header("자물쇠로 잠글 스테이지 좌표 (예: b1, c3)")]
-    [SerializeField] List<string> lockPointCoords;
+    public HashSet<StageCoord> CurrentLockPoints => StageLogic.GetRemainingLocks(lockPointDataSO.GetLockPoints(), LocalStorage.LoadMaxClearableStage());
+    [SerializeField] LockPointDataSO lockPointDataSO;
 
-    public HashSet<StageCoord> CurrentLockPoints => StageLogic.GetRemainingLocks(StageLogic.GetDesignatedLockLevels(lockPointCoords), LocalStorage.LoadMaxClearableStage());
-    
     void Awake()
     {
         if (Instance == null) { Instance = this; }
@@ -22,7 +20,7 @@ public class StageLockManager : MonoBehaviour
 
     public void SaveMaxClearableStage(StageCoord unlockPoint)
     {
-        var maxClearalbe = StageLogic.GetClearableLimit(StageLogic.GetDesignatedLockLevels(lockPointCoords), unlockPoint);
+        var maxClearalbe = StageLogic.GetClearableLimit(lockPointDataSO.GetLockPoints(), unlockPoint);
         LocalStorage.SaveMaxClearableStage(maxClearalbe);
     }
 }
