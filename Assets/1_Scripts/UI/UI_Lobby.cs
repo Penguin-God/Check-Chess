@@ -2,6 +2,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+public enum StageState
+{
+    LockPoint,
+    Playable,
+    Unplayable,
+}
+
 public class UI_Lobby : MonoBehaviour
 {
     [Header("Board UI References")]
@@ -37,7 +44,7 @@ public class UI_Lobby : MonoBehaviour
             var currentState = EvaluateStageState(currentStage, maxPlayableStage);
             square.GetComponent<Button>().interactable = currentState != StageState.Unplayable;
 
-            ApplySquareVisuals(square, StageStatusLogic.GetStatusColor(currentState, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor)), currentState);
+            ApplySquareVisuals(square, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor), currentState);
             BindButtonAction(square, currentStage, currentState);
 
             // 플레이어 마커(폰)를 유저가 가장 최근에 도달하여 도전할 곳에 위치시킵니다.
