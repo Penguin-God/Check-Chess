@@ -2,12 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public enum StagePersentType
-{
-    LockPoint,
-    Playable,
-    Unplayable,
-}
+
 
 public class UI_Lobby : MonoBehaviour
 {
@@ -53,29 +48,29 @@ public class UI_Lobby : MonoBehaviour
         });
     }
 
-    StagePersentType AA(StageCoord stageCoord)
+    StageState AA(StageCoord stageCoord)
     {
-        if (StageLockManager.Instance.LockPoints.Contains(stageCoord)) return StagePersentType.LockPoint;
-        else if (stageCoord > LocalStorage.LoadMaxClearedStage()) return StagePersentType.Unplayable;
-        else return StagePersentType.Playable;
+        if (StageLockManager.Instance.LockPoints.Contains(stageCoord)) return StageState.LockPoint;
+        else if (stageCoord > LocalStorage.LoadMaxClearedStage()) return StageState.Unplayable;
+        else return StageState.Playable;
     }
 
     // --- [ 부수 효과 (Side Effects) ] ---
-    void ApplySquareVisuals(UI_Square square, Color color, StagePersentType state)
+    void ApplySquareVisuals(UI_Square square, Color color, StageState state)
     {
-        Sprite currentIcon = state == StagePersentType.LockPoint ? lockSprite : null;
+        Sprite currentIcon = state == StageState.LockPoint ? lockSprite : null;
         SquareModel squareModel = new SquareModel(color, currentIcon);
         square.UpdateVisuals(squareModel);
     }
 
     // 절대 레벨 숫자 대신 StageCoord 객체를 받도록 변경
-    void BindButtonAction(UI_Square square, StageCoord stage, StagePersentType state)
+    void BindButtonAction(UI_Square square, StageCoord stage, StageState state)
     {
         switch (state)
         {
-            case StagePersentType.LockPoint: square.BindClickAction(() => WatchAdToUnlock(stage)); break;
-            case StagePersentType.Playable: square.BindClickAction(() => OnStageSelected(stage)); break;
-            case StagePersentType.Unplayable: break;
+            case StageState.LockPoint: square.BindClickAction(() => WatchAdToUnlock(stage)); break;
+            case StageState.Playable: square.BindClickAction(() => OnStageSelected(stage)); break;
+            case StageState.Unplayable: break;
         }
     }
 
@@ -85,7 +80,7 @@ public class UI_Lobby : MonoBehaviour
 
         LevelPlayAdManager.Instance.ShowRewardedAd(() =>
         {
-            StageLockManager.Instance._UnlockLevel(stage);
+            StageLockManager.Instance.UnlockLevel(stage);
             UpdateLobbyUI();
         });
     }

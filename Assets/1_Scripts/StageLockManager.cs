@@ -10,41 +10,20 @@ public class StageLockManager : MonoBehaviour
 
     HashSet<StageCoord> LockLevels { get; set; }
     public HashSet<StageCoord> LockPoints => StageLogic.GetDesignatedLockLevels(lockPointCoords);
-    HashSet<StageCoord> UnlockedLevels { get; set; }
-
+    
     void Awake()
     {
         if (Instance == null) { Instance = this; }
         else { Destroy(gameObject); return; }
 
         LockLevels = StageLogic.GetDesignatedLockLevels(lockPointCoords);
-        LoadUnlockedLevels();
     }
 
     public void UnlockLevel(StageCoord stage)
-    {
-        UnlockedLevels.Add(stage);
-        SaveUnlockedLevels();
-    }
-
-    public void _UnlockLevel(StageCoord stage)
     {
         StageLogic.GetPlayableLimit(LockLevels, stage);
         LocalStorage.SaveMaxUnlockStage(stage);
     }
 
-    // public StageState EvaluateStageState(StageCoord stage) => StageStatusLogic.EvaluateStageState(stage, LocalStorage.LoadMaxClearedStage(), LockLevels, UnlockedLevels);
     public StageState EvaluateStageState(StageCoord stage) => StageStatusLogic.EvaluateStageState(stage, LocalStorage.LoadMaxClearedStage(), LocalStorage.LoadMaxUnlockStage());
-
-    void SaveUnlockedLevels()
-    {
-        string data = StageLogic.SerializeUnlocked(UnlockedLevels);
-        LocalStorage.SaveUnlockedStages(data);
-    }
-
-    void LoadUnlockedLevels()
-    {
-        string data = LocalStorage.LoadUnlockedStages();
-        UnlockedLevels = StageLogic.DeserializeUnlocked(data);
-    }
 }

@@ -3,11 +3,11 @@ using System.Linq;
 
 public static class StageLogic
 {
-    public static StageCoord GetPlayableLimit(HashSet<StageCoord> lockedSet, StageCoord unlockStage)
+    public static StageCoord GetPlayableLimit(HashSet<StageCoord> lockedSet, StageCoord maxUnlockStage)
     {
         // unlockStage보다 큰 자물쇠들만 필터링한 뒤, 오름차순 정렬하여 가장 가까운 첫 번째 자물쇠를 찾습니다.
-        StageCoord nextLock = lockedSet
-            .Where(lockStage => lockStage > unlockStage)
+        StageCoord nextLock =
+            GetLockSet(lockedSet, maxUnlockStage)
             .OrderBy(lockStage => lockStage)
             .FirstOrDefault();
 
@@ -17,6 +17,9 @@ public static class StageLogic
         // 첫 번째 자물쇠의 바로 이전 단계(--)를 반환합니다.
         return --nextLock;
     }
+
+    // unlockStage보다 큰 스테이지만 가져옴
+    public static IEnumerable<StageCoord> GetLockSet(HashSet<StageCoord> lockedSet, StageCoord maxUnlockStage) => lockedSet.Where(lockStage => lockStage > maxUnlockStage);
 
     public static HashSet<StageCoord> GetDesignatedLockLevels(IEnumerable<string> coords) => new (coords.Select(StringToStage));
     static StageCoord StringToStage(string coord) => StageCoord.FromBoardCoord(BoardCoord.FromChessSquare(coord));
