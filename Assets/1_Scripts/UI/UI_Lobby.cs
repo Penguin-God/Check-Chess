@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-
-
 public class UI_Lobby : MonoBehaviour
 {
     [Header("Board UI References")]
@@ -21,7 +19,7 @@ public class UI_Lobby : MonoBehaviour
 
     void Start()
     {
-        BoardIterator.DrawBoardReverseYLoop(SetupSquareUI); // Grid 규칙 때문에 역으로 설정해야 정좌표가 됨
+        BoardIterator.DrawBoardReverseYLoop(SetupSquareUI);
         UpdateLobbyUI();
     }
 
@@ -29,29 +27,31 @@ public class UI_Lobby : MonoBehaviour
 
     void UpdateLobbyUI()
     {
-        StageCoord maxClearedStage = LocalStorage.LoadMaxClearedStage();
-        
+        StageCoord maxPlayableStage = LocalStorage.LoadMaxPlayableStage();
+
         BoardIterator.DrawBoardLoop(coord =>
         {
             UI_Square square = boardButtons[coord];
             StageCoord currentStage = StageCoord.FromBoardCoord(coord);
-            var currentState = AA(currentStage);
 
-            square.GetComponent<Button>().interactable = false;
+            var currentState = EvaluateStageState(currentStage, maxPlayableStage);
+            square.GetComponent<Button>().interactable = currentState != StageState.Unplayable;
+
             ApplySquareVisuals(square, StageStatusLogic.GetStatusColor(currentState, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor)), currentState);
             BindButtonAction(square, currentStage, currentState);
 
-            if (currentStage == maxClearedStage)
+            // 플레이어 마커(폰)를 유저가 가장 최근에 도달하여 도전할 곳에 위치시킵니다.
+            if (currentStage == maxPlayableStage)
             {
                 PlacePawnOnSquare(square.GetComponent<RectTransform>());
             }
         });
     }
 
-    StageState AA(StageCoord stageCoord)
+    StageState EvaluateStageState(StageCoord stageCoord, StageCoord maxPlayableStage)
     {
         if (StageLockManager.Instance.CurrentLockPoints.Contains(stageCoord)) return StageState.LockPoint;
-        else if (stageCoord > LocalStorage.LoadMaxPlayable()) return StageState.Unplayable;
+        else if (stageCoord > maxPlayableStage) return StageState.Unplayable;
         else return StageState.Playable;
     }
 
@@ -63,7 +63,6 @@ public class UI_Lobby : MonoBehaviour
         square.UpdateVisuals(squareModel);
     }
 
-    // 절대 레벨 숫자 대신 StageCoord 객체를 받도록 변경
     void BindButtonAction(UI_Square square, StageCoord stage, StageState state)
     {
         switch (state)
@@ -77,7 +76,6 @@ public class UI_Lobby : MonoBehaviour
     void WatchAdToUnlock(StageCoord stage)
     {
         Debug.Log($"챕터 {stage.ChapterIndex}, 스테이지 {stage.StageIndex} 자물쇠 해금을 위해 광고를 봅니다.");
-
         LevelPlayAdManager.Instance.ShowRewardedAd(() =>
         {
             StageLockManager.Instance.SaveMaxClearableStage(stage);
@@ -99,5 +97,3 @@ public class UI_Lobby : MonoBehaviour
         pawnMarker.gameObject.SetActive(true);
     }
 }
-
-

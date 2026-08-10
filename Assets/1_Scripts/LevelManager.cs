@@ -32,15 +32,18 @@ public class LevelManager : MonoBehaviour
     public StageDataSO GetCurrentStageData()
     {
         bool isValidIndex = CurrentStage.ChapterIndex < chapters.Count && CurrentStage.StageIndex < chapters[CurrentStage.ChapterIndex].stages.Count;
-
         return isValidIndex ? chapters[CurrentStage.ChapterIndex].stages[CurrentStage.StageIndex] : null;
     }
 
     public void ClearCurrentStage()
     {
-        if (CurrentStage > LocalStorage.LoadMaxClearedStage())
-            LocalStorage.SaveMaxClearedStage(CurrentStage);
+        var nextStage = CurrentStage;
+        nextStage++;
+
+        if (nextStage > LocalStorage.LoadMaxPlayableStage())
+            LocalStorage.SaveMaxPlayableStage(nextStage);
     }
 
-    public bool CurrentStagePlayable(StageCoord stage) => LocalStorage.LoadMaxClearableStage() >= stage;
+    // 다음 스테이지로 넘어갈 수 있는지 확인 (진행도 조건 && 자물쇠 조건)
+    public bool CurrentStagePlayable(StageCoord stage) => stage <= LocalStorage.LoadMaxPlayableStage() && stage <= LocalStorage.LoadMaxClearableStage();
 }

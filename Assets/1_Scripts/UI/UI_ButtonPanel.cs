@@ -10,7 +10,6 @@ public class UI_ButtonPanel : MonoBehaviour
     public Button hintBtn;
     public Button nextBtn;
 
-    // 힌트 버튼 클릭 이벤트를 외부(GameBoardUI)로 전달하기 위한 Action
     public event Action OnHintClicked;
 
     void Start()
@@ -26,6 +25,7 @@ public class UI_ButtonPanel : MonoBehaviour
     void ToLobby() => SceneManager.LoadScene("Lobby");
 
     void ShowHint() => OnHintClicked?.Invoke();
+
     void ToNextStage()
     {
         LevelManager.Instance.CurrentStage++;
@@ -36,9 +36,11 @@ public class UI_ButtonPanel : MonoBehaviour
     {
         hintBtn.gameObject.SetActive(false);
         nextBtn.gameObject.SetActive(true);
+
         var nextStage = LevelManager.Instance.CurrentStage;
-        nextStage++;
+        nextStage++; // 다음 스테이지를 미리 계산
+
+        // 바뀐 LevelManager 로직 덕분에 자물쇠와 클리어 한계가 동시에 완벽하게 계산됩니다.
         nextBtn.interactable = LevelManager.Instance.CurrentStagePlayable(nextStage);
-        // nextBtn.GetComponent<Image>().color = StageStatusLogic.GetStatusColor(status, nextBtn.GetComponent<Image>().color);
     }
 }
