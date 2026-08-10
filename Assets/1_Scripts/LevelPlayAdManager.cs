@@ -10,8 +10,8 @@ public class LevelPlayAdManager : MonoBehaviour
     public string appKey = "277cdb17d";
     public string adUnitId = "ufblnzbx0r5k6upi";
 
-    private LevelPlayRewardedAd rewardedAd;
-    private Action onAdSuccessCallback; // UI에 결과를 알려줄 델리게이트
+    LevelPlayRewardedAd rewardedAd;
+    Action onAdSuccessCallback; // UI에 결과를 알려줄 델리게이트
 
     void Awake()
     {
@@ -21,6 +21,9 @@ public class LevelPlayAdManager : MonoBehaviour
 
     void Start()
     {
+        // Init() 함수를 부르기 전에 반드시 테스트 스위트를 켜겠다고 선언합니다.
+        LevelPlay.SetMetaData("is_test_suite", "enable");
+
         LevelPlay.OnInitSuccess += OnInitSuccess;
         LevelPlay.OnInitFailed += OnInitFailed;
         LevelPlay.Init(appKey);
@@ -28,6 +31,9 @@ public class LevelPlayAdManager : MonoBehaviour
 
     void OnInitSuccess(LevelPlayConfiguration config)
     {
+        // 초기화가 성공하자마자 폰 화면에 테스트 스위트 UI를 강제로 띄웁니다.
+        LevelPlay.LaunchTestSuite();
+
         rewardedAd = new LevelPlayRewardedAd(adUnitId);
         rewardedAd.OnAdRewarded += OnAdRewarded;
         rewardedAd.OnAdLoadFailed += OnAdLoadFailed;
