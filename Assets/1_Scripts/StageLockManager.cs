@@ -26,6 +26,12 @@ public class StageLockManager : MonoBehaviour
         SaveUnlockedLevels();
     }
 
+    public void _UnlockLevel(StageCoord stage)
+    {
+        StageLogic.GetPlayableLimit(LockLevels, stage);
+        LocalStorage.SaveMaxUnlockStage(stage);
+    }
+
     void SaveUnlockedLevels()
     {
         string data = StageLogic.SerializeUnlocked(UnlockedLevels);
