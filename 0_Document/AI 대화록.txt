@@ -131,6 +131,8 @@
 결과 : StageCoord만들고 LevelManager, UI_Lobby, StageLockManager에서 사용하던 int를 대체 및 변환 로직 캡슐화
 
 "21"
-동기 : 가장 가까운 잠금만 풀 수 있도록 기획 변경
-인풋 : 
+동기 및 행동 : 가장 가까운 잠금만 풀 수 있도록 기획 변경
+
+"22"
+
 

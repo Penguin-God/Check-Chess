@@ -1,3 +1,4 @@
+using System.Linq; // [추가] Any()와 Min()을 사용하기 위해 필요합니다.
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -35,6 +36,11 @@ public class UI_Lobby : MonoBehaviour
     void UpdateLobbyUI()
     {
         StageCoord maxPlayableStage = LocalStorage.LoadMaxPlayableStage();
+        var currentLocks = StageLockManager.Instance.CurrentLockPoints;
+
+        // [핵심] 현재 남은 자물쇠 집합 중 가장 작은 값(첫 번째 자물쇠)을 찾습니다!
+        // (StageCoord에 IComparable을 구현해 두었기 때문에 .Min()이 완벽하게 작동합니다)
+        StageCoord firstLock = currentLocks.Any() ? currentLocks.Min() : null;
 
         BoardIterator.DrawBoardLoop(coord =>
         {
@@ -42,12 +48,13 @@ public class UI_Lobby : MonoBehaviour
             StageCoord currentStage = StageCoord.FromBoardCoord(coord);
 
             var currentState = EvaluateStageState(currentStage, maxPlayableStage);
-            square.GetComponent<Button>().interactable = currentState != StageState.Unplayable;
+            square.GetComponent<Button>().interactable = false;
 
             ApplySquareVisuals(square, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor), currentState);
-            BindButtonAction(square, currentStage, currentState);
 
-            // 플레이어 마커(폰)를 유저가 가장 최근에 도달하여 도전할 곳에 위치시킵니다.
+            // 바인딩 시에도 첫 번째 자물쇠 여부를 함께 넘겨줍니다.
+            BindButtonAction(square, currentStage, currentState, currentStage == firstLock);
+
             if (currentStage == maxPlayableStage)
             {
                 PlacePawnOnSquare(square.GetComponent<RectTransform>());
@@ -70,13 +77,21 @@ public class UI_Lobby : MonoBehaviour
         square.UpdateVisuals(squareModel);
     }
 
-    void BindButtonAction(UI_Square square, StageCoord stage, StageState state)
+    // 매개변수로 isFirstLock을 추가하여 로직을 더 안전하게 제어합니다.
+    void BindButtonAction(UI_Square square, StageCoord stage, StageState state, bool isFirstLock)
     {
         switch (state)
         {
-            case StageState.LockPoint: square.BindClickAction(() => WatchAdToUnlock(stage)); break;
-            case StageState.Playable: square.BindClickAction(() => OnStageSelected(stage)); break;
-            case StageState.Unplayable: break;
+            case StageState.LockPoint:
+                // 오직 첫 번째 자물쇠일 때만 광고 이벤트를 바인딩합니다.
+                if (isFirstLock)
+                    square.BindClickAction(() => WatchAdToUnlock(stage));
+                break;
+            case StageState.Playable:
+                square.BindClickAction(() => OnStageSelected(stage));
+                break;
+            case StageState.Unplayable:
+                break;
         }
     }
 
