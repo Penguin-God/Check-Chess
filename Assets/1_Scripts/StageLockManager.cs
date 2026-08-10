@@ -14,11 +14,15 @@ public class StageLockManager : MonoBehaviour
     {
         if (Instance == null) { Instance = this; }
         else { Destroy(gameObject); return; }
+
+        // 최초 unlock
+        if (LocalStorage.LoadMaxClearableStage() == new StageCoord(0, 0))
+            SaveMaxClearableStage(new StageCoord(0, 0));
     }
 
     public void SaveMaxClearableStage(StageCoord unlockPoint)
     {
         var maxClearalbe = StageLogic.GetClearableLimit(StageLogic.GetDesignatedLockLevels(lockPointCoords), unlockPoint);
-        LocalStorage.SaveMaxClearableStage(unlockPoint);
+        LocalStorage.SaveMaxClearableStage(maxClearalbe);
     }
 }
