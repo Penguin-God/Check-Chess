@@ -51,7 +51,7 @@ public class UI_Lobby : MonoBehaviour
     StageState AA(StageCoord stageCoord)
     {
         if (StageLockManager.Instance.CurrentLockPoints.Contains(stageCoord)) return StageState.LockPoint;
-        else if (stageCoord > LocalStorage.LoadMaxClearedStage()) return StageState.Unplayable;
+        else if (stageCoord > LocalStorage.LoadMaxPlayable()) return StageState.Unplayable;
         else return StageState.Playable;
     }
 

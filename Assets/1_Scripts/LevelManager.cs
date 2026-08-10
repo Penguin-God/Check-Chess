@@ -38,10 +38,9 @@ public class LevelManager : MonoBehaviour
 
     public void ClearCurrentStage()
     {
-        if (CurrentStage >= LocalStorage.LoadMaxClearedStage())
-        {
-            CurrentStage++;
+        if (CurrentStage > LocalStorage.LoadMaxClearedStage())
             LocalStorage.SaveMaxClearedStage(CurrentStage);
-        }
     }
+
+    public bool CurrentStagePlayable(StageCoord stage) => LocalStorage.LoadMaxClearableStage() >= stage;
 }

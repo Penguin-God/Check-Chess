@@ -26,14 +26,19 @@ public class UI_ButtonPanel : MonoBehaviour
     void ToLobby() => SceneManager.LoadScene("Lobby");
 
     void ShowHint() => OnHintClicked?.Invoke();
-    void ToNextStage() => RestartStage();
+    void ToNextStage()
+    {
+        LevelManager.Instance.CurrentStage++;
+        RestartStage();
+    }
 
     public void Clear()
     {
         hintBtn.gameObject.SetActive(false);
         nextBtn.gameObject.SetActive(true);
-        var status = StageStatusLogic.EvaluateStageState(LevelManager.Instance.CurrentStage, LocalStorage.LoadMaxClearedStage(), LocalStorage.LoadMaxClearableStage())
-        nextBtn.interactable = status == StageState.Playable ? true : false;
-        nextBtn.GetComponent<Image>().color = StageStatusLogic.GetStatusColor(status, nextBtn.GetComponent<Image>().color);
+        var nextStage = LevelManager.Instance.CurrentStage;
+        nextStage++;
+        nextBtn.interactable = LevelManager.Instance.CurrentStagePlayable(nextStage);
+        // nextBtn.GetComponent<Image>().color = StageStatusLogic.GetStatusColor(status, nextBtn.GetComponent<Image>().color);
     }
 }

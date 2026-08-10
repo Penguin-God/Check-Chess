@@ -17,4 +17,15 @@ public static class LocalStorage
 
     public static StageCoord LoadMaxClearableStage() => LoadStage(KEY_MAX_CLEARABLE);
     public static void SaveMaxClearableStage(StageCoord stageCoord) => SaveStage(KEY_MAX_CLEARABLE, stageCoord);
+
+    public static StageCoord LoadMaxPlayable()
+    {
+        if (PlayerPrefs.HasKey(KEY_MAX_CLEARED_LEVEL) == false) return new StageCoord(0, 0);
+        else
+        {
+            var result = LoadMaxClearableStage();
+            result++;
+            return result;
+        }
+    }
 }
