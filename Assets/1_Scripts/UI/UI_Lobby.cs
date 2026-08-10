@@ -80,7 +80,7 @@ public class UI_Lobby : MonoBehaviour
 
         LevelPlayAdManager.Instance.ShowRewardedAd(() =>
         {
-            LocalStorage.SaveMaxUnlockStage(stage);
+            StageLockManager.Instance.SaveMaxClearableStage(stage);
             UpdateLobbyUI();
         });
     }

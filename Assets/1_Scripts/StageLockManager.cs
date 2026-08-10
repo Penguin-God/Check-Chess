@@ -8,7 +8,7 @@ public class StageLockManager : MonoBehaviour
     [Header("자물쇠로 잠글 스테이지 좌표 (예: b1, c3)")]
     [SerializeField] List<string> lockPointCoords;
 
-    public HashSet<StageCoord> CurrentLockPoints => StageLogic.GetRemainingLocks(StageLogic.GetDesignatedLockLevels(lockPointCoords), LocalStorage.LoadMaxUnlockStage());
+    public HashSet<StageCoord> CurrentLockPoints => StageLogic.GetRemainingLocks(StageLogic.GetDesignatedLockLevels(lockPointCoords), LocalStorage.LoadMaxClearableStage());
     
     void Awake()
     {
@@ -16,6 +16,9 @@ public class StageLockManager : MonoBehaviour
         else { Destroy(gameObject); return; }
     }
 
-    public void UnlockLevel(StageCoord stage) => LocalStorage.SaveMaxUnlockStage(stage);
-    public StageState EvaluateStageState(StageCoord stage) => StageStatusLogic.EvaluateStageState(stage, LocalStorage.LoadMaxClearedStage(), LocalStorage.LoadMaxUnlockStage());
+    public void SaveMaxClearableStage(StageCoord unlockPoint)
+    {
+        var maxClearalbe = StageLogic.GetClearableLimit(StageLogic.GetDesignatedLockLevels(lockPointCoords), unlockPoint);
+        LocalStorage.SaveMaxClearableStage(unlockPoint);
+    }
 }

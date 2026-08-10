@@ -3,29 +3,18 @@ using UnityEngine;
 public static class LocalStorage
 {
     const string KEY_MAX_CLEARED_LEVEL = "MaxClearedLevel";
-    const string KEY_UNLOCKED_STAGES = "UnlockedStageLevels";
+    const string KEY_MAX_CLEARABLE = "MaxClearableLevel";
 
-    public static StageCoord LoadMaxClearedStage() => StageCoord.FromAbsoluteLevel(PlayerPrefs.GetInt(KEY_MAX_CLEARED_LEVEL, 0));
-
-    public static void SaveMaxClearedStage(StageCoord stageCoord)
+    static StageCoord LoadStage(string key, int defaultValue = 0) => StageCoord.FromAbsoluteLevel(PlayerPrefs.GetInt(key, defaultValue));
+    static void SaveStage(string key, StageCoord stage)
     {
-        PlayerPrefs.SetInt(KEY_MAX_CLEARED_LEVEL, stageCoord.ToAbsoluteLevel());
-        PlayerPrefs.Save(); // 기기에 확실히 기록되도록 Save() 호출
-    }
-
-    public static string LoadUnlockedStages() => PlayerPrefs.GetString(KEY_UNLOCKED_STAGES, "");
-
-    public static void SaveUnlockedStages(string data)
-    {
-        PlayerPrefs.SetString(KEY_UNLOCKED_STAGES, data);
+        PlayerPrefs.SetInt(key, stage.ToAbsoluteLevel());
         PlayerPrefs.Save();
     }
 
+    public static StageCoord LoadMaxClearedStage() => LoadStage(KEY_MAX_CLEARED_LEVEL);
+    public static void SaveMaxClearedStage(StageCoord stageCoord) => SaveStage(KEY_MAX_CLEARED_LEVEL, stageCoord);
 
-    public static void SaveMaxUnlockStage(StageCoord stageCoord)
-    {
-        PlayerPrefs.SetInt("MAX_UNLOCK", stageCoord.ToAbsoluteLevel());
-        PlayerPrefs.Save(); // 기기에 확실히 기록되도록 Save() 호출
-    }
-    public static StageCoord LoadMaxUnlockStage() => StageCoord.FromAbsoluteLevel(PlayerPrefs.GetInt("MAX_UNLOCK", 0));
+    public static StageCoord LoadMaxClearableStage() => LoadStage(KEY_MAX_CLEARABLE);
+    public static void SaveMaxClearableStage(StageCoord stageCoord) => SaveStage(KEY_MAX_CLEARABLE, stageCoord);
 }
