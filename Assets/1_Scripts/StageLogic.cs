@@ -11,14 +11,16 @@ public static class StageLogic
             .OrderBy(lockStage => lockStage)
             .FirstOrDefault();
 
-        // [예외 처리] 만약 더 이상 앞을 막고 있는 자물쇠가 없다면? (다 풀었거나 애초에 자물쇠가 없을 때)
+        // [예외 처리] 이제 앞을 막고 있는 자물쇠가 없다면? (다 풀었거나 애초에 자물쇠가 없을 때)
         if (nextLock == null) return StageCoord.MaxStage;
 
         // 첫 번째 자물쇠의 바로 이전 단계(--)를 반환합니다.
         return --nextLock;
     }
 
-    public static HashSet<StageCoord> GetDesignatedLockLevels(IEnumerable<string> coords) => new HashSet<StageCoord>(coords.Select(c => StageCoord.FromBoardCoord(BoardCoord.FromChessSquare(c))));
+    public static HashSet<StageCoord> GetDesignatedLockLevels(IEnumerable<string> coords) => new (coords.Select(StringToStage));
+    static StageCoord StringToStage(string coord) => StageCoord.FromBoardCoord(BoardCoord.FromChessSquare(coord));
+
     public static string SerializeUnlocked(HashSet<StageCoord> unlockedSet) => string.Join(",", unlockedSet.Select(coord => coord.ToAbsoluteLevel()));
 
     // 불러올 때는 int를 파싱한 뒤, FromAbsoluteLevel을 통해 StageCoord 레코드로 복원합니다.
@@ -28,7 +30,10 @@ public static class StageLogic
         if (string.IsNullOrEmpty(data)) return set;
 
         foreach (var s in data.Split(','))
-            if (int.TryParse(s, out int val)) set.Add(StageCoord.FromAbsoluteLevel(val));
+        {
+            if (int.TryParse(s, out int val))
+                set.Add(StageCoord.FromAbsoluteLevel(val));
+        }
 
         return set;
     }
