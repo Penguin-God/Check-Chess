@@ -50,7 +50,7 @@ public class UI_Lobby : MonoBehaviour
 
     StageState AA(StageCoord stageCoord)
     {
-        if (StageLockManager.Instance.LockPoints.Contains(stageCoord)) return StageState.LockPoint;
+        if (StageLockManager.Instance.CurrentLockPoints.Contains(stageCoord)) return StageState.LockPoint;
         else if (stageCoord > LocalStorage.LoadMaxClearedStage()) return StageState.Unplayable;
         else return StageState.Playable;
     }
@@ -80,7 +80,7 @@ public class UI_Lobby : MonoBehaviour
 
         LevelPlayAdManager.Instance.ShowRewardedAd(() =>
         {
-            StageLockManager.Instance.UnlockLevel(stage);
+            LocalStorage.SaveMaxUnlockStage(stage);
             UpdateLobbyUI();
         });
     }

@@ -7,7 +7,7 @@ public static class StageLogic
     {
         // unlockStage보다 큰 자물쇠들만 필터링한 뒤, 오름차순 정렬하여 가장 가까운 첫 번째 자물쇠를 찾습니다.
         StageCoord nextLock =
-            GetLockSet(lockedSet, maxUnlockStage)
+            GetRemainingLocks(lockedSet, maxUnlockStage)
             .OrderBy(lockStage => lockStage)
             .FirstOrDefault();
 
@@ -19,7 +19,7 @@ public static class StageLogic
     }
 
     // unlockStage보다 큰 스테이지만 가져옴
-    public static IEnumerable<StageCoord> GetLockSet(HashSet<StageCoord> lockedSet, StageCoord maxUnlockStage) => lockedSet.Where(lockStage => lockStage > maxUnlockStage);
+    public static HashSet<StageCoord> GetRemainingLocks(HashSet<StageCoord> lockedSet, StageCoord maxUnlockStage) => new (lockedSet.Where(lockStage => lockStage > maxUnlockStage));
 
     public static HashSet<StageCoord> GetDesignatedLockLevels(IEnumerable<string> coords) => new (coords.Select(StringToStage));
     static StageCoord StringToStage(string coord) => StageCoord.FromBoardCoord(BoardCoord.FromChessSquare(coord));
