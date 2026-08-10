@@ -3,16 +3,11 @@ using UnityEngine;
 
 public class StageLockManager : MonoBehaviour
 {
-    public static StageLockManager Instance { get; private set; }
-
     public HashSet<StageCoord> CurrentLockPoints => StageLogic.GetRemainingLocks(lockPointDataSO.GetLockPoints(), LocalStorage.LoadMaxClearableStage());
     [SerializeField] LockPointDataSO lockPointDataSO;
 
     void Awake()
     {
-        if (Instance == null) { Instance = this; }
-        else { Destroy(gameObject); return; }
-
         // 최초 unlock
         if (LocalStorage.LoadMaxClearableStage() == new StageCoord(0, 0))
             SaveMaxClearableStage(new StageCoord(0, 0));

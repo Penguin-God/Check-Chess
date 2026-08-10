@@ -24,7 +24,7 @@ public class UI_Lobby : MonoBehaviour
     public Color darkSquareColor = new Color(0.4f, 0.6f, 0.4f);
 
     Board<UI_Square> boardButtons = new();
-
+    [SerializeField] StageLockManager stageLockManager;
     void Start()
     {
         BoardIterator.DrawBoardReverseYLoop(SetupSquareUI);
@@ -36,7 +36,7 @@ public class UI_Lobby : MonoBehaviour
     void UpdateLobbyUI()
     {
         StageCoord maxPlayableStage = LocalStorage.LoadMaxPlayableStage();
-        var currentLocks = StageLockManager.Instance.CurrentLockPoints;
+        var currentLocks = stageLockManager.CurrentLockPoints;
 
         // [핵심] 현재 남은 자물쇠 집합 중 가장 작은 값(첫 번째 자물쇠)을 찾습니다!
         // (StageCoord에 IComparable을 구현해 두었기 때문에 .Min()이 완벽하게 작동합니다)
@@ -64,7 +64,7 @@ public class UI_Lobby : MonoBehaviour
 
     StageState EvaluateStageState(StageCoord stageCoord, StageCoord maxPlayableStage)
     {
-        if (StageLockManager.Instance.CurrentLockPoints.Contains(stageCoord)) return StageState.LockPoint;
+        if (stageLockManager.CurrentLockPoints.Contains(stageCoord)) return StageState.LockPoint;
         else if (stageCoord > maxPlayableStage) return StageState.Unplayable;
         else return StageState.Playable;
     }
@@ -100,7 +100,7 @@ public class UI_Lobby : MonoBehaviour
         Debug.Log($"챕터 {stage.ChapterIndex}, 스테이지 {stage.StageIndex} 자물쇠 해금을 위해 광고를 봅니다.");
         LevelPlayAdManager.Instance.ShowRewardedAd(() =>
         {
-            StageLockManager.Instance.SaveMaxClearableStage(stage);
+            stageLockManager.SaveMaxClearableStage(stage);
             UpdateLobbyUI();
         });
     }
