@@ -28,14 +28,12 @@ public class UI_Lobby : MonoBehaviour
     void UpdateLobbyUI()
     {
         StageCoord maxClearedStage = LocalStorage.LoadMaxClearedStage();
-        var lockedSet = StageLockManager.Instance.LockLevels;
-        var unlockedSet = StageLockManager.Instance.UnlockedLevels;
-
+        
         BoardIterator.DrawBoardLoop(coord =>
         {
             UI_Square square = boardButtons[coord];
             StageCoord currentStage = StageCoord.FromBoardCoord(coord);
-            StageState currentState = StageStatusLogic.EvaluateStageState(currentStage, maxClearedStage, lockedSet, unlockedSet);
+            StageState currentState = StageLockManager.Instance.EvaluateStageState(currentStage);
 
             square.GetComponent<Button>().interactable = currentState != StageState.Unreached;
             ApplySquareVisuals(square, StageStatusLogic.GetStatusColor(currentState, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor)), currentState);
@@ -79,7 +77,8 @@ public class UI_Lobby : MonoBehaviour
         //    UpdateLobbyUI();
         //});
 
-        StageLockManager.Instance.UnlockLevel(stage);
+        //StageLockManager.Instance.UnlockLevel(stage);
+        StageLockManager.Instance._UnlockLevel(stage);
         UpdateLobbyUI();
     }
 
