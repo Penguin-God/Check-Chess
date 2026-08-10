@@ -23,19 +23,33 @@ public static class ChessPuzzleLogic
 
         var active = state.ActiveSquare;
 
-        // 딕셔너리의 KeyValuePair를 활용해 함수형 파이프라인 구성
-        return state.Board
-            .GetAllSquares()
-            .Where(kvp => kvp.Value != PieceType.None && kvp.Key != active)
+        // 1. 현재 보드에 존재하는 모든 기물을 가져오고 총개수를 셉니다.
+        var allPieces = state.Board.GetAllSquares().Where(kvp => kvp.Value != PieceType.None).ToList();
+        int totalPieceCount = allPieces.Count;
+
+        // 2. 성능 최적화: IsValidChessMove에서 매번 딕셔너리로 변환하지 않도록 캐싱
+        var boardDict = state.Board.ToDictionary();
+
+        return allPieces
+            .Where(kvp => kvp.Key != active && IsTargetCapturable(kvp.Value)) // 자기 자신(active) 제외
             .Select(kvp => kvp.Key)
-            .Where(coord => IsValidChessMove(state.Board.ToDictionary(), active, coord))
+            .Where(coord => IsValidChessMove(boardDict, active, coord))
             .ToList();
+
+        // [내부 함수] 킹은 기물 수가 2개(자기 제외 하나 더)여야만 잡을 수 있음
+        bool IsTargetCapturable(PieceType targetPiece)
+        {
+            if (targetPiece == PieceType.King) return totalPieceCount == 2;
+            else return true;
+        }
     }
 
     // [3] 바톤 터치 실행
     public static GameState MoveAndTouch(GameState state, BoardCoord targetSquare)
     {
         var validMoves = GetValidBatonTouches(state);
+
+        // validMoves에서 이미 킹 접근을 차단했으므로, 조건이 안 맞으면 여기서 튕겨냅니다!
         if (!validMoves.Contains(targetSquare)) return state;
 
         var newBoard = state.Board.Change(state.ActiveSquare, PieceType.None);
