@@ -27,5 +27,5 @@ public static class LocalStorage
         PlayerPrefs.SetInt("MAX_UNLOCK", stageCoord.ToAbsoluteLevel());
         PlayerPrefs.Save(); // 기기에 확실히 기록되도록 Save() 호출
     }
-    public static string LoadMaxUnlockStage() => PlayerPrefs.GetString("MAX_UNLOCK", "");
+    public static StageCoord LoadMaxUnlockStage() => StageCoord.FromAbsoluteLevel(PlayerPrefs.GetInt("MAX_UNLOCK", 0));
 }

@@ -10,20 +10,13 @@ public enum StageState
 
 public static class StageStatusLogic
 {
-    public static StageState EvaluateStageState(StageCoord currentStage, StageCoord maxClearedStage, HashSet<StageCoord> lockedSet, HashSet<StageCoord> unlockedSet)
+    public static StageState EvaluateStageState(StageCoord stage, StageCoord maxClearedStage, StageCoord maxUnLockStage)
     {
-        if (StageLogic.IsCurrentlyLocked(currentStage, lockedSet, unlockedSet)) return StageState.Locked;
-        if (currentStage <= maxClearedStage) return StageState.Playable;
-
-        return StageState.Unreached;
-    }
-
-    public static StageState EvaluateStageState(StageCoord currentStage, StageCoord maxClearedStage, StageCoord maxUnLockStage)
-    {
-        if (maxClearedStage == maxUnLockStage) return StageState.Locked;
-        if (currentStage <= maxClearedStage) return StageState.Playable;
+        if (stage > maxUnLockStage) return StageState.Locked;
+        if (stage <= maxClearedStage) return StageState.Playable;
         return StageState.Unreached;
     }
 
     public static Color GetStatusColor(StageState state, Color baseColor) => state == StageState.Playable ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
+    public static Color GetStatusColor(StagePersentType state, Color baseColor) => state == StagePersentType.Playable ? baseColor : Color.Lerp(baseColor, Color.gray, 0.7f);
 }

@@ -2,6 +2,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+public enum StagePersentType
+{
+    LockPoint,
+    Playable,
+    Unplayable,
+}
+
 public class UI_Lobby : MonoBehaviour
 {
     [Header("Board UI References")]
@@ -33,9 +40,9 @@ public class UI_Lobby : MonoBehaviour
         {
             UI_Square square = boardButtons[coord];
             StageCoord currentStage = StageCoord.FromBoardCoord(coord);
-            StageState currentState = StageLockManager.Instance.EvaluateStageState(currentStage);
+            var currentState = AA(currentStage);
 
-            square.GetComponent<Button>().interactable = currentState != StageState.Unreached;
+            square.GetComponent<Button>().interactable = false;
             ApplySquareVisuals(square, StageStatusLogic.GetStatusColor(currentState, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor)), currentState);
             BindButtonAction(square, currentStage, currentState);
 
@@ -46,24 +53,29 @@ public class UI_Lobby : MonoBehaviour
         });
     }
 
+    StagePersentType AA(StageCoord stageCoord)
+    {
+        if (StageLockManager.Instance.LockPoints.Contains(stageCoord)) return StagePersentType.LockPoint;
+        else if (stageCoord > LocalStorage.LoadMaxClearedStage()) return StagePersentType.Unplayable;
+        else return StagePersentType.Playable;
+    }
 
     // --- [ 부수 효과 (Side Effects) ] ---
-
-    void ApplySquareVisuals(UI_Square square, Color color, StageState state)
+    void ApplySquareVisuals(UI_Square square, Color color, StagePersentType state)
     {
-        Sprite currentIcon = state == StageState.Locked ? lockSprite : null;
+        Sprite currentIcon = state == StagePersentType.LockPoint ? lockSprite : null;
         SquareModel squareModel = new SquareModel(color, currentIcon);
         square.UpdateVisuals(squareModel);
     }
 
     // 절대 레벨 숫자 대신 StageCoord 객체를 받도록 변경
-    void BindButtonAction(UI_Square square, StageCoord stage, StageState state)
+    void BindButtonAction(UI_Square square, StageCoord stage, StagePersentType state)
     {
         switch (state)
         {
-            case StageState.Locked: square.BindClickAction(() => WatchAdToUnlock(stage)); break;
-            case StageState.Playable: square.BindClickAction(() => OnStageSelected(stage)); break;
-            case StageState.Unreached: break;
+            case StagePersentType.LockPoint: square.BindClickAction(() => WatchAdToUnlock(stage)); break;
+            case StagePersentType.Playable: square.BindClickAction(() => OnStageSelected(stage)); break;
+            case StagePersentType.Unplayable: break;
         }
     }
 
@@ -71,15 +83,11 @@ public class UI_Lobby : MonoBehaviour
     {
         Debug.Log($"챕터 {stage.ChapterIndex}, 스테이지 {stage.StageIndex} 자물쇠 해금을 위해 광고를 봅니다.");
 
-        //LevelPlayAdManager.Instance.ShowRewardedAd(() =>
-        //{
-        //    StageLockManager.Instance.UnlockLevel(stage);
-        //    UpdateLobbyUI();
-        //});
-
-        //StageLockManager.Instance.UnlockLevel(stage);
-        StageLockManager.Instance._UnlockLevel(stage);
-        UpdateLobbyUI();
+        LevelPlayAdManager.Instance.ShowRewardedAd(() =>
+        {
+            StageLockManager.Instance._UnlockLevel(stage);
+            UpdateLobbyUI();
+        });
     }
 
     void OnStageSelected(StageCoord stage)

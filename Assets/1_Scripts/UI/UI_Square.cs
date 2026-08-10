@@ -11,10 +11,11 @@ public class UI_Square : MonoBehaviour
     public Image background;
     public Image statusIcon;
 
-    public void BindClickAction(UnityAction onClickAction)
+    public void BindClickAction(UnityAction onClickAction, bool interactable = true)
     {
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(onClickAction);
+        button.interactable = interactable;
     }
 
     public void UpdateVisuals(SquareModel squareModel)
