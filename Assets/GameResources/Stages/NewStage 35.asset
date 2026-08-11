@@ -25,5 +25,5 @@ MonoBehaviour:
   - X: 4
     Y: 2
     Piece: 6
-  startHintCoord: {x: 1, y: 5}
+  startHintCoord: {x: 3, y: 5}
   nextHintCoord: {x: 2, y: 4}
