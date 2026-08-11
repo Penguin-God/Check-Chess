@@ -57,9 +57,12 @@ public class GameBoardUI : MonoBehaviour
 
             if (currentState.ActiveSquare == null) // 선택단계
             {
-                PlaySound(selectPieceSound);
                 nextState = ChessPuzzleLogic.SelectStartingPiece(currentState, clickedCoord);
-                buttonPanel.InActiveHintButton();
+                if(nextState.ActiveSquare != null)
+                {
+                    PlaySound(selectPieceSound);
+                    buttonPanel.InActiveHintButton();
+                }
             }
             else
             {
