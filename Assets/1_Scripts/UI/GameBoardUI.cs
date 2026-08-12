@@ -6,7 +6,7 @@ public class GameBoardUI : MonoBehaviour
     [Header("UI References")]
     public Transform boardPanel;
     public GameObject squarePrefab;
-    public UI_ButtonPanel buttonPanel;
+    public UI_PuzzleHUD hud;
 
     [Header("Theme & Visuals")]
     public BoardThemeSO boardTheme;
@@ -40,7 +40,7 @@ public class GameBoardUI : MonoBehaviour
             return;
         }
 
-        buttonPanel.OnHintClicked += ShowHintOnBoard;
+        hud.OnHintClicked += ShowHintOnBoard;
         RenderState(currentState);
 
         UI_Square CreateSquare(BoardCoord coord)
@@ -61,7 +61,7 @@ public class GameBoardUI : MonoBehaviour
                 if(nextState.ActiveSquare != null)
                 {
                     PlaySound(selectPieceSound);
-                    buttonPanel.InActiveHintButton();
+                    hud.InActiveHintButton();
                 }
             }
             else
@@ -97,7 +97,7 @@ public class GameBoardUI : MonoBehaviour
     {
         PlaySound(kingCaptureSound);
         LevelManager.Instance.ClearCurrentStage();
-        buttonPanel.Clear();
+        hud.Clear();
     }
 
     void PlaySound(AudioClip clip)

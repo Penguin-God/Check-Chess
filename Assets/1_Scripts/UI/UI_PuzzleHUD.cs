@@ -1,14 +1,23 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class UI_ButtonPanel : MonoBehaviour
+public class UI_PuzzleHUD : MonoBehaviour
 {
+    [Header("Buttons")]
     public Button restartBtn;
     public Button toLobbyBtn;
     public Button hintBtn;
     public Button nextBtn;
+
+    [Header("Tutorial UI")]
+    public TextMeshProUGUI tutorialText;
+
+    [Tooltip("a1, a2, a3... 순서대로 튜토리얼 텍스트를 입력하세요. 비워두면 표시되지 않습니다.")]
+    [TextArea(2, 4)] // 인스펙터에서 엔터(줄바꿈)를 치기 편하도록 텍스트 입력창을 넓혀줍니다.
+    public string[] tutorialMessages;
 
     public event Action OnHintClicked;
 
@@ -18,12 +27,26 @@ public class UI_ButtonPanel : MonoBehaviour
         toLobbyBtn.onClick.AddListener(ToLobby);
         hintBtn.onClick.AddListener(ShowHint);
         nextBtn.onClick.AddListener(ToNextStage);
+
         nextBtn.gameObject.SetActive(false);
+        tutorialText.gameObject.SetActive(false);
+        ShowTutorialIfNeeded();
+    }
+
+    void ShowTutorialIfNeeded()
+    {
+        StageCoord current = LevelManager.Instance.CurrentStage;
+
+        // a챕터(ChapterIndex == 0)이고, 인스펙터에 등록된 배열의 길이보다 StageIndex가 작을 때만 실행합니다.
+        if (current.ChapterIndex == 0 && current.StageIndex < tutorialMessages.Length)
+        {
+            tutorialText.gameObject.SetActive(true);
+            tutorialText.text = tutorialMessages[current.StageIndex];
+        }
     }
 
     void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     void ToLobby() => SceneManager.LoadScene("Lobby");
-
     void ShowHint() => OnHintClicked?.Invoke();
 
     void ToNextStage()
@@ -38,9 +61,8 @@ public class UI_ButtonPanel : MonoBehaviour
         nextBtn.gameObject.SetActive(true);
 
         var nextStage = LevelManager.Instance.CurrentStage;
-        nextStage++; // 다음 스테이지를 미리 계산
+        nextStage++;
 
-        // 바뀐 LevelManager 로직 덕분에 자물쇠와 클리어 한계가 동시에 완벽하게 계산됩니다.
         nextBtn.interactable = LevelManager.Instance.CurrentStagePlayable(nextStage);
     }
 
