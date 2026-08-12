@@ -743,6 +743,7 @@ MonoBehaviour:
   pawnMarker: {fileID: 1744747738}
   pawnIcon: {fileID: 702849514, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
   lockSprite: {fileID: 21300000, guid: 75555aa0f05f9cc45ab2f22fa2e70c89, type: 3}
+  adLockSprite: {fileID: 21300000, guid: 708c9ac14d0cd4d4fb996541b0a73dcf, type: 3}
   lightSquareColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
   darkSquareColor: {r: 0.4, g: 0.6, b: 0.4, a: 1}
   lockPointDataSO: {fileID: 11400000, guid: 2a101d81ab2b47447a8017bb7c612ae7, type: 2}

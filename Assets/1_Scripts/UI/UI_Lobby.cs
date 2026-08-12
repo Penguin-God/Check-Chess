@@ -1,4 +1,4 @@
-using System.Linq; // [추가] Any()와 Min()을 사용하기 위해 필요합니다.
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,6 +18,7 @@ public class UI_Lobby : MonoBehaviour
     public RectTransform pawnMarker;
     public Sprite pawnIcon;
     public Sprite lockSprite;
+    public Sprite adLockSprite;
 
     [Header("Board Colors")]
     public Color lightSquareColor = new Color(0.9f, 0.9f, 0.9f);
@@ -25,6 +26,7 @@ public class UI_Lobby : MonoBehaviour
 
     Board<UI_Square> boardButtons = new();
     [SerializeField] LockPointDataSO lockPointDataSO;
+
     void Start()
     {
         BoardIterator.DrawBoardReverseYLoop(SetupSquareUI);
@@ -38,8 +40,6 @@ public class UI_Lobby : MonoBehaviour
         StageCoord maxPlayableStage = LocalStorage.LoadMaxPlayableStage();
         var currentLocks = lockPointDataSO.GetCurrentLockPoints();
 
-        // [핵심] 현재 남은 자물쇠 집합 중 가장 작은 값(첫 번째 자물쇠)을 찾습니다!
-        // (StageCoord에 IComparable을 구현해 두었기 때문에 .Min()이 완벽하게 작동합니다)
         StageCoord firstLock = currentLocks.Any() ? currentLocks.Min() : null;
 
         BoardIterator.DrawBoardLoop(coord =>
@@ -50,10 +50,12 @@ public class UI_Lobby : MonoBehaviour
             var currentState = EvaluateStageState(currentStage, maxPlayableStage);
             square.GetComponent<Button>().interactable = false;
 
-            ApplySquareVisuals(square, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor), currentState);
+            bool isFirstLock = (currentStage == firstLock);
 
-            // 바인딩 시에도 첫 번째 자물쇠 여부를 함께 넘겨줍니다.
-            BindButtonAction(square, currentStage, currentState, currentStage == firstLock);
+            // 💡 시각적 요소를 업데이트할 때 첫 번째 자물쇠인지 여부도 같이 넘겨줍니다.
+            ApplySquareVisuals(square, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor), currentState, isFirstLock);
+
+            BindButtonAction(square, currentStage, currentState, isFirstLock);
 
             if (currentStage == maxPlayableStage)
             {
@@ -69,21 +71,26 @@ public class UI_Lobby : MonoBehaviour
         else return StageState.Playable;
     }
 
-    // --- [ 부수 효과 (Side Effects) ] ---
-    void ApplySquareVisuals(UI_Square square, Color color, StageState state)
+    // 💡 매개변수에 isFirstLock을 추가하여 스프라이트를 분기합니다.
+    void ApplySquareVisuals(UI_Square square, Color color, StageState state, bool isFirstLock)
     {
-        Sprite currentIcon = state == StageState.LockPoint ? lockSprite : null;
+        Sprite currentIcon = null;
+
+        if (state == StageState.LockPoint)
+        {
+            // 첫 번째 자물쇠면 광고 자물쇠 이미지를, 아니면 일반 자물쇠 이미지를 넣습니다.
+            currentIcon = isFirstLock ? adLockSprite : lockSprite;
+        }
+
         SquareModel squareModel = new SquareModel(color, currentIcon);
         square.UpdateVisuals(squareModel);
     }
 
-    // 매개변수로 isFirstLock을 추가하여 로직을 더 안전하게 제어합니다.
     void BindButtonAction(UI_Square square, StageCoord stage, StageState state, bool isFirstLock)
     {
         switch (state)
         {
             case StageState.LockPoint:
-                // 오직 첫 번째 자물쇠일 때만 광고 이벤트를 바인딩합니다.
                 if (isFirstLock)
                     square.BindClickAction(() => WatchAdToUnlock(stage));
                 break;
