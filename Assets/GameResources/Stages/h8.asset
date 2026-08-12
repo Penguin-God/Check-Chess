@@ -54,4 +54,4 @@ MonoBehaviour:
     Piece: 3
   startHintCoord: {x: 5, y: 5}
   nextHintCoord: {x: 4, y: 6}
-  StageText: h8
+  StageText: 'h8 : Promote to Rook'

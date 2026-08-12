@@ -57,4 +57,4 @@ MonoBehaviour:
     Piece: 3
   startHintCoord: {x: 6, y: 4}
   nextHintCoord: {x: 4, y: 3}
-  StageText: g8
+  StageText: 'g8 : Promote to Knight'
