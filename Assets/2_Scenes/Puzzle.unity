@@ -1233,11 +1233,7 @@ MonoBehaviour:
   hintBtn: {fileID: 996665925}
   nextBtn: {fileID: 1026560330}
   tutorialText: {fileID: 1869005377}
-  tutorialMessages:
-  - a1
-  - a2
-  - a3
-  - a4
+  lockPointDataSO: {fileID: 11400000, guid: 2a101d81ab2b47447a8017bb7c612ae7, type: 2}
 --- !u!1 &1463228364
 GameObject:
   m_ObjectHideFlags: 0

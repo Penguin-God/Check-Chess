@@ -406,7 +406,7 @@ GameObject:
   - component: {fileID: 922168767}
   - component: {fileID: 922168766}
   m_Layer: 0
-  m_Name: Stage
+  m_Name: Scene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -745,7 +745,7 @@ MonoBehaviour:
   lockSprite: {fileID: 21300000, guid: 75555aa0f05f9cc45ab2f22fa2e70c89, type: 3}
   lightSquareColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
   darkSquareColor: {r: 0.4, g: 0.6, b: 0.4, a: 1}
-  stageLockManager: {fileID: 922168766}
+  lockPointDataSO: {fileID: 11400000, guid: 2a101d81ab2b47447a8017bb7c612ae7, type: 2}
 --- !u!4 &1811033935
 Transform:
   m_ObjectHideFlags: 0
@@ -765,10 +765,10 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 922168767}
   - {fileID: 68607182}
   - {fileID: 1811033935}
   - {fileID: 1348432112}
   - {fileID: 461203987}
   - {fileID: 1739226776}
   - {fileID: 1043889406}
-  - {fileID: 922168767}

@@ -16,6 +16,7 @@ public class UI_PuzzleHUD : MonoBehaviour
     public TextMeshProUGUI tutorialText;
 
     public event Action OnHintClicked;
+    [SerializeField] LockPointDataSO lockPointDataSO;
 
     void Start()
     {
