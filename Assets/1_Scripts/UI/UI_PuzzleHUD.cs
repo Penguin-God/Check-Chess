@@ -12,8 +12,9 @@ public class UI_PuzzleHUD : MonoBehaviour
     public Button hintBtn;
     public Button nextBtn;
 
-    [Header("Tutorial UI")]
+    [Header("UI")]
     public TextMeshProUGUI tutorialText;
+    public GameObject adImg;
 
     public event Action OnHintClicked;
     [SerializeField] LockPointDataSO lockPointDataSO;
@@ -26,6 +27,7 @@ public class UI_PuzzleHUD : MonoBehaviour
         nextBtn.onClick.AddListener(ToNextStage);
 
         nextBtn.gameObject.SetActive(false);
+        adImg.SetActive(false);
 
         ShowTutoriaText();
     }
@@ -54,6 +56,7 @@ public class UI_PuzzleHUD : MonoBehaviour
 
         if (LevelManager.Instance.CheckStagePlayable(nextStage) == false)
         {
+            adImg.gameObject.SetActive(true);
             nextBtn.onClick.RemoveAllListeners();
             nextBtn.onClick.AddListener(ShowAdAndNext);
         }
