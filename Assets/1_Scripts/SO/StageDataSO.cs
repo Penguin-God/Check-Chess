@@ -19,6 +19,8 @@ public class StageDataSO : ScriptableObject
     public Vector2Int startHintCoord = new Vector2Int(-1, -1);
     public Vector2Int nextHintCoord = new Vector2Int(-1, -1);
 
+    public string StageText;
+
     // 첫 번째 힌트(시작 기물) 좌표 반환
     public BoardCoord GetStartHintCoord()
     {

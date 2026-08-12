@@ -148,3 +148,8 @@
 인풋 : UI_ButtonPanel을 새 역할까지 포함해서 만들어주고 이름도 바꿔줘
 결과 : 새로운 UI_PuzzleHUD
 
+"25"
+동기 : 스테이지별 제목 추가
+인풋 : 튜토리얼 전용 텍스트 대신 아예 스테이지 자체에서 가져오는 text를 사용하고 별도 SO를 만들어서 기본값은 보드위치로 세팅해줘
+결과 : 새로운 LevelDatabaseSO, 스테이지를 가져와서 텍스트틀 출력하는 UI_PuzzleHUD, 기존 SO관리 로직이 사라진 LevelManager
+
