@@ -49,7 +49,7 @@ public class UI_PuzzleHUD : MonoBehaviour
         var nextStage = LevelManager.Instance.CurrentStage;
         nextStage++;
 
-        nextBtn.interactable = LevelManager.Instance.CurrentStagePlayable(nextStage);
+        nextBtn.interactable = LevelManager.Instance.CheckStagePlayable(nextStage);
     }
 
     public void InActiveHintButton() => hintBtn.interactable = false;
