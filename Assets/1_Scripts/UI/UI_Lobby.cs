@@ -16,9 +16,9 @@ public class UI_Lobby : MonoBehaviour
     public Transform boardPanel;
     public GameObject squarePrefab;
     public RectTransform pawnMarker;
+    public RectTransform adMarker;
     public Sprite pawnIcon;
     public Sprite lockSprite;
-    public Sprite adLockSprite;
 
     [Header("Board Colors")]
     public Color lightSquareColor = new Color(0.9f, 0.9f, 0.9f);
@@ -42,6 +42,10 @@ public class UI_Lobby : MonoBehaviour
 
         StageCoord firstLock = currentLocks.Any() ? currentLocks.Min() : null;
 
+        // 💡 맵을 그리기 전에 마커들을 일단 숨겨둡니다. (자물쇠가 다 열렸을 때 화면에 남는 것 방지)
+        if (pawnMarker != null) pawnMarker.gameObject.SetActive(false);
+        if (adMarker != null) adMarker.gameObject.SetActive(false);
+
         BoardIterator.DrawBoardLoop(coord =>
         {
             UI_Square square = boardButtons[coord];
@@ -52,14 +56,21 @@ public class UI_Lobby : MonoBehaviour
 
             bool isFirstLock = (currentStage == firstLock);
 
-            // 💡 시각적 요소를 업데이트할 때 첫 번째 자물쇠인지 여부도 같이 넘겨줍니다.
-            ApplySquareVisuals(square, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor), currentState, isFirstLock);
+            // 시각적 업데이트 (이제 합성 이미지가 필요 없으니 기본 lockSprite만 넘깁니다)
+            ApplySquareVisuals(square, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor), currentState);
 
             BindButtonAction(square, currentStage, currentState, isFirstLock);
 
+            // 💡 폰 마커 배치
             if (currentStage == maxPlayableStage)
             {
-                PlacePawnOnSquare(square.GetComponent<RectTransform>());
+                PlaceMarkerOnSquare(pawnMarker, square.GetComponent<RectTransform>());
+            }
+
+            // 💡 첫 번째 자물쇠일 경우 광고 마커 배치 (우측 상단 모서리)
+            if (isFirstLock)
+            {
+                PlaceMarkerOnSquare(adMarker, square.GetComponent<RectTransform>(), true);
             }
         });
     }
@@ -71,17 +82,9 @@ public class UI_Lobby : MonoBehaviour
         else return StageState.Playable;
     }
 
-    // 💡 매개변수에 isFirstLock을 추가하여 스프라이트를 분기합니다.
-    void ApplySquareVisuals(UI_Square square, Color color, StageState state, bool isFirstLock)
+    void ApplySquareVisuals(UI_Square square, Color color, StageState state)
     {
-        Sprite currentIcon = null;
-
-        if (state == StageState.LockPoint)
-        {
-            // 첫 번째 자물쇠면 광고 자물쇠 이미지를, 아니면 일반 자물쇠 이미지를 넣습니다.
-            currentIcon = isFirstLock ? adLockSprite : lockSprite;
-        }
-
+        Sprite currentIcon = state == StageState.LockPoint ? lockSprite : null;
         SquareModel squareModel = new SquareModel(color, currentIcon);
         square.UpdateVisuals(squareModel);
     }
@@ -117,11 +120,35 @@ public class UI_Lobby : MonoBehaviour
         SceneManager.LoadScene("Puzzle");
     }
 
-    void PlacePawnOnSquare(RectTransform squareRect)
+    // 💡 마커(폰, 광고 공통)를 지정된 칸에 찰싹 달라붙게 하는 범용 함수
+    void PlaceMarkerOnSquare(RectTransform marker, RectTransform squareRect, bool isTopRight = false)
     {
-        if (pawnMarker == null) return;
-        pawnMarker.SetParent(squareRect);
-        pawnMarker.anchoredPosition = Vector2.zero;
-        pawnMarker.gameObject.SetActive(true);
+        if (marker == null) return;
+
+        // false를 주어 스케일이 꼬이지 않게 부모를 옮깁니다.
+        marker.SetParent(squareRect, false);
+
+        if (isTopRight)
+        {
+            // 🎯 [우측 상단 모서리 배치]
+            // 부모(자물쇠 칸)의 우측(1) 상단(1)을 기준점으로 잡습니다.
+            marker.anchorMin = new Vector2(1, 1);
+            marker.anchorMax = new Vector2(1, 1);
+            // 마커 자신의 중심(0.5, 0.5)을 기준점에 맞춥니다.
+            marker.pivot = new Vector2(0.5f, 0.5f);
+
+            // 모서리에서 바깥으로 살짝 튀어나오게 여백을 줍니다. (필요에 따라 숫자 조절 가능)
+            marker.anchoredPosition = new Vector2(-31f, -27f);
+        }
+        else
+        {
+            // 🎯 [정중앙 배치 (폰 마커용)]
+            marker.anchorMin = new Vector2(0.5f, 0.5f);
+            marker.anchorMax = new Vector2(0.5f, 0.5f);
+            marker.pivot = new Vector2(0.5f, 0.5f);
+            marker.anchoredPosition = Vector2.zero;
+        }
+
+        marker.gameObject.SetActive(true);
     }
 }
