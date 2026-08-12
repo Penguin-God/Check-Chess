@@ -24,8 +24,11 @@ public class UI_Lobby : MonoBehaviour
     public Color lightSquareColor = new Color(0.9f, 0.9f, 0.9f);
     public Color darkSquareColor = new Color(0.4f, 0.6f, 0.4f);
 
-    Board<UI_Square> boardButtons = new();
+    [Header("Data References")]
     [SerializeField] LockPointDataSO lockPointDataSO;
+    [SerializeField] BoardThemeSO boardThemeSO; // 💡 기물 이미지를 가져오기 위해 추가된 테마 데이터
+
+    Board<UI_Square> boardButtons = new();
 
     void Start()
     {
@@ -42,9 +45,8 @@ public class UI_Lobby : MonoBehaviour
 
         StageCoord firstLock = currentLocks.Any() ? currentLocks.Min() : null;
 
-        // 💡 맵을 그리기 전에 마커들을 일단 숨겨둡니다. (자물쇠가 다 열렸을 때 화면에 남는 것 방지)
-        if (pawnMarker != null) pawnMarker.gameObject.SetActive(false);
-        if (adMarker != null) adMarker.gameObject.SetActive(false);
+        pawnMarker.gameObject.SetActive(false);
+        adMarker.gameObject.SetActive(false);
 
         BoardIterator.DrawBoardLoop(coord =>
         {
@@ -56,18 +58,18 @@ public class UI_Lobby : MonoBehaviour
 
             bool isFirstLock = (currentStage == firstLock);
 
-            // 시각적 업데이트 (이제 합성 이미지가 필요 없으니 기본 lockSprite만 넘깁니다)
-            ApplySquareVisuals(square, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor), currentState);
+            // 💡 시각적 업데이트에 coord와 maxPlayableStage를 추가로 넘겨주어 클리어 여부와 기물 판별에 사용합니다.
+            ApplySquareVisuals(square, coord, currentStage, maxPlayableStage, currentState, BoardIterator.GetCheckerboardColor(coord, lightSquareColor, darkSquareColor));
 
             BindButtonAction(square, currentStage, currentState, isFirstLock);
 
-            // 💡 폰 마커 배치
+            // 폰 마커 배치
             if (currentStage == maxPlayableStage)
             {
                 PlaceMarkerOnSquare(pawnMarker, square.GetComponent<RectTransform>());
             }
 
-            // 💡 첫 번째 자물쇠일 경우 광고 마커 배치 (우측 상단 모서리)
+            // 첫 번째 자물쇠일 경우 광고 마커 배치
             if (isFirstLock)
             {
                 PlaceMarkerOnSquare(adMarker, square.GetComponent<RectTransform>(), true);
@@ -82,11 +84,47 @@ public class UI_Lobby : MonoBehaviour
         else return StageState.Playable;
     }
 
-    void ApplySquareVisuals(UI_Square square, Color color, StageState state)
+    void ApplySquareVisuals(UI_Square square, BoardCoord coord, StageCoord currentStage, StageCoord maxPlayableStage, StageState state, Color color)
     {
-        Sprite currentIcon = state == StageState.LockPoint ? lockSprite : null;
+        Sprite currentIcon = null;
+
+        if (state == StageState.LockPoint)
+        {
+            currentIcon = lockSprite;
+        }
+        else if (currentStage < maxPlayableStage) // 💡 스테이지를 '클리어'한 상태인지 확인
+        {
+            // 클리어한 스테이지가 8랭크 프로모션 자리라면 기물 이미지를 가져옵니다.
+            PieceType? promotionPiece = GetPromotionPiece(coord);
+            if (promotionPiece.HasValue)
+            {
+                currentIcon = boardThemeSO.PieceSpriteDict[promotionPiece.Value];
+            }
+        }
+
         SquareModel squareModel = new SquareModel(color, currentIcon);
         square.UpdateVisuals(squareModel);
+    }
+
+    // 💡 체스판의 8랭크(끝줄) 기물을 반환하는 함수
+    PieceType? GetPromotionPiece(BoardCoord coord)
+    {
+        // BoardCoord의 y축이 7일 때 8랭크(a8~h8)라고 가정합니다. 
+        // (게임 내 좌표계가 다르다면 이 부분을 y == 0 또는 다른 값으로 수정해 주세요)
+        if (coord.Y != 7) return null;
+
+        return coord.X switch
+        {
+            0 => PieceType.Rook,   // a8
+            1 => PieceType.Knight, // b8
+            2 => PieceType.Bishop, // c8
+            3 => PieceType.Queen,  // d8
+            4 => PieceType.King,   // e8
+            5 => PieceType.Bishop, // f8
+            6 => PieceType.Knight, // g8
+            7 => PieceType.Rook,   // h8
+            _ => null
+        };
     }
 
     void BindButtonAction(UI_Square square, StageCoord stage, StageState state, bool isFirstLock)
@@ -120,29 +158,21 @@ public class UI_Lobby : MonoBehaviour
         SceneManager.LoadScene("Puzzle");
     }
 
-    // 💡 마커(폰, 광고 공통)를 지정된 칸에 찰싹 달라붙게 하는 범용 함수
     void PlaceMarkerOnSquare(RectTransform marker, RectTransform squareRect, bool isTopRight = false)
     {
         if (marker == null) return;
 
-        // false를 주어 스케일이 꼬이지 않게 부모를 옮깁니다.
         marker.SetParent(squareRect, false);
 
         if (isTopRight)
         {
-            // 🎯 [우측 상단 모서리 배치]
-            // 부모(자물쇠 칸)의 우측(1) 상단(1)을 기준점으로 잡습니다.
             marker.anchorMin = new Vector2(1, 1);
             marker.anchorMax = new Vector2(1, 1);
-            // 마커 자신의 중심(0.5, 0.5)을 기준점에 맞춥니다.
             marker.pivot = new Vector2(0.5f, 0.5f);
-
-            // 모서리에서 바깥으로 살짝 튀어나오게 여백을 줍니다. (필요에 따라 숫자 조절 가능)
             marker.anchoredPosition = new Vector2(-31f, -27f);
         }
         else
         {
-            // 🎯 [정중앙 배치 (폰 마커용)]
             marker.anchorMin = new Vector2(0.5f, 0.5f);
             marker.anchorMax = new Vector2(0.5f, 0.5f);
             marker.pivot = new Vector2(0.5f, 0.5f);

@@ -767,7 +767,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 702849514, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
+  m_Sprite: {fileID: -1317583255, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -823,6 +823,7 @@ MonoBehaviour:
   lightSquareColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
   darkSquareColor: {r: 0.4, g: 0.6, b: 0.4, a: 1}
   lockPointDataSO: {fileID: 11400000, guid: 2a101d81ab2b47447a8017bb7c612ae7, type: 2}
+  boardThemeSO: {fileID: 11400000, guid: 74ff791f3a8429e46933c37c595968e9, type: 2}
 --- !u!4 &1811033935
 Transform:
   m_ObjectHideFlags: 0
