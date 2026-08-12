@@ -97,7 +97,7 @@ public class UI_Lobby : MonoBehaviour
 
     void WatchAdToUnlock(StageCoord stage)
     {
-        LevelPlayAdManager.Instance.ShowRewardedAd(() =>
+        AdManager.Instance.ShowRewardedAd(() =>
         {
             lockPointDataSO.SaveMaxClearableStage(stage);
             UpdateLobbyUI();

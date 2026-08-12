@@ -60,7 +60,7 @@ public class UI_PuzzleHUD : MonoBehaviour
 
         void ShowAdAndNext()
         {
-            LevelPlayAdManager.Instance.ShowRewardedAd(() =>
+            AdManager.Instance.ShowRewardedAd(() =>
             {
                 lockPointDataSO.SaveMaxClearableStage(nextStage);
                 ToNextStage();

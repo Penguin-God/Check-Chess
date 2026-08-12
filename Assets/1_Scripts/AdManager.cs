@@ -2,9 +2,9 @@ using UnityEngine;
 using Unity.Services.LevelPlay;
 using System;
 
-public class LevelPlayAdManager : MonoBehaviour
+public class AdManager : MonoBehaviour
 {
-    public static LevelPlayAdManager Instance { get; private set; }
+    public static AdManager Instance { get; private set; }
 
     [Header("LevelPlay Settings")]
     public string appKey = "277cdb17d";
