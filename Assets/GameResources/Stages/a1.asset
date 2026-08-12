@@ -13,15 +13,12 @@ MonoBehaviour:
   m_Name: a1
   m_EditorClassIdentifier: ChessBatonTouch::StageDataSO
   initialPieces:
-  - X: 2
-    Y: 6
-    Piece: 1
   - X: 3
     Y: 5
     Piece: 2
   - X: 5
     Y: 6
     Piece: 6
-  startHintCoord: {x: 2, y: 6}
-  nextHintCoord: {x: 3, y: 5}
-  StageText: a1
+  startHintCoord: {x: 3, y: 5}
+  nextHintCoord: {x: 5, y: 6}
+  StageText: 'a1 : You play as Black. Capture the White King.'

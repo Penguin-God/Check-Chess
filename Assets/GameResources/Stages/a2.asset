@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: a2
   m_EditorClassIdentifier: Assembly-CSharp::StageDataSO
   initialPieces:
-  - X: 1
-    Y: 5
-    Piece: 3
   - X: 2
     Y: 4
     Piece: 3
@@ -25,6 +22,10 @@ MonoBehaviour:
   - X: 4
     Y: 2
     Piece: 6
-  startHintCoord: {x: 3, y: 5}
-  nextHintCoord: {x: 2, y: 4}
-  StageText: a2
+  - X: 3
+    Y: 3
+    Piece: 4
+  startHintCoord: {x: 3, y: 3}
+  nextHintCoord: {x: 3, y: 5}
+  StageText: 'a2 : You can only move by capturing. Capture a Black piece to transform
+    into it'
