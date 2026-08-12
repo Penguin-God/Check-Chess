@@ -54,3 +54,4 @@ MonoBehaviour:
     Piece: 2
   startHintCoord: {x: 0, y: 7}
   nextHintCoord: {x: 6, y: 1}
+  StageText: g3

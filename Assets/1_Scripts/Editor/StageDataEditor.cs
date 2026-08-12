@@ -3,12 +3,11 @@ using UnityEditor;
 using System.Linq;
 using System;
 
-// 에디터의 현재 상태를 구분하기 위한 Enum
 public enum StageEditorMode
 {
-    PieceSetup, // 기물 배치 모드
-    StartHint,  // 시작 기물 힌트(노란색) 모드
-    NextHint    // 다음 기물 힌트(빨간색) 모드
+    PieceSetup,
+    StartHint,
+    NextHint
 }
 
 [CustomEditor(typeof(StageDataSO))]
@@ -21,6 +20,15 @@ public class StageDataEditor : Editor
     public override void OnInspectorGUI()
     {
         StageDataSO stageData = (StageDataSO)target;
+        serializedObject.Update();
+
+        // StageText 프로퍼티만 찾아서 화면에 예쁘게 그립니다
+        SerializedProperty stageTextProp = serializedObject.FindProperty("StageText");
+        EditorGUILayout.PropertyField(stageTextProp, new GUIContent("튜토리얼 텍스트"));
+
+        serializedObject.ApplyModifiedProperties();
+
+        GUILayout.Space(15); // 그리드와의 간격 벌리기
 
         GUILayout.Label("에디터 모드 설정", EditorStyles.boldLabel);
         EditorGUILayout.BeginVertical("box");
@@ -38,6 +46,7 @@ public class StageDataEditor : Editor
         GUILayout.Space(15);
         GUILayout.Label("보드 (8x8 Grid)", EditorStyles.boldLabel);
 
+        // ... (이하 보드 그리는 2중 for문 코드는 기존과 동일) ...
         for (int y = 0; y < BOARD_SIZE; y++)
         {
             EditorGUILayout.BeginHorizontal();
@@ -54,7 +63,6 @@ public class StageDataEditor : Editor
                 {
                     Undo.RecordObject(stageData, "Edit Chess Board");
 
-                    // 현재 선택된 모드에 따라 클릭 동작을 분기합니다.
                     switch (currentMode)
                     {
                         case StageEditorMode.StartHint: stageData.startHintCoord = TryToggleHintCoord(stageData.GetStartHintCoord, coord, currentSetup); break;
@@ -84,16 +92,14 @@ public class StageDataEditor : Editor
     Vector2Int TryToggleHintCoord(Func<BoardCoord> getCoord, BoardCoord clickCoord, PieceSetup currentSetup)
     {
         if (currentSetup == null || currentSetup.Piece == PieceType.None) return new Vector2Int(-1, -1);
-        // 기물이 있다면 토글 로직 수행 (이미 설정된 곳이면 해제, 아니면 설정)
         return (getCoord() == clickCoord) ? new Vector2Int(-1, -1) : new Vector2Int(clickCoord.X, clickCoord.Y);
     }
 
-    // --- 배경색 우선순위 ---
     Color DeterminedSquareBgColor(StageDataSO stageData, BoardCoord coord, PieceSetup currentSetup)
     {
         if (stageData.GetStartHintCoord() == coord) return Color.yellow;
         else if (stageData.GetNextHintCoord() == coord) return Color.red;
-        else if (currentSetup != null && currentSetup.Piece != PieceType.None) // 일반 기물
+        else if (currentSetup != null && currentSetup.Piece != PieceType.None)
             return currentSetup.Piece == PieceType.King ? Color.gray : Color.green;
         else return Color.white;
     }

@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,7 +13,7 @@ public class UI_PuzzleHUD : MonoBehaviour
     public Button nextBtn;
 
     [Header("Tutorial UI")]
-    public Text tutorialText;
+    public TextMeshProUGUI tutorialText;
 
     public event Action OnHintClicked;
 
