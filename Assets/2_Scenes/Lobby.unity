@@ -767,7 +767,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1317583255, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
+  m_Sprite: {fileID: -7708809668163741587, guid: 2fdf85e6bc27c8d499084dd0add5438e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -818,7 +818,6 @@ MonoBehaviour:
   squarePrefab: {fileID: 7238081151113486997, guid: 0731db858989dc94f8b528d259a7d136, type: 3}
   pawnMarker: {fileID: 1744747738}
   adMarker: {fileID: 682507189}
-  pawnIcon: {fileID: 702849514, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
   lockSprite: {fileID: 21300000, guid: 75555aa0f05f9cc45ab2f22fa2e70c89, type: 3}
   lightSquareColor: {r: 0.9411765, g: 0.8509804, b: 0.70980394, a: 1}
   darkSquareColor: {r: 0.70980394, g: 0.5294118, b: 0.3882353, a: 1}

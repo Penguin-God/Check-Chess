@@ -17,7 +17,6 @@ public class UI_Lobby : MonoBehaviour
     public GameObject squarePrefab;
     public RectTransform pawnMarker;
     public RectTransform adMarker;
-    public Sprite pawnIcon;
     public Sprite lockSprite;
 
     [Header("Board Colors")]

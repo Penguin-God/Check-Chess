@@ -16,14 +16,14 @@ MonoBehaviour:
   darkSquareColor: {r: 0.71, g: 0.53, b: 0.39, a: 1}
   pieceSpritesConfig:
   - pieceType: 1
-    pieceSprite: {fileID: -1317583255, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
+    pieceSprite: {fileID: -7708809668163741587, guid: 2fdf85e6bc27c8d499084dd0add5438e, type: 3}
   - pieceType: 2
-    pieceSprite: {fileID: -1408212723, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
+    pieceSprite: {fileID: 6918360255797489452, guid: 2fdf85e6bc27c8d499084dd0add5438e, type: 3}
   - pieceType: 3
-    pieceSprite: {fileID: 597306648, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
+    pieceSprite: {fileID: 2193797074797327884, guid: 2fdf85e6bc27c8d499084dd0add5438e, type: 3}
   - pieceType: 4
-    pieceSprite: {fileID: -1002331365, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
+    pieceSprite: {fileID: -3097914592943674184, guid: 2fdf85e6bc27c8d499084dd0add5438e, type: 3}
   - pieceType: 5
-    pieceSprite: {fileID: -309334120, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
+    pieceSprite: {fileID: -788488866779445655, guid: 2fdf85e6bc27c8d499084dd0add5438e, type: 3}
   - pieceType: 6
-    pieceSprite: {fileID: 1808495001, guid: 6000210437b9d404db7f80c34bbeaf03, type: 3}
+    pieceSprite: {fileID: -702500421044680214, guid: 2fdf85e6bc27c8d499084dd0add5438e, type: 3}

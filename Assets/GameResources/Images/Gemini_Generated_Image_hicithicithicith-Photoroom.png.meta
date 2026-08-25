@@ -1,0 +1,445 @@
+fileFormatVersion: 2
+guid: 2fdf85e6bc27c8d499084dd0add5438e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -702500421044680214
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_0
+  - first:
+      213: 7121801571831530599
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_1
+  - first:
+      213: 3685511181185471046
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_2
+  - first:
+      213: 7998445063831180163
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_3
+  - first:
+      213: -4974433793473665354
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_4
+  - first:
+      213: -1853465274069308380
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_5
+  - first:
+      213: 9008748992912625075
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_6
+  - first:
+      213: -788488866779445655
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_7
+  - first:
+      213: -3097914592943674184
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_8
+  - first:
+      213: 2193797074797327884
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_9
+  - first:
+      213: 6918360255797489452
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_10
+  - first:
+      213: -7708809668163741587
+    second: Gemini_Generated_Image_hicithicithicith-Photoroom_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 135
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: White_King
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 942
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae9c11dc6973046f0800000000000000
+      internalID: -702500421044680214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: White_Queen
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 942
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76446d1fbc8b5d260800000000000000
+      internalID: 7121801571831530599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: White_Rook
+      rect:
+        serializedVersion: 2
+        x: 860
+        y: 942
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6425a4284e0952330800000000000000
+      internalID: 3685511181185471046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: White_Bishop
+      rect:
+        serializedVersion: 2
+        x: 1242
+        y: 942
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3835221786f200f60800000000000000
+      internalID: 7998445063831180163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: White_Knight
+      rect:
+        serializedVersion: 2
+        x: 1620
+        y: 942
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b6ad4d02d247fab0800000000000000
+      internalID: -4974433793473665354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: White_Pawn
+      rect:
+        serializedVersion: 2
+        x: 2002
+        y: 942
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42ca39f372b2746e0800000000000000
+      internalID: -1853465274069308380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Black_King
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 282
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bd07398a71850d70800000000000000
+      internalID: 9008748992912625075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Black_Queen
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 282
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 966c242ad89be05f0800000000000000
+      internalID: -788488866779445655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Black_Rook
+      rect:
+        serializedVersion: 2
+        x: 860
+        y: 282
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bce717571ff105d0800000000000000
+      internalID: -3097914592943674184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Black_Bishop
+      rect:
+        serializedVersion: 2
+        x: 1240
+        y: 282
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c06f598f0dee17e10800000000000000
+      internalID: 2193797074797327884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Black_Knight
+      rect:
+        serializedVersion: 2
+        x: 1620
+        y: 284
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2f6df26ff3f20060800000000000000
+      internalID: 6918360255797489452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Black_Pawn
+      rect:
+        serializedVersion: 2
+        x: 2002
+        y: 284
+        width: 330
+        height: 330
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d68d008237ec40590800000000000000
+      internalID: -7708809668163741587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 4d155e04b487ce347a1ac1ecc4bf0b13
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":2.0},"gridSpriteSize":{"x":330.0,"y":330.0},"gridSpriteOffset":{"x":100.0,"y":300.0},"gridSpritePadding":{"x":50.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Black_Bishop: 2193797074797327884
+      Black_King: 9008748992912625075
+      Black_Knight: 6918360255797489452
+      Black_Pawn: -7708809668163741587
+      Black_Queen: -788488866779445655
+      Black_Rook: -3097914592943674184
+      K: 9008748992912625075
+      White_Bishop: 7998445063831180163
+      White_King: -702500421044680214
+      White_Knight: -4974433793473665354
+      White_Pawn: -1853465274069308380
+      White_Queen: 7121801571831530599
+      White_Rook: 3685511181185471046
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
