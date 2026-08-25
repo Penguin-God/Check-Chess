@@ -27,5 +27,4 @@ MonoBehaviour:
     Piece: 4
   startHintCoord: {x: 3, y: 3}
   nextHintCoord: {x: 3, y: 5}
-  StageText: 'a2 : You can only move by capturing. Capture a Black piece to transform
-    into it'
+  StageText: 'a2 : Capture a Black piece to transform into it'
