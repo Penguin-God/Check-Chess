@@ -60,29 +60,4 @@ public class UI_PuzzleHUD : MonoBehaviour
     }
 
     public void InActiveHintButton() => hintBtn.interactable = false;
-
-    //public void Clear()
-    //{
-    //    hintBtn.gameObject.SetActive(false);
-    //    nextBtn.gameObject.SetActive(true);
-
-    //    var nextStage = LevelManager.Instance.CurrentStage;
-    //    nextStage++;
-
-    //    if (LevelManager.Instance.CheckStagePlayable(nextStage) == false)
-    //    {
-    //        adImg.gameObject.SetActive(true);
-    //        nextBtn.onClick.RemoveAllListeners();
-    //        nextBtn.onClick.AddListener(ShowAdAndNext);
-    //    }
-
-    //    void ShowAdAndNext()
-    //    {
-    //        AdManager.Instance.ShowRewardedAd(() =>
-    //        {
-    //            lockPointDataSO.SaveMaxClearableStage(nextStage);
-    //            ToNextStage();
-    //        });
-    //    }
-    //}
 }
