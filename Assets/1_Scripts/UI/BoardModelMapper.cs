@@ -20,11 +20,6 @@ public static class BoardModelMapper
         });
     }
 
-
-    public static Board<SquareModel> CreateEmptyModel(Color whiteColor, Color blackColor)
-        => CreateDefaultBoard().Map((coord, colorType) => new SquareModel(GetColor(colorType, whiteColor, blackColor), null));
-
-    static Color GetColor(BoardColorType colorType, Color whiteColor, Color blackColor) => colorType == BoardColorType.Black? blackColor : whiteColor;
-    static BoardColorType GetCheckerboardColorType(BoardCoord boardCoord) => (boardCoord.X + boardCoord.Y) % 2 == 0 ? BoardColorType.Black : BoardColorType.White;
+    static BoardColorType GetCheckerboardColorType(BoardCoord boardCoord) => (boardCoord.X + boardCoord.Y) % 2 == 0 ? BoardColorType.White : BoardColorType.Black;
     static Board<BoardColorType> CreateDefaultBoard() => new Board<BoardColorType>(coord => GetCheckerboardColorType(coord));
 }
